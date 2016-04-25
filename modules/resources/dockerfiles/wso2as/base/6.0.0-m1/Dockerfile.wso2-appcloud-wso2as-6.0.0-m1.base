@@ -28,7 +28,12 @@ ENV WSO2_AS_VERSION 6.0.0
 RUN wget https://github.com/wso2/product-as/releases/download/v${WSO2_AS_VERSION}-m1/wso2as-${WSO2_AS_VERSION}-m1.zip -O /tmp/catalina.zip && \
     unzip /tmp/catalina.zip -d /opt && \
     ln -s /opt/wso2as-${WSO2_AS_VERSION}-m1 /opt/tomcat && \
-    rm /tmp/catalina.zip
+    rm /tmp/catalina.zip && \
+    rm -rf /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/docs && \
+    rm -rf /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/examples && \
+    rm -rf /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/host-manager && \
+    rm /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/jaxrs_basic.war && \
+    rm -rf /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/manager
 
 
 # Make a copy of the webapps folder, in case an empty or non-existent host
@@ -45,6 +50,7 @@ ENV CATALINA_HOME /opt/tomcat
 ENV PATH $PATH:$CATALINA_HOME/bin
 ENV ADMIN_PASS ""
 ENV CERT_PASS ""
+ENV JAVA_OPTS="-Xms128m -Xmx256m -XX:PermSize=64m"
 
 EXPOSE 8080 8443
 
