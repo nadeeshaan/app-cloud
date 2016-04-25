@@ -43,6 +43,7 @@ def get_node_status():
                 reason = condition["reason"]
                 message = condition["message"]
                 if (type == "Ready" and status == "False") or (type == "OutOfDisk" and status == "True"):
+                    condition_ok = False
                     alert_message += "Type : " + type + "\n" + "Status : " + status + "\n" + "Message : " + message + \
                                      "\n" + "Reason : " + reason + "\n"
                     alert_message += "----------------------------------------\n"
