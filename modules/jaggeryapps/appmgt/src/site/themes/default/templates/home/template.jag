@@ -161,11 +161,11 @@ jagg.template("home", function(inputs, outputs, jagg) {
                           <b>URL : </b><%=selectedApplicationRevision.deploymentURL%></span></a>
                           </div>
                           <div class="sec" id="version-app-launch-block">
-                              <button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"
-                              url="<%=selectedApplicationRevision.deploymentURL%>">Launch App</button>
                               <%
                                 if(selectedApplicationRevision.status=='running'){
                                 %>
+                                    <button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"
+                                    url="<%=selectedApplicationRevision.deploymentURL%>">Launch App</button>
                                     <div class="btn-group ctrl-edit-button btn-edit-code">
                                       <a type="button" class="btn cu-btn cu-btn-md cu-btn-red" onclick="stopApplication();">Stop
                                         <span id="stop-in-progress"><span>
@@ -179,6 +179,8 @@ jagg.template("home", function(inputs, outputs, jagg) {
                                 <%
                                 }else if(selectedApplicationRevision.status=='stopped'){
                                 %>
+                                    <button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"
+                                    url="<%=selectedApplicationRevision.deploymentURL%>" disabled>Launch App</button>
                                     <div class="btn-group ctrl-edit-button btn-edit-code">
                                       <a type="button" class="btn cu-btn cu-btn-md cu-btn-blue" onclick="startApplication();">Start</a>
                                     </div>
