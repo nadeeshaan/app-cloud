@@ -43,6 +43,10 @@ public class AppCloudIntegrationTestConstants {
 	public static final String TOMCAT_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='war']";
 	public static final String MSS_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='msf4j']";
 	public static final String PHP_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='php']";
+	public static final String TOMCAT_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='war']";
+	public static final String MSS_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='msf4j']";
+	public static final String PHP_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='php']";
+
 	public static final String APP_PROPERTIES_KEY = "//appCloudProperties/application/properties/property";
 	public static final String APP_NEW_PROPERTIES_KEY = "//appCloudProperties/application/newProperties/property";
 	public static final String APP_TAGS_KEY = "//appCloudProperties/application/tags/tag";
@@ -66,4 +70,8 @@ public class AppCloudIntegrationTestConstants {
 	public static final String PROPERTY_STATUS_NAME = "status";
 	public static final String PROPERTY_VERSIONS_NAME = "versions";
 	public static final String TRUE_STRING = "true";
+	public static final String PROPERTY_DEPLOYMENT_URL = "deploymentURL";
+	public static final String PARAM_UNDERSCORE = "_";
+	public static final String PARAM_ICON = "icon";
+
 }

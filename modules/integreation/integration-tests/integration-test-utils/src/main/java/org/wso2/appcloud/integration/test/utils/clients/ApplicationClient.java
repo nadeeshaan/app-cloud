@@ -62,6 +62,7 @@ public class ApplicationClient extends BaseClient{
 	protected static final String DELETE_TAG_ACTION = "deleteTag";
 	protected static final String DELETE_REVISION_ACTION = "deleteVersion";
 	protected static final String GET_REVISIONS_ACTION = "getExistingRevisions";
+	protected static final String CHANGE_APP_ICON_ACTION = "changeAppIcon";
 	protected static final String PARAM_NAME_APPLICATION_NAME = "applicationName";
 	protected static final String PARAM_NAME_APPLICATION_HASH_ID = "applicationKey";
 	protected static final String PARAM_NAME_APPLICATION_DESCRIPTION = "applicationDescription";
@@ -78,6 +79,7 @@ public class ApplicationClient extends BaseClient{
 	protected static final String PARAM_NAME_VALUE = "value";
 	protected static final String PARAM_NAME_NEW_VALUE = "newValue";
 	protected static final String PARAM_NAME_IS_FILE_ATTACHED = "isFileAttached";
+	protected static final String PARAM_NAME_CHANGE_ICON = "changeIcon";
 	protected static final String PARAM_NAME_FILE_UPLOAD = "fileupload";
 	protected static final String PARAM_NAME_IS_NEW_VERSION = "isNewVersion";
 	protected static final String PARAM_NAME_CONTAINER_SPEC_MEMORY = "conSpecMemory";
@@ -358,6 +360,39 @@ public class ApplicationClient extends BaseClient{
 			return jsonArray;
 		} else {
 			throw new AppCloudIntegrationTestException("Get Application Versions failed " + response.getData());
+		}
+	}
+
+	public boolean launchApplication(String launchURL, String sampleAppContent) throws Exception {
+		HttpResponse response = HttpRequestUtil.doPost(new URL(launchURL), "", getRequestHeaders());
+		if (response.getResponseCode() == HttpStatus.SC_OK &&
+		    response.getData().toString().contains(sampleAppContent)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void changeAppIcon(String applicationHash, File appIcon) throws Exception {
+		HttpClient httpclient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
+		HttpPost httppost = new HttpPost(this.endpoint);
+		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+		builder.addPart(PARAM_NAME_CHANGE_ICON, new FileBody(appIcon));
+		builder.addPart(PARAM_NAME_ACTION, new StringBody(CHANGE_APP_ICON_ACTION, ContentType.TEXT_PLAIN));
+		builder.addPart(PARAM_NAME_APPLICATION_HASH_ID, new StringBody(applicationHash, ContentType.TEXT_PLAIN));
+		httppost.setEntity(builder.build());
+		httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
+		org.apache.http.HttpResponse response = httpclient.execute(httppost);
+		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+			return;
+		} else {
+			BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			String result = "";
+			while (in.readLine() != null) {
+				result += in.readLine();
+			}
+			throw new AppCloudIntegrationTestException("Update app icon failed " + result);
 		}
 	}
 

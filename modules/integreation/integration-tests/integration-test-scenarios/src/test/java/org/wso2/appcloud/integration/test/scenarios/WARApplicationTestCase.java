@@ -31,7 +31,8 @@ public class WARApplicationTestCase extends AppCloudIntegrationBaseTestCase {
 	public WARApplicationTestCase(){
 		super(AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.TOMCAT_APP_RUNTIME_ID_KEY),
 		      AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.TOMCAT_APP_FILE_NAME_KEY),
-		      WAR_APPLICATION_TYPE);
+		      WAR_APPLICATION_TYPE, AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.
+				                                                                          TOMCAT_APP_CONTENT));
 	}
 
 	@Override

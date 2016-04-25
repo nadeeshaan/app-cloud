@@ -31,7 +31,8 @@ public class PHPApplicationTestCase extends AppCloudIntegrationBaseTestCase {
 	public PHPApplicationTestCase(){
 		super(AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.PHP_APP_RUNTIME_ID_KEY),
 		      AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.PHP_APP_FILE_NAME_KEY),
-		      PHP_APPLICATION_TYPE);
+		      PHP_APPLICATION_TYPE,AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.
+				                                                                         PHP_APP_CONTENT));
 	}
 
 	@Override
