@@ -280,7 +280,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                     <i class="fa fa-tags fa-5x"></i>
                   </div>
                   <div class="block-number pull-right">
-                   <span id="runtimePropCount"><%=selectedApplicationRevision.tags.length.toString()%></span>
+                   <span id="tagCount"><%=selectedApplicationRevision.tags.length.toString()%></span>
                   </div>
                   <div class="tag-list" id="tag-list"></div>
                   <div class="clearfix"></div>
