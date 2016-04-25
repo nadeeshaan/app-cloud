@@ -23,18 +23,18 @@ import java.sql.Connection;
 
 public class DBConfiguration {
 
-    private static final Log log = LogFactory.getLog(DBConfiguration.class);
+	private static final Log log = LogFactory.getLog(DBConfiguration.class);
 
-    public Connection getConnection() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DataSourceJDBC.getConnection();
-            return con;
-        } catch (Exception e) {
-            String msg =
-                    "Error while connecting to Data Base ";
-            log.error(msg, e);
-        }
-        return null;
-    }
+	public Connection getConnection() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DataSourceJDBC.getConnection();
+			return con;
+		} catch (Exception e) {
+			String msg =
+					"Error while connecting to Data Base ";
+			log.error(msg, e);
+		}
+		return null;
+	}
 }

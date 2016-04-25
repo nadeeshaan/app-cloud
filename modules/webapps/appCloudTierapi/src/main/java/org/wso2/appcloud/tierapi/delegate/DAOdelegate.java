@@ -23,21 +23,21 @@ import org.wso2.appcloud.tierapi.dao.impl.PlanDaoImpl;
 
 public class DAOdelegate {
 
-    private static PlanDao planInstance = new PlanDaoImpl();
-    private static ContainerSpecsDao containerSpecInstance = new ContainerSpecDaoImpl();
+	private static PlanDao planInstance = new PlanDaoImpl();
+	private static ContainerSpecsDao containerSpecInstance = new ContainerSpecDaoImpl();
 
-    /**
-     * Get PlanDAO object
-     */
-    public static PlanDao getPlanInstance() {
-        return planInstance;
-    }
+	/**
+	 * Get PlanDAO object
+	 */
+	public static PlanDao getPlanInstance() {
+		return planInstance;
+	}
 
-    /**
-     * Get PlanContainerSpec object
-     */
-    public static ContainerSpecsDao getContainerSpecInstance() {
-        return containerSpecInstance;
-    }
+	/**
+	 * Get PlanContainerSpec object
+	 */
+	public static ContainerSpecsDao getContainerSpecInstance() {
+		return containerSpecInstance;
+	}
 
 }

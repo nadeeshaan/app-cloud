@@ -18,22 +18,22 @@ package org.wso2.appcloud.provisioning.runtime.beans;
 
 public class ResourceQuotaLimit {
 
-    private String cpuLimit;
-    private String memoryLimit;
+	private String cpuLimit;
+	private String memoryLimit;
 
-    public void setCpuLimit(String cpuLimit) {
-        this.cpuLimit = cpuLimit;
-    }
+	public void setCpuLimit(String cpuLimit) {
+		this.cpuLimit = cpuLimit;
+	}
 
-    public String getCpuLimit() {
-        return cpuLimit;
-    }
+	public String getCpuLimit() {
+		return cpuLimit;
+	}
 
-    public void setMemoryLimit(String memoryLimit) {
-        this.memoryLimit = memoryLimit;
-    }
+	public void setMemoryLimit(String memoryLimit) {
+		this.memoryLimit = memoryLimit;
+	}
 
-    public String getMemoryLimit() {
-        return memoryLimit;
-    }
+	public String getMemoryLimit() {
+		return memoryLimit;
+	}
 }

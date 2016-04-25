@@ -352,14 +352,14 @@ var createDockerFile =  function(applicationName, versionName, runtimeId, upload
 var deployApplication = function(applicationName, versionName, deploymentConfig, isRedeploy, versionHashId, status, conSpecMemory, conSpecCpu){
 
     var resourceQuotaLimit = new ResourceQuotaLimit();
-        try{
-            resourceQuotaLimit.setCpuLimit(conSpecCpu);
-            resourceQuotaLimit.setMemoryLimit(conSpecMemory);
-        }catch(e){
-            var msg = "Error while updating the Resource Quota";
-            log.error(msg);
-            log.error(e);
-        }
+    try{
+        resourceQuotaLimit.setCpuLimit(conSpecCpu);
+        resourceQuotaLimit.setMemoryLimit(conSpecMemory);
+    }catch(e){
+        var msg = "Error while updating the Resource Quota";
+        log.error(msg);
+        log.error(e);
+    }
     //Adding deployment pending event
     var msg = "Application deployment successfully triggered in Kubernetes";
     addEvent(KUBE_DEPLOY, EVENT_PENDING, msg, versionHashId);

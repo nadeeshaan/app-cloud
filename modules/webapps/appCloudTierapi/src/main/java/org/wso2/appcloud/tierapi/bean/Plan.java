@@ -25,41 +25,41 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Plan {
 
-    private int id;
-    private String planName;
-    private int maxApplications;
+	private int id;
+	private String planName;
+	private int maxApplications;
 
-    public Plan() {
+	public Plan() {
 
-    }
+	}
 
-    public Plan(String planName, int maxApplications) {
-        this.planName = planName;
-        this.maxApplications = maxApplications;
-    }
+	public Plan(String planName, int maxApplications) {
+		this.planName = planName;
+		this.maxApplications = maxApplications;
+	}
 
-    public int getId() {
-        return id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public void setPlanName(String planName) {
-        this.planName = planName;
-    }
+	public void setPlanName(String planName) {
+		this.planName = planName;
+	}
 
-    public String getPlanName() {
-        return planName;
-    }
+	public String getPlanName() {
+		return planName;
+	}
 
-    public void setMaxApplications(int maxApplications) {
-        this.maxApplications = maxApplications;
-    }
+	public void setMaxApplications(int maxApplications) {
+		this.maxApplications = maxApplications;
+	}
 
-    public int getMaxApplications() {
-        return maxApplications;
-    }
+	public int getMaxApplications() {
+		return maxApplications;
+	}
 
 }

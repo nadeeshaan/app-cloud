@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+* Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -24,62 +24,62 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ContainerSpecifications {
 
-    private int id;
-    private String conSpecName;
-    private int cpu;
-    private int memory;
-    private int storage;
-    private int costPerHour;
+	private int id;
+	private String conSpecName;
+	private int cpu;
+	private int memory;
+	private int storage;
+	private int costPerHour;
 
-    public ContainerSpecifications() {
+	public ContainerSpecifications() {
 
-    }
+	}
 
-    public ContainerSpecifications(String conSpecName, int cpu, int memory, int storage, int costPerHour) {
-        this.conSpecName = conSpecName;
-        this.cpu = cpu;
-        this.storage = storage;
-        this.memory = memory;
-        this.costPerHour = costPerHour;
-    }
+	public ContainerSpecifications(String conSpecName, int cpu, int memory, int storage, int costPerHour) {
+		this.conSpecName = conSpecName;
+		this.cpu = cpu;
+		this.storage = storage;
+		this.memory = memory;
+		this.costPerHour = costPerHour;
+	}
 
-    public int getId() {
-        return id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public void setConSpecName(String conSpecName) {
-        this.conSpecName = conSpecName;
-    }
+	public void setConSpecName(String conSpecName) {
+		this.conSpecName = conSpecName;
+	}
 
-    public String getConSpecName() {
-        return conSpecName;
-    }
+	public String getConSpecName() {
+		return conSpecName;
+	}
 
-    public void setCpu(int cpu) {
-        this.cpu = cpu;
-    }
+	public void setCpu(int cpu) {
+		this.cpu = cpu;
+	}
 
-    public int getCpu() {
-        return cpu;
-    }
+	public int getCpu() {
+		return cpu;
+	}
 
-    public void setMemory(int memory) {
-        this.memory = memory;
-    }
+	public void setMemory(int memory) {
+		this.memory = memory;
+	}
 
-    public int getMemory() {
-        return memory;
-    }
+	public int getMemory() {
+		return memory;
+	}
 
-    public void setCostPerHour(int costPerHour) {
-        this.costPerHour = costPerHour;
-    }
+	public void setCostPerHour(int costPerHour) {
+		this.costPerHour = costPerHour;
+	}
 
-    public int getCostPerHour() {
-        return costPerHour;
-    }
+	public int getCostPerHour() {
+		return costPerHour;
+	}
 }

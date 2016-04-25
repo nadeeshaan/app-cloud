@@ -30,30 +30,30 @@ import java.util.Hashtable;
 
 public class DataSourceJDBC {
 
-    private static final Log log = LogFactory.getLog(DataSourceJDBC.class);
+	private static final Log log = LogFactory.getLog(DataSourceJDBC.class);
 
-    public static Connection getConnection() {
-        Connection conn = null;
-        try {
-            Context initCtx = new InitialContext();
-            SelectorContext selectorContext =
-                    new SelectorContext((Hashtable<String, Object>) initCtx.getEnvironment(), false);
-            Context envCtx = (Context) selectorContext.lookup("java:comp/env");
+	public static Connection getConnection() {
+		Connection conn = null;
+		try {
+			Context initCtx = new InitialContext();
+			SelectorContext selectorContext =
+					new SelectorContext((Hashtable<String, Object>) initCtx.getEnvironment(), false);
+			Context envCtx = (Context) selectorContext.lookup("java:comp/env");
 
-            DataSource ds = (DataSource)
-                    envCtx.lookup("jdbc/WSO2AppCloud1");
+			DataSource ds = (DataSource)
+					envCtx.lookup("jdbc/WSO2AppCloud1");
 
-            conn = ds.getConnection();
+			conn = ds.getConnection();
 
-        } catch (NamingException e) {
-            String msg =
-                    "Error while connecting to Data Source ";
-            log.error(msg, e);
-        } catch (SQLException e) {
-            String msg =
-                    "Error while getting connection to Data Base ";
-            log.error(msg, e);
-        }
-        return conn;
-    }
+		} catch (NamingException e) {
+			String msg =
+					"Error while connecting to Data Source ";
+			log.error(msg, e);
+		} catch (SQLException e) {
+			String msg =
+					"Error while getting connection to Data Base ";
+			log.error(msg, e);
+		}
+		return conn;
+	}
 }
