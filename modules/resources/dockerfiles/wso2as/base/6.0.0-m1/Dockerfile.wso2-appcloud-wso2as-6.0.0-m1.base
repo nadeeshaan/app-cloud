@@ -29,12 +29,8 @@ RUN wget https://github.com/wso2/product-as/releases/download/v${WSO2_AS_VERSION
     unzip /tmp/catalina.zip -d /opt && \
     ln -s /opt/wso2as-${WSO2_AS_VERSION}-m1 /opt/tomcat && \
     rm /tmp/catalina.zip && \
-    rm -rf /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/docs && \
     rm -rf /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/examples && \
-    rm -rf /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/host-manager && \
-    rm /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/jaxrs_basic.war && \
-    rm -rf /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/manager
-
+    rm /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/jaxrs_basic.war
 
 # Make a copy of the webapps folder, in case an empty or non-existent host
 # folder is specified for the (webapps) volume.
