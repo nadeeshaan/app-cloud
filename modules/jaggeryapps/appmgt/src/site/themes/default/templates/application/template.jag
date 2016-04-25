@@ -38,7 +38,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
         var newVersion = request.getParameter("newVersion");
         var nextVersion = request.getParameter("nextVersion");
         var subscriptionPlanURL = subscriptionPlanBaseURL + "/plans/1";
-		var runtimeContainerSpecURL = subscriptionPlanBaseURL + "/containerSpecs/allowedruntime/"+runtimeID;
+		var runtimeContainerSpecURL = subscriptionPlanBaseURL + "/containerSpecs/allowedruntime/" + runtimeID;
         var data = null;
         var maxInstancesJson = get(subscriptionPlanURL , "" , "json");
 		var allowedRuntimeContainerSpecJson = get(runtimeContainerSpecURL, "", "json");
@@ -55,7 +55,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var specCpu = new Array();
     var specCost = new Array();
     var specMemory = new Array();
-    for(var i=0 ; i<allowedRuntimeContainerSpecJson.data.length ; i++ ) {
+    for(var i = 0 ; i < allowedRuntimeContainerSpecJson.data.length ; i++ ) {
         specCpu[i] = JSON.parse(allowedRuntimeContainerSpecJson.data[i].cpu);
         specMemory[i] = JSON.parse(allowedRuntimeContainerSpecJson.data[i].memory);
         specCost[i] = JSON.parse(allowedRuntimeContainerSpecJson.data[i].costPerHour);
