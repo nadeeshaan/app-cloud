@@ -1298,7 +1298,11 @@ var constructFileUploadPath = function (versionHashId) {
 
 var getApplicationCount = function(){
     try{
-        var applicationCount = ApplicationManager.getApplicationCount();
+        var tenantId = modManager.getTenantId();
+        var applicationCount = ApplicationManager.getMaxAppCountForWhiteListedTenants(tenantId);
+        if(applicationCount == -1){
+            applicationCount = ApplicationManager.getApplicationCount();
+        }
         return applicationCount;
     }catch(e){
         log.error("Error while getting application count from the database");
