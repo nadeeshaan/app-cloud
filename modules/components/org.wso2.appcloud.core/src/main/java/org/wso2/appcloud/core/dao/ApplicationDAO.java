@@ -1041,6 +1041,7 @@ public class ApplicationDAO {
                 applicationRuntime.setImageName(resultSet.getString(SQLQueryConstants.RUNTIME_IMAGE_NAME));
                 applicationRuntime.setRepoURL(resultSet.getString(SQLQueryConstants.RUNTIME_REPO_URL));
                 applicationRuntime.setTag(resultSet.getString(SQLQueryConstants.RUNTIME_TAG));
+                applicationRuntime.setDescription(resultSet.getString(SQLQueryConstants.DESCRIPTION));
 
                 applicationRuntimeList.add(applicationRuntime);
             }
@@ -1077,6 +1078,7 @@ public class ApplicationDAO {
                 applicationRuntime.setRepoURL(resultSet.getString(SQLQueryConstants.RUNTIME_REPO_URL));
                 applicationRuntime.setRuntimeName(resultSet.getString(SQLQueryConstants.NAME));
                 applicationRuntime.setTag(resultSet.getString(SQLQueryConstants.RUNTIME_TAG));
+                applicationRuntime.setDescription(resultSet.getString(SQLQueryConstants.DESCRIPTION));
             }
 
         } catch (SQLException e) {
