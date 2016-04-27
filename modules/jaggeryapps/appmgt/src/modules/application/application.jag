@@ -1320,6 +1320,7 @@ var constructFileUploadPath = function (versionHashId) {
 
 var getApplicationCount = function(){
     try{
+        var tenantId = modManager.getTenantId();
         var applicationCount = ApplicationManager.getApplicationCount();
         return applicationCount;
     }catch(e){
@@ -1328,6 +1329,7 @@ var getApplicationCount = function(){
         return null;
     }
 };
+
 var addCustomUrl = function (customUrl, applicationName, versionName) {
     var tenantId = modManager.getTenantId();
     var versionHashId = Util.getVersionHashId(applicationName, versionName, tenantId);
@@ -1452,6 +1454,18 @@ var getNotAllowedEnvVariables = function () {
         }
 
         return notAllowedVariables;
+};
+
+var getMaxInstanceCount = function () {
+    var tenantId = modManager.getTenantId();
+    var maxAppCount = ApplicationManager.getMaxAppCountForWhiteListedTenants(tenantId);
+    var subscriptionPlanBaseURL = modManager.getPropertyValue("SubscriptionPlanBaseURL");
+    var subscriptionPlanURL = subscriptionPlanBaseURL + "/plans/1";
+    if(maxAppCount == -1) {
+        var maxInstancesJson = get(subscriptionPlanURL , "" , "json");
+        maxAppCount = parseInt(maxInstancesJson.data.maxApplications);
+    }
+    return maxAppCount;
 };
 
 %>

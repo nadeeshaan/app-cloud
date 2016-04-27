@@ -681,4 +681,19 @@ public class ApplicationManager {
 
         return applicationDAO.getApplicationVersionsByRunningTimePeriod(numberOfHours);
     }
+
+	public static int getMaxAppCountForWhiteListedTenants(int tenantID) throws AppCloudException {
+		ApplicationDAO applicationDAO = new ApplicationDAO();
+		Connection dbConnection = DBUtil.getDBConnection();
+
+		int maxAppCount = 0;
+		try {
+			maxAppCount = applicationDAO.getWhiteListedTenantMaxAppCount(dbConnection, tenantID);
+		} catch (AppCloudException e) {
+			String msg = "Get Max App Count failed for tenant id : " + tenantID;
+			log.error(msg, e);
+			throw new AppCloudException(msg, e);
+		}
+		return maxAppCount;
+	}
 }

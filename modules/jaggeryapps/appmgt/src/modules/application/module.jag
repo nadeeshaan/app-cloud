@@ -181,24 +181,35 @@ jagg.module("application", {
     deleteVersionFromDatabase:function() {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").deleteVersionFromDatabase.apply(this, arguments);
     },
+
     deleteVersion:function() {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").deleteVersion.apply(this, arguments);
     },
+
 	getApplicationCount:function() {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").getApplicationCount.apply(this, arguments);
     },
+
     verifyCustomUrl: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").verifyCustomUrl.apply(this, arguments);
     },
+
     addCustomUrl: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").addCustomUrl.apply(this, arguments);
     },
+
     isAplicationVersionExist: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").isAplicationVersionExist.apply(this, arguments);
     },
+
     getNotAllowedEnvVariables: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").getNotAllowedEnvVariables.apply(this, arguments);
     },
+
+    getMaxInstanceCount: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").getMaxInstanceCount.apply(this, arguments);
+    },
+
     stopOtherVersions: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").stopOtherVersions.apply(this, arguments);
     }
