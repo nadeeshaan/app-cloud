@@ -41,7 +41,6 @@ jagg.block("application", {
         var applicationCount = applicationModule.getApplicationCount();
         var subscriptionPlanBaseURL = modManager.getPropertyValue("SubscriptionPlanBaseURL");
         var notAllowedEnvVariables = applicationModule.getNotAllowedEnvVariables();
-        var maxAppCount = applicationModule.getMaxInstanceCount();
 
         return {
             "runtimes" : runtimes,
@@ -49,8 +48,7 @@ jagg.block("application", {
             "applicationName" : applicationName,
             "applicationCount" : applicationCount,
             "subscriptionPlanBaseURL" : subscriptionPlanBaseURL,
-            "notAllowedEnvVariables" : notAllowedEnvVariables,
-            "maxAppCount" : maxAppCount
+            "notAllowedEnvVariables" : notAllowedEnvVariables
         };
     }
 });
