@@ -393,8 +393,8 @@ jagg.template("home", function(inputs, outputs, jagg) {
             conSpecMemory: conSpecMemory
 
         }, function (result) {
-            jagg.message({content: "Only one running version per application is allowed. " +
-                                 "Other versions of the application are stopped.", type: 'info'});
+            jagg.message({content:"You can start only one version of an application at a time on a free subscription." +
+             " Other versions have been stopped automatically.", type: 'info'});
         });
     }
 
