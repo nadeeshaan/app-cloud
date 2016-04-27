@@ -40,8 +40,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
         var subscriptionPlanURL = subscriptionPlanBaseURL + "/plans/1";
 		var runtimeContainerSpecURL = subscriptionPlanBaseURL + "/containerSpecs/allowedruntime/" + runtimeID;
         var data = null;
-        var maxInstancesJson = get(subscriptionPlanURL , "" , "json");
 		var allowedRuntimeContainerSpecJson = get(runtimeContainerSpecURL, "", "json");
+		var maxApplications = outputs.maxAppCount;
     %>
 
 <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/bootstrap-3.2.0/bootstrap.min.css'))%>">
@@ -51,7 +51,6 @@ jagg.template("application", function (inputs, outputs, jagg) {
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/styles.css'))%>">
 
 <%
-    var maxApplications = JSON.parse(maxInstancesJson.data.maxApplications);
     var specCpu = new Array();
     var specCost = new Array();
     var specMemory = new Array();

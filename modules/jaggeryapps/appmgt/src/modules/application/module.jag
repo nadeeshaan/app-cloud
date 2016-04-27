@@ -204,6 +204,10 @@ jagg.module("application", {
 
     getNotAllowedEnvVariables: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").getNotAllowedEnvVariables.apply(this, arguments);
+    },
+
+    getMaxInstanceCount: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").getMaxInstanceCount.apply(this, arguments);
     }
 });
 %>
