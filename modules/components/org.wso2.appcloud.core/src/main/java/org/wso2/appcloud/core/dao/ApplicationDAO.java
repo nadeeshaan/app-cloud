@@ -22,25 +22,11 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.appcloud.common.AppCloudException;
 import org.wso2.appcloud.core.DBUtil;
 import org.wso2.appcloud.core.SQLQueryConstants;
-import org.wso2.appcloud.core.dto.Application;
-import org.wso2.appcloud.core.dto.ApplicationRuntime;
-import org.wso2.appcloud.core.dto.ApplicationType;
-import org.wso2.appcloud.core.dto.Container;
-import org.wso2.appcloud.core.dto.ContainerServiceProxy;
-import org.wso2.appcloud.core.dto.Deployment;
-import org.wso2.appcloud.core.dto.RuntimeProperty;
-import org.wso2.appcloud.core.dto.Tag;
-import org.wso2.appcloud.core.dto.Transport;
-import org.wso2.appcloud.core.dto.Version;
-import org.wso2.carbon.user.core.tenant.JDBCTenantManager;
+import org.wso2.appcloud.core.dto.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -1548,4 +1534,27 @@ public class ApplicationDAO {
         }
         return versions.toArray(new Version[versions.size()]);
     }
+
+	public int getWhiteListedTenantMaxAppCount(Connection dbConnection, int tenantID) throws AppCloudException {
+		PreparedStatement preparedStatement = null;
+		int maxAppCount;
+
+		try {
+			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_WHITE_LISTED_TENANT_DETAILS);
+			preparedStatement.setInt(1, tenantID);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()){
+				maxAppCount = resultSet.getInt(SQLQueryConstants.MAX_APP_COUNT);
+			} else {
+				maxAppCount = -1;
+			}
+		} catch (SQLException e) {
+			String msg = "Error while retrieving white listed tenant details.";
+			throw new AppCloudException(msg, e);
+		} finally {
+			DBUtil.closePreparedStatement(preparedStatement);
+		}
+		return maxAppCount;
+	}
+
 }
