@@ -37,8 +37,8 @@ jagg.template("page/master", function(inputs, outputs, jagg) {%>
 
 <body class="top-notification-active">
     <div class="top-notification">
-        <span class="hidden-xs">This new version of WSO2 App Cloud still in alpha stage. Click here for <a href="https://apps.cloud.wso2.com">old</a> version.</span>
-        <span class="visible-xs">WSO2 App Cloud in alpha stage. Click here for <a href="https://apps.cloud.wso2.com">old</a> version.</span>
+        <span class="hidden-xs">This new version of WSO2 App Cloud still in beta stage. Click here for the <a href="https://apps.cloud.wso2.com">old</a> version.</span>
+        <span class="visible-xs">WSO2 App Cloud in beta stage. Click here for the <a href="https://apps.cloud.wso2.com">old</a> version.</span>
     </div>
     <div id="wrap">
         <div id="header"><% jagg.includeBlocks(outputs.header); %></div>
