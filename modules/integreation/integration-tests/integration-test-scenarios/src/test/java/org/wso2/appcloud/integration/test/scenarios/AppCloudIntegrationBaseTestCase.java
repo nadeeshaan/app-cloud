@@ -336,6 +336,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		int round = 1;
 		String actualStatus = null;
 		while (round <= retryCount) {
+			log.info("RetryApplicationActions round : " + round);
 			JSONObject result = applicationClient.getApplicationBean(applicationName);
 			actualStatus = ((JSONObject) ((JSONObject) result
 					.get(AppCloudIntegrationTestConstants.PROPERTY_VERSIONS_NAME))

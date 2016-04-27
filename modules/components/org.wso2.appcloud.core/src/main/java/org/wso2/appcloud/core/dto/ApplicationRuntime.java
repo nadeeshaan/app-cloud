@@ -24,6 +24,7 @@ public class ApplicationRuntime {
     private String repoURL;
     private String imageName;
     private String tag;
+    private String description;
 
     public int getId() {
         return id;
@@ -63,5 +64,13 @@ public class ApplicationRuntime {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -80,15 +80,24 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var urlUploadComplete = false;
     var applicationHashId;
     var notAllowedEnvVariables = jQuery.parseJSON('<%=notAllowedEnvVariables%>');
+    var newVersion = "<%=newVersion%>";
+    var isNewVersion = false;
+
+    if(newVersion == "true"){
+        isNewVersion = true;
+    }
+
     $(document).ready(function(){
 
-             if(applicationCount >= maxApplications){
+            if(!isNewVersion){
+              if(applicationCount >= maxApplications){
                 $('#outerContainer').empty();
                 $('#outerContainer').html('<div class="container-fluid"><div class="row row-centered">' +
                  '<div class="col-centered col-xs-10 col-sm-7  col-md-7 col-lg-6"><div class="cloud-new-content">' +
-                  '<h3>You cannot create more than 3 applications, including versions, on a free subscription. ' +
+                  '<h3>You cannot create more than ' + maxApplications + ' applications on a free subscription. ' +
                    'Please delete an existing application to continue...</h3></div></div></div></div>');
                 return;
+              }
             }
 
             $("#runtime").select2();
@@ -124,6 +133,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
             $.each(<%=runtimes%>,function(key,value){
                 $("#runtime").append($('<option></option>').val(value.id).html(value.runtimeName));
                 $("#runtime").trigger('change');
+                $("#runtime").attr('title', function () {
+                    return value.description;
+                });
             });
 
             $.each(<%=specCpu%>,function(key,value){
@@ -232,6 +244,10 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         data: formData,
                         async: true,
                         success: function (data) {
+                            if(isNewVersion){
+                                jagg.message({content: "You can start only one version of an application at a time on" +
+                                 " a free subscription. Other versions have been stopped automatically.", type: 'info'});
+                            }
                         },
                         cache: false,
                         contentType: false,
