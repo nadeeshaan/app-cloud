@@ -66,6 +66,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
 
     if(isNewVersion == 'true'){
         createAppVersionInDataBase(versionName, runtimeId, runtimePropertiesArray, tagArray, applicationHashId, versionHashId, conSpecMemory, conSpecCpu);
+        stopOtherVersions(applicationHashId, versionName);
     }else{
         createAppInDataBase(applicationName, versionName, applicationDescription, replicas, runtimeId, appTypeName,
                 runtimePropertiesArray, tagArray, appIcon, applicationHashId, versionHashId, conSpecMemory, conSpecCpu);
@@ -84,6 +85,26 @@ var addApplication = function (applicationName, versionName, applicationDescript
     triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
     putSelectedRevisionToSession(applicationHashId, versionName);
 };
+
+var stopOtherVersions = function(applicationHashId, selectedRevision){
+    var application = getApplication(applicationHashId);
+    var applicationVersions = application.versions;
+    var keys = Object.keys(applicationVersions);
+
+    for(var i=0; i < keys.length; i++){
+        var key = keys[i];
+
+        //Stop other versions
+        if(key != selectedRevision) {
+            var versionDetails = applicationVersions[key];
+            var prevVersionHashId = versionDetails.hashId;
+
+            deleteApplicationFromKubernetes(prevVersionHashId);
+            updateApplicationStatus(prevVersionHashId, APPLICATION_STOPPED);
+            deleteEventsOfAppVersions(prevVersionHashId);
+        }
+    }
+}
 
 var triggerKubernetesDeployment = function(runtimeProperties, applicationRuntime, tagName, applicationName, versionName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu){
     var appHostURL = constructAppLaunchURL(applicationName, versionName);
@@ -665,6 +686,7 @@ var getAllRuntimes = function(appType){
             runtimeObject.imageName = runtime.imageName;
             runtimeObject.repoURL = runtime.repoURL;
             runtimeObject.tag = runtime.tag;
+            runtimeObject.description = runtime.description;
 
             runtimeArray.push(runtimeObject);
         }
@@ -1298,6 +1320,7 @@ var constructFileUploadPath = function (versionHashId) {
 
 var getApplicationCount = function(){
     try{
+        var tenantId = modManager.getTenantId();
         var applicationCount = ApplicationManager.getApplicationCount();
         return applicationCount;
     }catch(e){
@@ -1306,6 +1329,7 @@ var getApplicationCount = function(){
         return null;
     }
 };
+
 var addCustomUrl = function (customUrl, applicationName, versionName) {
     var tenantId = modManager.getTenantId();
     var versionHashId = Util.getVersionHashId(applicationName, versionName, tenantId);
@@ -1430,6 +1454,18 @@ var getNotAllowedEnvVariables = function () {
         }
 
         return notAllowedVariables;
+};
+
+var getMaxInstanceCount = function () {
+    var tenantId = modManager.getTenantId();
+    var maxAppCount = ApplicationManager.getMaxAppCountForWhiteListedTenants(tenantId);
+    var subscriptionPlanBaseURL = modManager.getPropertyValue("SubscriptionPlanBaseURL");
+    var subscriptionPlanURL = subscriptionPlanBaseURL + "/plans/1";
+    if(maxAppCount == -1) {
+        var maxInstancesJson = get(subscriptionPlanURL , "" , "json");
+        maxAppCount = parseInt(maxInstancesJson.data.maxApplications);
+    }
+    return maxAppCount;
 };
 
 %>

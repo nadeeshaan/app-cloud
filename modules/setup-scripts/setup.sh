@@ -24,6 +24,8 @@ mvn clean install -Dmaven.test.skip=true -f $APP_CLOUD_SRC_HOME/pom.xml
 MYSQL=`which mysql`
 Q0="DROP DATABASE IF EXISTS cloudUserstore;"
 Q1="CREATE DATABASE cloudUserstore;"
+#for windows and mac users
+#Q1="CREATE DATABASE cloudUserstore character set latin1;"
 SQL="${Q0}${Q1}"
 $MYSQL -uroot -proot -A -e "$SQL";
 
@@ -36,14 +38,20 @@ $MYSQL -uroot -proot < $APP_CLOUD_SRC_HOME/modules/dbscripts/appcloud.sql
 # Setting up storage server databases
 Q3="DROP DATABASE IF EXISTS rss_db;"
 Q4="CREATE DATABASE rss_db;"
+#for windows and mac users
+#Q4="CREATE DATABASE rss_db character set latin1;"
 SQL2="${Q3}${Q4}"
 $MYSQL -uroot -proot -A -e "$SQL2";
 
 #Setting up http monitoring dataase
 Q5="DROP DATABASE IF EXISTS analytics_event_store;"
 Q6="CREATE DATABASE analytics_event_store;"
+#for windows and mac users
+#Q6="CREATE DATABASE analytics_event_store character set latin1;"
 Q7="DROP DATABASE IF EXISTS analytics_processed_data_store;"
 Q8="CREATE DATABASE analytics_processed_data_store;"
+#for windows and mac users
+#Q8="CREATE DATABASE analytics_processed_data_store character set latin1;"
 SQL1="${Q5}${Q6}${Q7}${Q8}"
 $MYSQL -uroot -proot -A -e "$SQL1";
 $MYSQL -uroot -proot < $APP_CLOUD_SRC_HOME/modules/dbscripts/http-mon-mysql.sql
