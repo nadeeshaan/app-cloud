@@ -133,6 +133,10 @@ var log = new Log();
         // redeploy application from kubernetes
         applicationModule.redeployApplication(applicationName, applicationRevision, versionKey, conSpecMemory, conSpecCpu);
 
+        // stop other versions of the application
+        var applicationHashId = applicationModule.getApplicationHashIdByName(applicationName);
+        applicationModule.stopOtherVersions(applicationHashId, applicationRevision);
+
         response.status = 200;
         response.message = "Application starting requested is completed successfully.";
 

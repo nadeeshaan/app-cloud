@@ -198,6 +198,9 @@ jagg.module("application", {
     },
     getNotAllowedEnvVariables: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").getNotAllowedEnvVariables.apply(this, arguments);
+    },
+    stopOtherVersions: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").stopOtherVersions.apply(this, arguments);
     }
 });
 %>

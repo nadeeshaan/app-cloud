@@ -393,7 +393,8 @@ jagg.template("home", function(inputs, outputs, jagg) {
             conSpecMemory: conSpecMemory
 
         }, function (result) {
-             //jagg.message({content: "Application start request is submitted successfully.", type: 'info'});
+            jagg.message({content: "Only one running version per application is allowed. " +
+                                 "Other versions of the application are stopped.", type: 'info'});
         });
     }
 

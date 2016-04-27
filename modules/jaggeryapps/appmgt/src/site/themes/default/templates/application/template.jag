@@ -81,15 +81,24 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var urlUploadComplete = false;
     var applicationHashId;
     var notAllowedEnvVariables = jQuery.parseJSON('<%=notAllowedEnvVariables%>');
+    var newVersion = "<%=newVersion%>";
+    var isNewVersion = false;
+
+    if(newVersion == "true"){
+        isNewVersion = true;
+    }
+
     $(document).ready(function(){
 
-             if(applicationCount >= maxApplications){
+            if(!isNewVersion){
+              if(applicationCount >= maxApplications){
                 $('#outerContainer').empty();
                 $('#outerContainer').html('<div class="container-fluid"><div class="row row-centered">' +
                  '<div class="col-centered col-xs-10 col-sm-7  col-md-7 col-lg-6"><div class="cloud-new-content">' +
-                  '<h3>You cannot create more than 3 applications, including versions, on a free subscription. ' +
+                  '<h3>You cannot create more than ' + maxApplications + ' applications on a free subscription. ' +
                    'Please delete an existing application to continue...</h3></div></div></div></div>');
                 return;
+              }
             }
 
             $("#runtime").select2();
@@ -233,6 +242,10 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         data: formData,
                         async: true,
                         success: function (data) {
+                            if(isNewVersion){
+                                jagg.message({content: "Only one running version per application is allowed. " +
+                                 "Other versions of the application are stopped.", type: 'info'});
+                            }
                         },
                         cache: false,
                         contentType: false,
