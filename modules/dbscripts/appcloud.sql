@@ -360,13 +360,6 @@ CREATE TABLE IF NOT EXISTS AC_RUNTIME_CONTAINER_SPECIFICATIONS (
   KEY CON_SPEC_ID (CON_SPEC_ID))
 ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_WHITE_LISTED_TENANTS` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `tenant_id` INT NOT NULL,
-  `max_app_count` INT NOT NULL,
-  PRIMARY KEY (`id`, `tenant_id`))
-ENGINE = InnoDB;
-
 -- -----------------------------------------------------
 -- Populate Data to `AppCloudDB`.`ApplicationRuntime`
 -- -----------------------------------------------------
