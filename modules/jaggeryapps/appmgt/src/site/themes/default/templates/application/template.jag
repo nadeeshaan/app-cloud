@@ -569,6 +569,10 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     activateCreateApplication();
                     activateUploadButton();
         });
+
+        $('#artifactUrl').on('focusout keyup blur click', function () { // fires on every keyup & blur
+            activateUploadButton();
+        });
     });
 
     function activateCreateApplication() {
@@ -599,7 +603,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
     function activateUploadButton() {
         if ($('#applicationName').val() && $('#applicationRevision').val()) {
             $("#btn-artifact-upload").attr("disabled", false);
-            $("#url-upload").attr("disabled", false);
+            if ($('#artifactUrl').val()) {
+                $("#url-upload").attr("disabled", false);
+            }
         }
     }
 
