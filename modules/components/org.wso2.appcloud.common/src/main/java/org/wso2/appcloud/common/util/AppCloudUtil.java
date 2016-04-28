@@ -29,11 +29,7 @@ import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Properties;
@@ -45,11 +41,6 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.wso2.carbon.core.util.KeyStoreManager;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 
 /**
