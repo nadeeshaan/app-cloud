@@ -66,3 +66,15 @@ var getFormattedRuntimeLogs = function (applicationKey, selectedRevision, applic
         throw "Error while calling mod.getRuntimeLogs. Results are not instances of DeploymentLogs";
     }
 }
+
+var getApplicationRevisionStatus = function(applicationKey, selectedRevision){
+
+    var versionList = ApplicationManager.getAllVersionsOfApplication(applicationKey);
+    log.info(versionList.size());
+
+    var applicationRevisions = versionList;
+    var revisionStatus = applicationRevisions[selectedRevision].status;
+
+    return revisionStatus;
+
+}
