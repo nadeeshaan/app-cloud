@@ -100,7 +100,6 @@ jagg.template("application", function (inputs, outputs, jagg) {
               }
             }
 
-            $("#runtime").select2();
             $("containerSpec").select2();
             $("container").select2();
             //check if application name available
