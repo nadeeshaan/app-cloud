@@ -20,6 +20,7 @@ package org.wso2.appcloud.integration.test.utils.clients;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.commons.httpclient.HttpStatus;
+import org.json.JSONObject;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestConstants;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestException;
 import org.wso2.carbon.automation.test.utils.http.client.HttpResponse;
@@ -51,7 +52,7 @@ public class DatabaseClient extends BaseClient {
 
 
     /**
-     * Construct authenticates REST client to invoke appmgt functions
+     * Construct authenticates REST client to invoke appmgt functions.
      *
      * @param backEndUrl backend url
      * @param username   username
@@ -71,7 +72,7 @@ public class DatabaseClient extends BaseClient {
      * @param isBasic
      * @throws AppCloudIntegrationTestException
      */
-    public void createDatabaseAndAttachUser(String databaseName, String userName, String customPassword, String
+    public JSONObject createDatabaseAndAttachUser(String databaseName, String userName, String customPassword, String
             isBasic) throws AppCloudIntegrationTestException {
 
         Map<String, String> msgBodyMap = new HashMap<String, String>();
@@ -82,7 +83,8 @@ public class DatabaseClient extends BaseClient {
         msgBodyMap.put(IS_BASIC, isBasic);
         HttpResponse response = super.doPostRequest(AppCloudIntegrationTestConstants.DATABASE_ADD, msgBodyMap);
         if (response.getResponseCode() == HttpStatus.SC_OK) {
-            return;
+            JSONObject jsonObject = new JSONObject(response.getData());
+            return jsonObject;
         } else {
             throw new AppCloudIntegrationTestException(
                     "Error occurred while creating database " + response.getResponseCode() + response.getData());
@@ -113,7 +115,8 @@ public class DatabaseClient extends BaseClient {
     }
 
     /**
-     * This will return all the database users in the system, categorized in to two :
+     * This will return all the database users in the system.
+     * categorized in to two:
      * Attached users and Available users to attach - to the given database name.
      *
      * @param databaseName
@@ -144,14 +147,15 @@ public class DatabaseClient extends BaseClient {
      * @param password
      * @throws AppCloudIntegrationTestException
      */
-    public void createDatabaseUser(String userName, String password) throws AppCloudIntegrationTestException {
+    public JSONObject createDatabaseUser(String userName, String password) throws AppCloudIntegrationTestException {
         Map<String, String> msgBodyMap = new HashMap<String, String>();
         msgBodyMap.put(PARAM_NAME_ACTION, CREATE_DATABASE_USER_ACTION);
         msgBodyMap.put(USER_NAME, userName);
         msgBodyMap.put(PASSWORD, password);
         HttpResponse response = super.doPostRequest(AppCloudIntegrationTestConstants.DATABASE_USERS, msgBodyMap);
         if (response.getResponseCode() == HttpStatus.SC_OK) {
-            return;
+            JSONObject jsonObject = new JSONObject(response.getData());
+            return jsonObject;
         } else {
             throw new AppCloudIntegrationTestException(
                     "Error occurred while creating database user" + response.getResponseCode() + response.getData());

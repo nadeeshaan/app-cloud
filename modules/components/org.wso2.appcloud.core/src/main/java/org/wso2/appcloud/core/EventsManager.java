@@ -1,4 +1,4 @@
-/*
+/**
 * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import java.util.List;
 public class EventsManager {
 
     /**
-     * Method for updating app creation events
+     * Method for updating app creation events.
      *
      * @param versionHashId version Hash id
      * @param event
@@ -40,7 +40,7 @@ public class EventsManager {
     }
 
     /**
-     * Method for retrieve application creation event stream
+     * Method for retrieve application creation event stream.
      *
      * @param versionHashId version hash id
      * @return
@@ -55,7 +55,7 @@ public class EventsManager {
     }
 
     /**
-     * Delete all events related to a particluar version
+     * Delete all events related to a particluar version.
      * @param versionHashId version hash id
      * @throws AppCloudException
      */

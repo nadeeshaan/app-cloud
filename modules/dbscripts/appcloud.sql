@@ -56,11 +56,11 @@ ENGINE = InnoDB;
 -- Populate Data to `AppCloudDB`.`ApplicationRuntime`
 -- -----------------------------------------------------
 
-INSERT INTO `AC_RUNTIME` (`id`, `name`, `repo_url`, `image_name`, `tag`) VALUES
-(1, 'Apache Tomcat 8.0.28 / WSO2 Application Server 6.0.0-M1', 'registry.docker.appfactory.private.wso2.com:5000', 'wso2as', '6.0.0-m1'),
-(2, 'OpenJDK 8', 'registry.docker.appfactory.private.wso2.com:5000', 'msf4j', '1.0'),
-(3, 'Apache 2.4.10', 'registry.docker.appfactory.private.wso2.com:5000','php','5.6'),
-(4, 'Carbon 4.2.0', 'registry.docker.appfactory.private.wso2.com:5000','carbon','4.2.0');
+INSERT INTO `AC_RUNTIME` (`id`, `name`, `repo_url`, `image_name`, `tag`, `description`) VALUES
+(1, 'Apache Tomcat 8.0.28 / WSO2 Application Server 6.0.0-M1', 'registry.docker.appfactory.private.wso2.com:5000', 'wso2as', '6.0.0-m1', 'OS:Debian, JAVA Version:8u72'),
+(2, 'OpenJDK 8', 'registry.docker.appfactory.private.wso2.com:5000', 'msf4j', '1.0', 'OS:Debian, JAVA Version:8u72'),
+(3, 'Apache 2.4.10', 'registry.docker.appfactory.private.wso2.com:5000','php','5.6', 'OS:Debian, PHP Version:5.6.20'),
+(4, 'Carbon 4.2.0', 'registry.docker.appfactory.private.wso2.com:5000','carbon','4.2.0', 'OS:Debian, Java Version:7u101');
 
 
 
@@ -109,6 +109,8 @@ CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_VERSION` (
   `status` VARCHAR(45) NULL,
   `deployment_id` INT NULL,
   `tenant_id` INT NULL,
+  `con_spec_cpu` VARCHAR(10) NOT NULL,
+  `con_spec_memory` VARCHAR(10) NOT NULL,
   `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `is_white_listed` TINYINT unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
@@ -335,6 +337,36 @@ CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_RUNTIME_TRANSPORT` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS AC_SUBSCRIPTION_PLANS (
+    PLAN_ID	INTEGER NOT NULL AUTO_INCREMENT,
+    PLAN_NAME   VARCHAR(200) NOT NULL,	
+    MAX_APPLICATIONS	INT NOT NULL,
+    PRIMARY KEY (PLAN_ID))
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS AC_CONTAINER_SPECIFICATIONS (
+    CON_SPEC_ID     INTEGER NOT NULL AUTO_INCREMENT,
+    CON_SPEC_NAME   VARCHAR(200) NOT NULL,
+    CPU              INT NOT NULL,	
+    MEMORY	     INT NOT NULL,
+    COST_PER_HOUR    INT NOT NULL,
+    PRIMARY KEY (CON_SPEC_ID))
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS AC_RUNTIME_CONTAINER_SPECIFICATIONS (
+  id int(11) NOT NULL,
+  CON_SPEC_ID int(11) NOT NULL,
+  PRIMARY KEY (id,CON_SPEC_ID),
+  KEY CON_SPEC_ID (CON_SPEC_ID))
+ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_WHITE_LISTED_TENANTS` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `tenant_id` INT NOT NULL,
+  `max_app_count` INT NOT NULL,
+  PRIMARY KEY (`id`, `tenant_id`))
+ENGINE = InnoDB;
+
 -- -----------------------------------------------------
 -- Populate Data to `AppCloudDB`.`ApplicationRuntime`
 -- -----------------------------------------------------
@@ -359,7 +391,23 @@ INSERT INTO `AC_RUNTIME_TRANSPORT` (`transport_id`, `runtime_id`) VALUES
 (3, 2),
 (2, 3),
 (3, 4);
+INSERT INTO `AC_CONTAINER_SPECIFICATIONS` (`CON_SPEC_NAME`, `CPU`, `MEMORY`, `COST_PER_HOUR`) VALUES
+('SMALL(128MB RAM and 0.1x vCPU)', 100, 128, 1),
+('MEDIUM(256MB RAM and 0.2x vCPU)', 200, 256, 2),
+('LARGE(512MB RAM and 0.3x vCPU)', 300, 512, 3);
 
+INSERT INTO `AC_SUBSCRIPTION_PLANS` (`PLAN_NAME`, `MAX_APPLICATIONS`) VALUES
+('FREE', 3),
+('PAID', 10);
+
+INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
+(1, 3),
+(2, 1),
+(2, 2),
+(2, 3),
+(3, 1),
+(3, 2),
+(3, 3);
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

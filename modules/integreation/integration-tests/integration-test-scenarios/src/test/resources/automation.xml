@@ -309,6 +309,12 @@
                 <runtimeID key="msf4j">2</runtimeID>
                 <runtimeID key="php">3</runtimeID>
             </runtimeIDs>
+            <sampleAppContents>
+                <sampleAppContent key="tomcat">Hello</sampleAppContent>
+                <sampleAppContent key="msf4j">Hello</sampleAppContent>
+                <sampleAppContent key="php">Hello</sampleAppContent>
+            </sampleAppContents>
+
             <files>
                 <file type="war">sample.war</file>
                 <file type="msf4j">helloworld.jar</file>

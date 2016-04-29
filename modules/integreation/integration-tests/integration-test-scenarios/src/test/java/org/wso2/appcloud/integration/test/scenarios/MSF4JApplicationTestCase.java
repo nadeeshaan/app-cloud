@@ -31,7 +31,8 @@ public class MSF4JApplicationTestCase extends AppCloudIntegrationBaseTestCase {
 	public MSF4JApplicationTestCase(){
 		super(AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.MSS_APP_RUNTIME_ID_KEY),
 		      AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.MSS_APP_FILE_NAME_KEY),
-		      MSF4J_APPLICATION_TYPE);
+		      MSF4J_APPLICATION_TYPE,AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.
+				                                                                           MSS_APP_CONTENT));
 	}
 
 	@Override

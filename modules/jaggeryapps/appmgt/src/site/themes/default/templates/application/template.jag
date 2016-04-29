@@ -23,9 +23,13 @@ include("/jagg/jagg.jag");
 jagg.template("application", function (inputs, outputs, jagg) {
         var runtimes = outputs.runtimes;
         var appType = outputs.appType;
+        var applicationCount = outputs.applicationCount;
         var appTypeName = appType.type;
+        var notAllowedEnvVariables = outputs.notAllowedEnvVariables;
         var isAppTypeBuildable = appType.buildable;
         var applicationName = outputs.applicationName;
+        var subscriptionPlanBaseURL = outputs.subscriptionPlanBaseURL;
+		var runtimeID = runtimes[0].id;
         var encodedLabels = request.getParameter("encodedLabels");
         var encodedEnvs = request.getParameter("encodedEnvs");
         var log = new Log();
@@ -33,7 +37,11 @@ jagg.template("application", function (inputs, outputs, jagg) {
         var decodedEnvs = parse(decodeURIComponent(encodedEnvs, "UTF-8"));
         var newVersion = request.getParameter("newVersion");
         var nextVersion = request.getParameter("nextVersion");
-
+        var subscriptionPlanURL = subscriptionPlanBaseURL + "/plans/1";
+		var runtimeContainerSpecURL = subscriptionPlanBaseURL + "/containerSpecs/allowedruntime/" + runtimeID;
+        var data = null;
+		var allowedRuntimeContainerSpecJson = get(runtimeContainerSpecURL, "", "json");
+		var maxApplications = outputs.maxAppCount;
     %>
 
 <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/bootstrap-3.2.0/bootstrap.min.css'))%>">
@@ -42,21 +50,59 @@ jagg.template("application", function (inputs, outputs, jagg) {
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/web-fonts/Roboto.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/styles.css'))%>">
 
+<%
+    var specCpu = new Array();
+    var specCost = new Array();
+    var specMemory = new Array();
+    for(var i = 0 ; i < allowedRuntimeContainerSpecJson.data.length ; i++ ) {
+        specCpu[i] = JSON.parse(allowedRuntimeContainerSpecJson.data[i].cpu);
+        specMemory[i] = JSON.parse(allowedRuntimeContainerSpecJson.data[i].memory);
+        specCost[i] = JSON.parse(allowedRuntimeContainerSpecJson.data[i].costPerHour);
+    }
+%>
+
  <script type="text/javascript">
     var appTypeName = "<%=appType.type%>";
     const APP_TYPE_EXTENSION = "<%=appType.extension%>";
     var applicationName = "<%=applicationName%>";
+    var applicationCount = <%=applicationCount%>
+    var maxApplications = <%=maxApplications%>;
+    var specCpu = <%=specCpu%>;
+    var specMemory = <%=specMemory%>;
+    var specCost = <%=specCost%>;
     var retryCount = 0;
     var iconErrorMsg = "Invalid Image";                // used to hold the validation error message of the app icon
     var artifactErrorMsg = "Invalid Artifact";
     var contentInvalidErrorMsg = "";
     var validationFailErrorMsg = "";
+    var envVariableErrorMsg = "";
+    var uploadURLErrorMsg = "";
     var uploadMethod = "file";
     var urlUploadComplete = false;
     var applicationHashId;
+    var notAllowedEnvVariables = jQuery.parseJSON('<%=notAllowedEnvVariables%>');
+    var newVersion = "<%=newVersion%>";
+    var isNewVersion = false;
+
+    if(newVersion == "true"){
+        isNewVersion = true;
+    }
+
     $(document).ready(function(){
 
-            $("#runtime").select2();
+            if(!isNewVersion){
+              if(applicationCount >= maxApplications){
+                $('#outerContainer').empty();
+                $('#outerContainer').html('<div class="container-fluid"><div class="row row-centered">' +
+                 '<div class="col-centered col-xs-10 col-sm-7  col-md-7 col-lg-6"><div class="cloud-new-content">' +
+                  '<h3>You cannot create more than ' + maxApplications + ' applications on a free subscription. ' +
+                   'Please delete an existing application to continue...</h3></div></div></div></div>');
+                return;
+              }
+            }
+
+            $("containerSpec").select2();
+            $("container").select2();
             //check if application name available
             if (applicationName != "null") {
                 $("#applicationName").val(applicationName);
@@ -87,6 +133,14 @@ jagg.template("application", function (inputs, outputs, jagg) {
             $.each(<%=runtimes%>,function(key,value){
                 $("#runtime").append($('<option></option>').val(value.id).html(value.runtimeName));
                 $("#runtime").trigger('change');
+                $("#runtime").attr('title', function () {
+                    return value.description;
+                });
+            });
+
+            $.each(<%=specCpu%>,function(key,value){
+                $("#containerSpec").append($('<option></option>').val(value.id).html(value.conSpecName));
+                $("#containerSpec").trigger('change');
             });
 
             var max_fields      = 10; //maximum input boxes allowed
@@ -145,7 +199,15 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 formData.append('appTypeName', appTypeName);
                 formData.append('applicationName', $("#applicationName").val());
                 var optionRuntime = $("#runtime option:selected").val();
+                var optionSpec = $("#container option:selected").index();
+                var optionConSpecCpu = specCpu[optionSpec];
+                var optionConSpecMemory = specMemory[optionSpec];
+                var optionConSpecCost = specCost[optionSpec];
+
                 formData.append('runtime', optionRuntime);
+                formData.append('conSpecMemory', optionConSpecMemory);
+                formData.append('conSpecCost', optionConSpecCost);
+                formData.append('conSpecCpu', optionConSpecCpu);
 
                 if(uploadMethod === "file"){
                     formData.append('uploadedFileName', $("#uploadedFileName").val());
@@ -182,6 +244,10 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         data: formData,
                         async: true,
                         success: function (data) {
+                            if(isNewVersion){
+                                jagg.message({content: "You can start only one version of an application at a time on" +
+                                 " a free subscription. Other versions have been stopped automatically.", type: 'info'});
+                            }
                         },
                         cache: false,
                         contentType: false,
@@ -351,6 +417,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 },
                 runtime: {
                     validateRuntimeSelection: true
+                },
+                artifactUrl: {
+                    validateArtifactURL: true
                 }
             },
             onsubmit: false,    // Since we are handling on submit validation on click event of the "Create" button,
@@ -397,6 +466,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
         $.validator.addMethod("validationApplicationRevisionChar", validationApplicationRevisionChar, getValidationFailErrorMsg);
         $.validator.addMethod("validateRuntimeSelection", validateRuntimeSelection, "Please select a valid runtime");
         $.validator.addMethod("validateArtifact", validateArtifact, getArtifactErrorMessage);
+        $.validator.addMethod("validateEnvironmentVariable", validateEnvironmentVariable, getEnvVariableErrorMsg);
+        $.validator.addMethod("validateArtifactURL", validateArtifactURL, getUploadURLErrorMsg);
 
         $("#appIcon").change(function() {
              $("#icon").val($("#appIcon").val());
@@ -502,10 +573,15 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     activateCreateApplication();
                     activateUploadButton();
         });
+
+        $('#artifactUrl').on('focusout keyup blur click', function () { // fires on every keyup & blur
+            validateArtifactURL($('#artifactUrl').val());
+        });
+
     });
 
     function activateCreateApplication() {
-        if ($('#applicationName').val() && $('#applicationRevision').val() 
+        if ($('#applicationName').val() && $('#applicationRevision').val() && $('#container option:selected').val()
                         && $('#runtime').val() > 0 && ($("#uploadedFileName").val() || $("#artifactUrl").val() || ($("#gitRepoUrl").val()  && $("#gitRepoBranch").val()))) {// checks form for validity
 
             if($("#uploadedFileName").val()){
@@ -532,8 +608,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
     function activateUploadButton() {
         if ($('#applicationName').val() && $('#applicationRevision').val()) {
             $("#btn-artifact-upload").attr("disabled", false);
-            $("#url-upload").attr("disabled", false);
         }
+        validateArtifactURL($('#artifactUrl').val());
     }
 
     function checkApplicationExistence(){
@@ -583,6 +659,39 @@ jagg.template("application", function (inputs, outputs, jagg) {
         } else {
             return true;
         }
+    }
+
+    function validateEnvironmentVariable(value){
+        if(value != "" && $.inArray(value.toLowerCase(), notAllowedEnvVariables) > -1){
+            envVariableErrorMsg = value + " is not allowed";
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function validateArtifactURL(value){
+        var pattern = "(ftp|http|https):\/\/(\\w+:{0,1}\\w*@)?(\\S+)(:[0-9]+)?(\/|\/([\\w#!:.?+=&%@!\\-\\/]))?\." + APP_TYPE_EXTENSION;
+        var regex = new RegExp(pattern, "g");
+        alert(isValid);
+        if(value && regex.test(value)){
+            if ($('#applicationName').val() && $('#applicationRevision').val()) {
+                $("#url-upload").attr("disabled", false);
+            }
+            return true;
+        } else {
+            $("#url-upload").attr("disabled", true);
+            uploadURLErrorMsg = "Invalid URL. The URL should be in the format : http:\/\/host-name\/file-location\/file-name." + APP_TYPE_EXTENSION;
+            return false;
+        }
+    }
+
+    function getUploadURLErrorMsg(){
+        return uploadURLErrorMsg;
+    }
+
+    function getEnvVariableErrorMsg(){
+        return envVariableErrorMsg;
     }
 
     function validateIconImage(filename, fileSize) {
@@ -694,7 +803,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
     </div>
 <!-- EOF App Cloud menu actionbar-->
 
-<div class="container-fluid cloud-container">
+<div class="container-fluid cloud-container" id="outerContainer">
         <div class="row">
             <div class="col-fixed-left col-fixed-1x">
                 <div class="cloud-selected-app-type <%= appType.color%>" id="1">
@@ -816,6 +925,24 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 <select name="runtime" id="runtime" class="form-control"></select>
             </div>
 
+			<div class="form-group">
+                <label for="container">Container Specification: </label>
+                <select name="container" id="container" class="form-control"  >
+                     <%
+                        if(allowedRuntimeContainerSpecJson.data.length>0) {
+                     %>
+                        <option onClick="maxApplicationCountValidate()" selected="Selected" ><%=allowedRuntimeContainerSpecJson.data[0].conSpecName%></option>
+                     <%
+                        }
+                        for(var i=1;i<allowedRuntimeContainerSpecJson.data.length;i++)
+                        {
+                     %>
+                        <option onClick="maxApplicationCountValidate()"> <%=allowedRuntimeContainerSpecJson.data[i].conSpecName%></option>
+                     <%
+                        }
+                     %>
+                </select>
+            </div>
             <div class="form-group">
                 <label for="application-icon">Icon:
                     <i class="fa fa-question-circle help-tips" data-toggle="tooltip" data-placement="left"
@@ -905,6 +1032,16 @@ jagg.template("application", function (inputs, outputs, jagg) {
         </div>
         </div>
       </div><!-- /.container -->
+
+      <script>
+      function maxApplicationCountValidate() {
+         if (applicationCount < maxApplications ) {
+             $("#add-application").prop("disabled", false);
+         } else {
+             $("#add-application").prop("disabled", true);
+         }
+      }
+      </script>
 
       <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/vendor/jquery.ui.widget.js'))%>"></script>
       <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/jquery.fileupload.js'))%>"></script>

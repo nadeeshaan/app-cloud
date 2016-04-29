@@ -35,6 +35,8 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	protected String tenantDomain;
 	private String fileName;
 	private String runtimeID;
+	private String sampleAppContent;
+	private String appIconImageFileName="appIcon.png";
 	private ApplicationClient applicationClient;
 	private LogsClient logsClient;
 	protected String applicationName;
@@ -43,10 +45,13 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	protected String applicationDescription;
 	protected String properties;
 	protected String tags;
+	private String containerSpecMemory = "512";
+	private String containerSpecCpu = "300";
 
-	public AppCloudIntegrationBaseTestCase(String runtimeID, String fileName, String applicationType){
+	public AppCloudIntegrationBaseTestCase(String runtimeID, String fileName, String applicationType, String sampleAppContent){
 		this.runtimeID = runtimeID;
 		this.fileName = fileName;
+		this.sampleAppContent = sampleAppContent;
 		//Application details
 		this.applicationName = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.APP_NAME_KEY);
 		this.applicationType = applicationType;
@@ -71,25 +76,58 @@ public abstract class AppCloudIntegrationBaseTestCase {
 
 		createApplication();
 	}
-	
+
 	public void createApplication() throws Exception {
+		log.info("Application creation started for application type : " + applicationType);
 		//Application creation
 		File uploadArtifact = new File(TestConfigurationProvider.getResourceLocation() + fileName);
 		applicationClient.createNewApplication(applicationName, this.runtimeID, applicationType, applicationRevision,
-		                                       applicationDescription, this.fileName, properties, tags, uploadArtifact, false);
+		                                       applicationDescription, this.fileName, properties, tags,
+		                                       uploadArtifact, false, containerSpecMemory, containerSpecCpu);
 
 		//Wait until creation finished
-		RetryApplicationActions(applicationRevision, AppCloudIntegrationTestConstants.STATUS_RUNNING, "Application creation");
+		log.info("Waiting until application comes to running state...");
+		RetryApplicationActions(applicationRevision, AppCloudIntegrationTestConstants.STATUS_RUNNING, "Application " +
+		                                                                                              "creation");
 	}
 
+	@SetEnvironment(executionEnvironments = {ExecutionEnvironment.PLATFORM})
+	@Test(description = "Testing application launch")
+	public void testLaunchApplication() throws Exception {
+		log.info("Waiting before trying application launch...");
+		Thread.sleep(AppCloudIntegrationTestUtils.getTimeOutPeriod());
+		JSONObject applicationBean = applicationClient.getApplicationBean(applicationName);
+		String launchURL = ((JSONObject) ((JSONObject) applicationBean
+				.get(AppCloudIntegrationTestConstants.PROPERTY_VERSIONS_NAME))
+				.get(applicationRevision)).getString(AppCloudIntegrationTestConstants.PROPERTY_DEPLOYMENT_URL);
+		//make the launch url http
+		launchURL = launchURL.replace("https", "http");
+		Boolean isLaunchSuccessfull = applicationClient.launchApplication(launchURL, sampleAppContent);
+		Assert.assertTrue("Application launch failed!", isLaunchSuccessfull);
+
+	}
+
+	@SetEnvironment(executionEnvironments = {ExecutionEnvironment.PLATFORM})
+	@Test(description = "Testing application icon change", dependsOnMethods = {"testLaunchApplication"})
+	public void testChangeApplicationIcon() throws Exception {
+		File appIcon = new File(TestConfigurationProvider.getResourceLocation() + appIconImageFileName);
+		String applicationHash = applicationClient.getApplicationHash(applicationName);
+		applicationClient.changeAppIcon(applicationHash, appIcon);
+		JSONObject applicationBean = applicationClient.getApplicationBean(applicationName);
+		boolean isIconNull = applicationBean.get(AppCloudIntegrationTestConstants.PARAM_ICON).equals(null);
+		// applicationBean.get("icon") should be NOT null, therefore isIconNull variable should be false,
+		Assert.assertFalse("Application icon change has been failed!",isIconNull);
+
+	}
 
 	@SetEnvironment(executionEnvironments = { ExecutionEnvironment.PLATFORM})
-	@Test(description = "Testing stop application action")
+	@Test(description = "Testing stop application action",  dependsOnMethods = {"testChangeApplicationIcon"})
 	public void testStopApplication() throws Exception {
 		String versionHash = applicationClient.getVersionHash(applicationName, applicationRevision);
 		applicationClient.stopApplicationRevision(applicationName, applicationRevision, versionHash);
 
 		//Wait until stop application finished
+		log.info("Waiting until application comes to stopped state");
 		RetryApplicationActions(applicationRevision, AppCloudIntegrationTestConstants.STATUS_STOPPED, "Application stop action");
 	}
 
@@ -97,9 +135,11 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	@Test(description = "Testing start application action", dependsOnMethods = {"testStopApplication"})
 	public void testStartApplication() throws Exception {
 		String versionHash = applicationClient.getVersionHash(applicationName, applicationRevision);
-		applicationClient.startApplicationRevision(applicationName, applicationRevision, versionHash);
+        applicationClient.startApplicationRevision(applicationName, applicationRevision, versionHash,
+                                                   containerSpecMemory, containerSpecCpu);
 
 		//Wait until start application finished
+		log.info("Waiting until application comes to running state...");
 		RetryApplicationActions(applicationRevision, AppCloudIntegrationTestConstants.STATUS_RUNNING,
 		                        "Application start action");
 	}
@@ -236,10 +276,12 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		String applicationRevision =
 				AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.APP_NEW_REVISION_KEY);
 		File uploadArtifact = new File(TestConfigurationProvider.getResourceLocation() + fileName);
-		applicationClient.createNewApplication(applicationName, this.runtimeID, applicationType, applicationRevision,
-		                                       applicationDescription, this.fileName, properties, tags, uploadArtifact, true);
+        applicationClient.createNewApplication(applicationName, this.runtimeID, applicationType, applicationRevision,
+                                               applicationDescription, this.fileName, properties, tags, uploadArtifact,
+                                               true, containerSpecMemory, containerSpecCpu);
 
 		//Wait until creation finished
+		log.info("Waiting until new version comes to running state");
 		RetryApplicationActions(applicationRevision, AppCloudIntegrationTestConstants.STATUS_RUNNING, "Application version creation");
 	}
 
@@ -281,7 +323,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	}
 
 	/**
-	 * Retry for application status to be changed to expected value for configured no of retries
+	 * Retry for application status to be changed to expected value for configured no of retries.
 	 * @param applicationRevision Revision of the application wanted to check status for
 	 * @param expectedStatus Expected Status of the application
 	 * @param action Action to log in error messages
@@ -294,6 +336,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		int round = 1;
 		String actualStatus = null;
 		while (round <= retryCount) {
+			log.info("RetryApplicationActions round : " + round);
 			JSONObject result = applicationClient.getApplicationBean(applicationName);
 			actualStatus = ((JSONObject) ((JSONObject) result
 					.get(AppCloudIntegrationTestConstants.PROPERTY_VERSIONS_NAME))

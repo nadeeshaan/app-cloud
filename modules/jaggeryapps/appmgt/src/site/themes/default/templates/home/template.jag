@@ -23,6 +23,8 @@ include("/jagg/constants.jag");
 jagg.template("home", function(inputs, outputs, jagg) {
     var application = outputs.application;
     var selectedRevision = outputs.selectedRevision;
+    var conSpecCpu = outputs.conSpecCpu;
+    var conSpecMemory = outputs.conSpecMemory;
     var versions = application.versions;
     var defaultVersionName = application.defaultVersionName;
     if (application.defaultVersionName != null && versions[defaultVersionName] != undefined) {
@@ -43,6 +45,8 @@ jagg.template("home", function(inputs, outputs, jagg) {
 
     var applicationName = "<%=applicationName%>";
     var applicationKey = "<%=applicationKey%>";
+    var conSpecCpu = "<%=conSpecCpu%>";
+    var conSpecMemory = "<%=conSpecMemory%>";
     var application = jQuery.parseJSON('<%=application%>');
     var selectedRevision = "<%=selectedRevision%>";
     var revisions = jQuery.parseJSON('<%=revisions%>');
@@ -157,11 +161,11 @@ jagg.template("home", function(inputs, outputs, jagg) {
                           <b>URL : </b><%=selectedApplicationRevision.deploymentURL%></span></a>
                           </div>
                           <div class="sec" id="version-app-launch-block">
-                              <button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"
-                              url="<%=selectedApplicationRevision.deploymentURL%>">Launch App</button>
                               <%
                                 if(selectedApplicationRevision.status=='running'){
                                 %>
+                                    <button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"
+                                    url="<%=selectedApplicationRevision.deploymentURL%>">Launch App</button>
                                     <div class="btn-group ctrl-edit-button btn-edit-code">
                                       <a type="button" class="btn cu-btn cu-btn-md cu-btn-red" onclick="stopApplication();">Stop
                                         <span id="stop-in-progress"><span>
@@ -173,8 +177,10 @@ jagg.template("home", function(inputs, outputs, jagg) {
                                       </a>
                                     </div>
                                 <%
-                                }else if(selectedApplicationRevision.status=='stopped'){
+                                }else if(selectedApplicationRevision.status=='stopped' || selectedApplicationRevision.status=='inactive'){
                                 %>
+                                    <button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"
+                                    url="<%=selectedApplicationRevision.deploymentURL%>" disabled>Launch App</button>
                                     <div class="btn-group ctrl-edit-button btn-edit-code">
                                       <a type="button" class="btn cu-btn cu-btn-md cu-btn-blue" onclick="startApplication();">Start</a>
                                     </div>
@@ -199,7 +205,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                                   </span> Delete
                               </div>
                           </a>
-                          <a id="upload-revision" href="<%=appCreationPageBaseUrl%>?appTypeName=<%=application.applicationType%>&applicationKey=<%=applicationKey%>&encodedLabels=<%=encodedLabels%>&encodedEnvs=<%=encodedEnvs%>&newVersion=true">
+                          <a id="upload-revision" href="<%=appCreationPageBaseUrl%>?appTypeName=<%=application.applicationType%>&applicationKey=<%=applicationKey%>&encodedLabels=<%=encodedLabels%>&encodedEnvs=<%=encodedEnvs%>&newVersion=true&conSpecCpu=<%=conSpecCpu%>&conSpecMemory=<%=conSpecMemory%>">
                               <div class="btn-create-version">
                                   <span class="fw-stack fw-lg btn-action-ico">
                                      <i class="fw fw-circle-outline fw-stack-2x"></i>
@@ -274,7 +280,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                     <i class="fa fa-tags fa-5x"></i>
                   </div>
                   <div class="block-number pull-right">
-                   <span id="runtimePropCount"><%=selectedApplicationRevision.tags.length.toString()%></span>
+                   <span id="tagCount"><%=selectedApplicationRevision.tags.length.toString()%></span>
                   </div>
                   <div class="tag-list" id="tag-list"></div>
                   <div class="clearfix"></div>
@@ -342,7 +348,9 @@ jagg.template("home", function(inputs, outputs, jagg) {
             action: "redeployApplication",
             applicationName: applicationName,
             applicationRevision: selectedRevision,
-            versionKey: selectedApplicationRevision.hashId
+            versionKey: selectedApplicationRevision.hashId,
+            conSpecCpu: conSpecCpu,
+            conSpecMemory: conSpecMemory
         }, function (result) {
             jagg.message({content: "Application redeployed successfully.", type: 'info'});
         });
@@ -380,10 +388,13 @@ jagg.template("home", function(inputs, outputs, jagg) {
             action: "startApplication",
             applicationName: applicationName,
             applicationRevision: selectedRevision,
-            versionKey: selectedApplicationRevision.hashId
+            versionKey: selectedApplicationRevision.hashId,
+            conSpecCpu: conSpecCpu,
+            conSpecMemory: conSpecMemory
 
         }, function (result) {
-             //jagg.message({content: "Application start request is submitted successfully.", type: 'info'});
+            jagg.message({content:"You can start only one version of an application at a time on a free subscription." +
+             " Other versions have been stopped automatically.", type: 'info'});
         });
     }
 

@@ -14,6 +14,8 @@ App Cloud enables you to host applications written in multiple languages on mult
 * support of env variables
 * tagging application(stage=Dev, version=2.0.0 etc)
 * mysql database support
+* container specifications to create docker containers
+* tier implementation
 
 ##Getting Help
 

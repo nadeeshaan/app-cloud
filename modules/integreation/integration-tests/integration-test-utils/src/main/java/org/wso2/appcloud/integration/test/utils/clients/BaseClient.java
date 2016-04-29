@@ -95,7 +95,7 @@ public class BaseClient {
 	}
 
     /**
-     * Get session
+     * Get session.
      *
      * @param responseHeaders response headers
      * @return session
@@ -105,7 +105,7 @@ public class BaseClient {
     }
 
     /**
-     * Set session
+     * Set session.
      *
      * @param session session
      */
@@ -114,7 +114,7 @@ public class BaseClient {
     }
 
     /**
-     * Construct authenticates REST client to invoke appmgt functions
+     * Construct authenticates REST client to invoke appmgt functions.
      *
      * @param backEndUrl backend url
      * @param username   username
@@ -140,7 +140,7 @@ public class BaseClient {
     }
 
 	/**
-	 * login to app mgt
+	 * login to app mgt.
 	 *
 	 * @param userName username
 	 * @param password password
@@ -187,8 +187,7 @@ public class BaseClient {
 	}
 
 	/**
-	 * Returns a String that is suitable for use as an application/x-www-form-urlencoded list of parameters in an
-	 * HTTP PUT or HTTP POST.
+	 * Returns a String that is suitable for use as an application/x-www-form-urlencoded list of parameters in an HTTP PUT or HTTP POST.
 	 *
 	 * @param keyVal parameter map
 	 * @return message body

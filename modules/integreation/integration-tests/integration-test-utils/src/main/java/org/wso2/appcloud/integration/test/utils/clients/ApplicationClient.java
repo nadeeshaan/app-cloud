@@ -62,6 +62,7 @@ public class ApplicationClient extends BaseClient{
 	protected static final String DELETE_TAG_ACTION = "deleteTag";
 	protected static final String DELETE_REVISION_ACTION = "deleteVersion";
 	protected static final String GET_REVISIONS_ACTION = "getExistingRevisions";
+	protected static final String CHANGE_APP_ICON_ACTION = "changeAppIcon";
 	protected static final String PARAM_NAME_APPLICATION_NAME = "applicationName";
 	protected static final String PARAM_NAME_APPLICATION_HASH_ID = "applicationKey";
 	protected static final String PARAM_NAME_APPLICATION_DESCRIPTION = "applicationDescription";
@@ -78,14 +79,17 @@ public class ApplicationClient extends BaseClient{
 	protected static final String PARAM_NAME_VALUE = "value";
 	protected static final String PARAM_NAME_NEW_VALUE = "newValue";
 	protected static final String PARAM_NAME_IS_FILE_ATTACHED = "isFileAttached";
+	protected static final String PARAM_NAME_CHANGE_ICON = "changeIcon";
 	protected static final String PARAM_NAME_FILE_UPLOAD = "fileupload";
 	protected static final String PARAM_NAME_IS_NEW_VERSION = "isNewVersion";
+	protected static final String PARAM_NAME_CONTAINER_SPEC_MEMORY = "conSpecMemory";
+	protected static final String PARAM_NAME_CONTAINER_SPEC_CPU = "conSpecCpu";
 
 	private String endpoint;
 
 
 	/**
-     * Construct authenticates REST client to invoke appmgt functions
+     * Construct authenticates REST client to invoke appmgt functions.
      *
      * @param backEndUrl backend url
      * @param username   username
@@ -98,9 +102,10 @@ public class ApplicationClient extends BaseClient{
 	                    + AppCloudIntegrationTestConstants.REST_APPLICATION_ENDPOINT;
     }
 
-    public void createNewApplication(String applicationName, String runtime, String appTypeName,
-            String applicationRevision, String applicationDescription, String uploadedFileName,
-            String runtimeProperties, String tags, File uploadArtifact, boolean isNewVersion) throws Exception {
+	public void createNewApplication(String applicationName, String runtime, String appTypeName,
+	                                 String applicationRevision, String applicationDescription, String uploadedFileName,
+	                                 String runtimeProperties, String tags, File uploadArtifact, boolean isNewVersion,
+	                                 String containerSpecMemory, String containerSpecCpu) throws Exception {
 
 	    HttpClient httpclient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
 	    HttpPost httppost = new HttpPost(this.endpoint);
@@ -109,6 +114,8 @@ public class ApplicationClient extends BaseClient{
 	    builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 	    builder.addPart(PARAM_NAME_FILE_UPLOAD, new FileBody(uploadArtifact));
 	    builder.addPart(PARAM_NAME_ACTION, new StringBody(CREATE_APPLICATION_ACTION, ContentType.TEXT_PLAIN));
+	    builder.addPart(PARAM_NAME_CONTAINER_SPEC_MEMORY, new StringBody(containerSpecMemory, ContentType.TEXT_PLAIN));
+	    builder.addPart(PARAM_NAME_CONTAINER_SPEC_CPU, new StringBody(containerSpecCpu, ContentType.TEXT_PLAIN));
 	    builder.addPart(PARAM_NAME_APPLICATION_NAME, new StringBody(applicationName, ContentType.TEXT_PLAIN));
 	    builder.addPart(PARAM_NAME_APPLICATION_DESCRIPTION, new StringBody(applicationDescription, ContentType.TEXT_PLAIN));
 	    builder.addPart(PARAM_NAME_RUNTIME, new StringBody(runtime, ContentType.TEXT_PLAIN));
@@ -150,13 +157,16 @@ public class ApplicationClient extends BaseClient{
 		}
 	}
 
-	public void startApplicationRevision(String applicationName, String applicationRevision, String versionHash) throws Exception {
+	public void startApplicationRevision(String applicationName, String applicationRevision, String versionHash,
+	                                     String containerSpecMemory, String containerSpecCpu) throws Exception {
 		HttpResponse response = HttpRequestUtil.doPost(
 				new URL(this.endpoint),
 				PARAM_NAME_ACTION + PARAM_EQUALIZER + START_APPLICATION_ACTION
 				+ PARAM_SEPARATOR + PARAM_NAME_APPLICATION_NAME + PARAM_EQUALIZER + applicationName
 				+ PARAM_SEPARATOR + PARAM_NAME_APPLICATION_REVISION + PARAM_EQUALIZER + applicationRevision
 				+ PARAM_SEPARATOR + PARAM_NAME_VERSION_KEY + PARAM_EQUALIZER + versionHash
+				+ PARAM_SEPARATOR + PARAM_NAME_CONTAINER_SPEC_CPU + PARAM_EQUALIZER + containerSpecCpu
+				+ PARAM_SEPARATOR + PARAM_NAME_CONTAINER_SPEC_MEMORY + PARAM_EQUALIZER + containerSpecMemory
 				, getRequestHeaders());
 		if (response.getResponseCode() != HttpStatus.SC_OK) {
 			throw new AppCloudIntegrationTestException("Application start failed " + response.getData());
@@ -350,6 +360,39 @@ public class ApplicationClient extends BaseClient{
 			return jsonArray;
 		} else {
 			throw new AppCloudIntegrationTestException("Get Application Versions failed " + response.getData());
+		}
+	}
+
+	public boolean launchApplication(String launchURL, String sampleAppContent) throws Exception {
+		HttpResponse response = HttpRequestUtil.doPost(new URL(launchURL), "", getRequestHeaders());
+		if (response.getResponseCode() == HttpStatus.SC_OK &&
+		    response.getData().toString().contains(sampleAppContent)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void changeAppIcon(String applicationHash, File appIcon) throws Exception {
+		HttpClient httpclient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
+		HttpPost httppost = new HttpPost(this.endpoint);
+		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+		builder.addPart(PARAM_NAME_CHANGE_ICON, new FileBody(appIcon));
+		builder.addPart(PARAM_NAME_ACTION, new StringBody(CHANGE_APP_ICON_ACTION, ContentType.TEXT_PLAIN));
+		builder.addPart(PARAM_NAME_APPLICATION_HASH_ID, new StringBody(applicationHash, ContentType.TEXT_PLAIN));
+		httppost.setEntity(builder.build());
+		httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
+		org.apache.http.HttpResponse response = httpclient.execute(httppost);
+		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+			return;
+		} else {
+			BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			String result = "";
+			while (in.readLine() != null) {
+				result += in.readLine();
+			}
+			throw new AppCloudIntegrationTestException("Update app icon failed " + result);
 		}
 	}
 

@@ -30,14 +30,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * This class provide the interface for accessing the dao layer
+ * This class provide the interface for accessing the dao layer.
  */
 public class ApplicationManager {
 
     private static Log log = LogFactory.getLog(ApplicationManager.class);
 
     /**
-     * Method for adding application
+     * Method for adding application.
      *
      * @param application application object
      * @return
@@ -54,11 +54,6 @@ public class ApplicationManager {
             applicationDAO.addApplication(dbConnection, application, tenantId);
             dbConnection.commit();
 
-        } catch (AppCloudException e){
-            String msg = "Error occurred while adding application to the database for application : " +
-                         application.getApplicationName() + " in tenant : " + tenantId;
-            log.error(msg, e);
-            throw new AppCloudException(msg, e);
         } catch (SQLException e) {
             String msg = "Error while committing the application adding transaction for application : " +
                          application.getApplicationName() + " in tenant : " + tenantId;
@@ -71,7 +66,7 @@ public class ApplicationManager {
     }
 
     /**
-     * Method for adding application version
+     * Method for adding application version.
      *
      * @param version version object
      * @throws AppCloudException
@@ -85,11 +80,6 @@ public class ApplicationManager {
             int applicationId = applicationDAO.getApplicationId(dbConnection, applicationHashId);
             applicationDAO.addVersion(dbConnection, version,"",applicationId, tenantId);
             dbConnection.commit();
-        } catch (AppCloudException e){
-            String msg = "Error occurred while adding application version to the database for application id : " +
-                          applicationHashId + ", version:"+ version.getVersionName()+" in tenant : " + tenantId;
-            log.error(msg, e);
-            throw new AppCloudException(msg, e);
         } catch (SQLException e) {
             String msg = "Error while committing the application version adding transaction for application id : " +
                     applicationHashId + ", version:"+ version.getVersionName()+" in tenant : " + tenantId;
@@ -102,7 +92,7 @@ public class ApplicationManager {
     }
 
     /**
-     * Method for adding runtime properties for a specific version
+     * Method for adding runtime properties for a specific version.
      *
      * @param runtimeProperties list of runtime properties
      * @param versionHashId version hash id
@@ -131,7 +121,7 @@ public class ApplicationManager {
     }
 
     /**
-     * Method for adding tags for a specific version
+     * Method for adding tags for a specific version.
      *
      * @param tags list of tags
      * @param versionHashId version hash id
@@ -159,7 +149,7 @@ public class ApplicationManager {
 
 
     /**
-     * Method for getting the list of application of a tenant
+     * Method for getting the list of application of a tenant.
      *
      * @return
      * @throws AppCloudException
@@ -189,9 +179,6 @@ public class ApplicationManager {
 
         try {
             return applicationDAO.getAllVersionListOfApplication(dbConnection, applicationHashId);
-        } catch (AppCloudException e){
-            String msg = "Error while getting list of version of application with the hash id : " + applicationHashId;
-            throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeConnection(dbConnection);
         }
@@ -239,9 +226,6 @@ public class ApplicationManager {
         try {
 
             return applicationDAO.getApplicationNameByHashId(dbConnection, applicationHashId);
-        } catch (AppCloudException e) {
-            String msg = "Error while getting the application name for application with hash id : " + applicationHashId;
-            throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeConnection(dbConnection);
         }
@@ -256,22 +240,13 @@ public class ApplicationManager {
 
         try {
             return applicationDAO.getApplicationHashIdByName(dbConnection, applicationName, tenantId);
-        } catch (AppCloudException e) {
-            String msg = "Error while getting application hash id for application name : " + applicationName;
-            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
         }
     }
 
     /**
-     * Method for getting application by id
-     *
-     * @param applicationId if of the application
-     * @return
-     * @throws AppCloudException
-     */
-
-    /**
-     * Method for getting application by hash id
+     * Method for getting application by hash id.
      *
      * @param applicationHashId application hash id
      * @return
@@ -283,12 +258,7 @@ public class ApplicationManager {
         Connection dbConnection = DBUtil.getDBConnection();
 
         try {
-
             return applicationDAO.getApplicationByHashId(dbConnection, applicationHashId);
-
-        } catch (AppCloudException e) {
-            String msg = "Error while getting the application detail for application with hash id : " + applicationHashId;
-            throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeConnection(dbConnection);
         }
@@ -300,12 +270,7 @@ public class ApplicationManager {
         Connection dbConnection = DBUtil.getDBConnection();
 
         try {
-
             return applicationDAO.getAllRuntimePropertiesOfVersion(dbConnection, versionHashId);
-
-        } catch (AppCloudException e) {
-            String msg = "Error while getting the runtime properties for version with hash id : " + versionHashId;
-            throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeConnection(dbConnection);
         }
@@ -318,12 +283,7 @@ public class ApplicationManager {
         Connection dbConnection = DBUtil.getDBConnection();
 
         try {
-
             return applicationDAO.getAllTagsOfVersion(dbConnection, versionHashId);
-
-        } catch (AppCloudException e) {
-            String msg = "Error while getting the tags for version with hash id : " + versionHashId;
-            throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeConnection(dbConnection);
         }
@@ -338,7 +298,6 @@ public class ApplicationManager {
         try {
             applicationDAO.updateRuntimeProperty(dbConnection, versionHashId, oldKey, newKey, newValue);
             dbConnection.commit();
-
         }  catch (SQLException e) {
             String msg = "Error while committing transaction when adding runtime property with key : " + oldKey +
                          " for version with hash id : " + versionHashId;
@@ -444,7 +403,7 @@ public class ApplicationManager {
 
 
     /**
-     * Method for getting all apptypes
+     * Method for getting all apptypes.
      *
      * @return
      * @throws AppCloudException
@@ -458,7 +417,7 @@ public class ApplicationManager {
 
 
     /**
-     * Method for getting all runtimes for a given application type
+     * Method for getting all runtimes for a given application type.
      *
      * @param appType application type
      * @return
@@ -472,7 +431,7 @@ public class ApplicationManager {
     }
 
     /**
-     * Method for updating application status
+     * Method for updating application status.
      *
      * @param status status of application
      * @return
@@ -533,6 +492,8 @@ public class ApplicationManager {
             String msg = "Error while committing the transaction when deleting the version with hash id : " + versionHashId;
             log.error(msg, e);
             throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
         }
     }
 
@@ -586,9 +547,17 @@ public class ApplicationManager {
         ApplicationDAO applicationDAO = new ApplicationDAO();
         return applicationDAO.getRuntimeById(runtimeId);
     }
+	
+	public static int getApplicationCount() throws AppCloudException {
+        ApplicationDAO applicationDAO = new ApplicationDAO();
 
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        int applicationCount = applicationDAO.getApplicationCount(tenantId);
+
+        return applicationCount;
+    }
     /**
-     * Get container service proxy by version hash id
+     * Get container service proxy by version hash id.
      *
      * @param versionHashId
      * @return
@@ -610,9 +579,9 @@ public class ApplicationManager {
     }
 
     /**
-     * Update container service proxy service by version hash id
+     * Update container service proxy service by version hash id.
      *
-     * @param containerId
+     * @param versionHashId
      * @param host_url
      * @return
      * @throws AppCloudException
@@ -641,7 +610,7 @@ public class ApplicationManager {
      * Update default version field with mapped version for custom url
      *
      * @param applicationHashId
-     * @param defautlVersionHashId
+     * @param defaultVersionName
      * @return
      * @throws AppCloudException
      */
@@ -666,7 +635,20 @@ public class ApplicationManager {
 
     public static Version[] getApplicationVersionsByRunningTimePeriod(int numberOfHours) throws AppCloudException {
         ApplicationDAO applicationDAO = new ApplicationDAO();
-        return applicationDAO.getApplicationVersionsByRunningTimePeriod(numberOfHours);
 
+        return applicationDAO.getApplicationVersionsByRunningTimePeriod(numberOfHours);
     }
+
+	public static int getMaxAppCountForWhiteListedTenants(int tenantID) throws AppCloudException {
+		ApplicationDAO applicationDAO = new ApplicationDAO();
+		Connection dbConnection = DBUtil.getDBConnection();
+
+		int maxAppCount = 0;
+		try {
+			maxAppCount = applicationDAO.getWhiteListedTenantMaxAppCount(dbConnection, tenantID);
+		} finally {
+			DBUtil.closeConnection(dbConnection);
+		}
+		return maxAppCount;
+	}
 }

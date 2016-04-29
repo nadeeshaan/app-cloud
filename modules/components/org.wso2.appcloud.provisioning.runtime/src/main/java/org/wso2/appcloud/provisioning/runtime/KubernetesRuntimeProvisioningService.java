@@ -29,19 +29,47 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.appcloud.provisioning.runtime.Utils.KubernetesProvisioningUtils;
 import org.wso2.appcloud.provisioning.runtime.beans.*;
 import org.wso2.appcloud.provisioning.runtime.beans.Container;
+import org.wso2.appcloud.provisioning.runtime.beans.ResourceQuotaLimit;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
 
 /**
- * This class will implement the runtime provisioning service specific to Kubernetes
+ * This class will implement the runtime provisioning service specific to Kubernetes.
  */
 public class KubernetesRuntimeProvisioningService implements RuntimeProvisioningService {
 
     private static final Log log = LogFactory.getLog(KubernetesRuntimeProvisioningService.class);
     private ApplicationContext applicationContext;
     private Namespace namespace;
+    private ResourceQuotaLimit resourceQuotaLimit;
+
+    public KubernetesRuntimeProvisioningService(ApplicationContext applicationContext, ResourceQuotaLimit resourceQuotaLimit) {
+        this.applicationContext = applicationContext;
+        this.namespace = KubernetesProvisioningUtils.getNameSpace(applicationContext);
+        this.resourceQuotaLimit = resourceQuotaLimit;
+
+        //Creating namespace in kubernetes if not available
+        KubernetesClient kubernetesClient = KubernetesProvisioningUtils.getFabric8KubernetesClient();
+        NamespaceList namespaceList = kubernetesClient.namespaces().list();
+        boolean isNamespaceExists = false;
+        for (Namespace ns : namespaceList.getItems()) {
+            if (ns.getMetadata().getName().equals(this.namespace.getMetadata().getName())) {
+                isNamespaceExists = true;
+                if (log.isDebugEnabled()) {
+                    log.debug("Namespace found: " + ns.getMetadata().getName());
+                }
+                break;
+            }
+        }
+        if (!isNamespaceExists) {
+            if (log.isDebugEnabled()) {
+                log.debug("Namespace not available hence creating namespace: " + namespace.getMetadata().getName());
+            }
+            kubernetesClient.namespaces().create(namespace);
+        }
+    }
 
     public KubernetesRuntimeProvisioningService(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -101,7 +129,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
 
 
     /**
-     * Create Kubernetes Deployment and set of services according to the deployment configuration
+     * Create Kubernetes Deployment and set of services according to the deployment configuration.
      * @param config deployment configuration
      * @return list of created service names
      * @throws RuntimeProvisioningException
@@ -113,6 +141,10 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
         List<Container> containers = config.getContainers();
         ArrayList<io.fabric8.kubernetes.api.model.Container> kubContainerList = new ArrayList<>();
         List<String> serviceNameList = new ArrayList<>();
+        String cpuLimitInt = resourceQuotaLimit.getCpuLimit();
+        String cpuLimit = cpuLimitInt.concat("m");
+        String memoryLimitInt = resourceQuotaLimit.getMemoryLimit();
+        String memoryLimit = memoryLimitInt.concat("Mi");
 
         try {
             //Deployment creation
@@ -121,6 +153,11 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
                 kubContainer.setName(container.getContainerName());
                 kubContainer.setImage(container.getBaseImageName() + ":" + container.getBaseImageVersion());
                 kubContainer.setImagePullPolicy(KubernetesPovisioningConstants.IMAGE_PULL_POLICY_ALWAYS);
+
+                ResourceRequirementsBuilder resourceRequirementsBuilder = new ResourceRequirementsBuilder();
+                ResourceRequirements resourceRequirement = resourceRequirementsBuilder
+                        .addToLimits("cpu", new Quantity(cpuLimit)).addToLimits("memory", new Quantity(memoryLimit)).build();
+                kubContainer.setResources(resourceRequirement);
 
                 //Checking whether the container is including volume mounts
                 if(container.getVolumeMounts()!= null) {
@@ -207,7 +244,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * Get service with service port and service specification
+     * Get service with service port and service specification.
      * @param serviceProxy service information
      * @return K8s service
      */
@@ -362,7 +399,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * Set runtime properties to kubernetes environment
+     * Set runtime properties to kubernetes environment.
      *
      * @param runtimeProperties runtime properties
      * @param deploymentConfig  includes deployment related details
@@ -468,7 +505,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * Update runtime properties already defined in the application
+     * Update runtime properties already defined in the application.
      *
      * @param runtimeProperties list of runtime properties
      * @param deploymentConfig  includes deployment related details
@@ -543,7 +580,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * Provide runtime properties for given application context
+     * Provide runtime properties for given application context.
      *
      * @return list of runtime properties
      * @throws RuntimeProvisioningException
@@ -589,8 +626,8 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * add a set of custom domains for an application version. This will create an ingress for each domain
-     * and each service
+     * add a set of custom domains for an application version.
+     * This will create an ingress for each domain and each service.
      *
      * @param domains set of domains
      * @throws RuntimeProvisioningException
@@ -647,7 +684,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * update a certain domain by replacing the ingresses created for related services with new ingresses
+     * update a certain domain by replacing the ingresses created for related services with new ingresses.
      *
      * @param oldDomain old domain name to be changed
      * @param newDomain new domain name to be changed to
@@ -720,7 +757,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * get a set of custom domains for a particular applicaiton context
+     * get a set of custom domains for a particular applicaiton context.
      *
      * @return set of domains
      * @throws RuntimeProvisioningException
@@ -740,7 +777,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * delete a custom domain and delete the ingresses created for related services
+     * delete a custom domain and delete the ingresses created for related services.
      *
      * @param domain domain name
      * @throws RuntimeProvisioningException
@@ -857,7 +894,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * Delete K8s object for given kind with labels
+     * Delete K8s object for given kind with labels.
      *
      * @param k8sKind k8s object type
      */

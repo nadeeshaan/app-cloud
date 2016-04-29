@@ -1,4 +1,4 @@
-/*
+/**
 * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,6 +49,10 @@ public class SQLQueryConstants {
     public static final String EVENT_TIMESTAMP = "timestamp";
     public static final String HOST_URL = "host_url";
     public static final String TENANT_ID = "tenant_id";
+    public static final String MAX_APP_COUNT = "max_app_count";
+    public static final String CON_SPEC_CPU = "con_spec_cpu";
+    public static final String CON_SPEC_MEMORY = "con_spec_memory";
+
 
 
     /*==============================
@@ -63,7 +67,7 @@ public class SQLQueryConstants {
             "(?, ?, ?, ?, ?, (SELECT id FROM AC_APP_TYPE WHERE name=?))";
 
     public static final String ADD_VERSION =
-            "INSERT INTO AC_VERSION (name, hash_id, application_id, runtime_id, tenant_id) VALUES (?, ?, ?, ?, ?)";
+            "INSERT INTO AC_VERSION (name, hash_id, application_id, runtime_id, tenant_id, con_spec_cpu, con_spec_memory) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     public static final String ADD_TAG =
             "INSERT INTO AC_TAG (name, value, version_id, description, tenant_id) values (?, ?, (SELECT id FROM " +
@@ -173,6 +177,7 @@ public class SQLQueryConstants {
     public static final String GET_ALL_APP_VERSIONS_CREATED_BEFORE_X_DAYS_AND_NOT_WHITE_LISTED =
             "SELECT * FROM AC_VERSION WHERE is_white_listed=0 AND status='running' AND timestamp <  timestampadd(HOUR, -?, now());";
 
+	public static final String GET_WHITE_LISTED_TENANT_DETAILS = "SELECT * FROM AC_WHITE_LISTED_TENANTS WHERE tenant_id=?";
 
     /* Update Queries */
 
@@ -233,4 +238,5 @@ public class SQLQueryConstants {
     public static final String DELETE_ALL_APP_VERSION_EVENTS =
             "Delete from AC_EVENT where version_id = (SELECT id FROM AC_VERSION WHERE hash_id=?)";
 
+	public static final String GET_TENANT_APPLICATION_COUNT = "SELECT COUNT(*) FROM AC_APPLICATION WHERE tenant_id = ?";
 }

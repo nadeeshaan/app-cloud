@@ -139,7 +139,7 @@
             <hashTree/>
           </hashTree>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Stop Idle applications" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Stop Idle applications" enabled="false"/>
         <hashTree>
           <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Module Controller" enabled="true">
             <collectionProp name="ModuleController.node_path">
@@ -271,12 +271,12 @@
           <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="create apps" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="create apps" enabled="true"/>
         <hashTree>
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="AF apps set" enabled="true">
             <stringProp name="filename">${working_dir}/sample_data/apps/apps.csv</stringProp>
             <stringProp name="fileEncoding"></stringProp>
-            <stringProp name="variableNames">app_name,app_rev,app_desc,app_type,file_name,file_dir_path,runtime_id</stringProp>
+            <stringProp name="variableNames">app_name,app_rev,app_desc,app_type,file_name,file_dir_path,runtime_id,con_spec_memory,con_spec_cpu</stringProp>
             <stringProp name="delimiter">,</stringProp>
             <boolProp name="quotedData">false</boolProp>
             <boolProp name="recycle">true</boolProp>
@@ -412,6 +412,20 @@
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">runtime</stringProp>
               </elementProp>
+              <elementProp name="conSpecMemory" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${con_spec_memory}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">conSpecMemory</stringProp>
+              </elementProp>
+              <elementProp name="conSpecCpu" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${con_spec_cpu}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">conSpecCpu</stringProp>
+              </elementProp>
             </collectionProp>
           </elementProp>
           <stringProp name="HTTPSampler.domain">${appfactory_hostname}</stringProp>
@@ -516,7 +530,7 @@
             </collectionProp>
           </elementProp>
           <stringProp name="HTTPSampler.domain">${appfactory_hostname}</stringProp>
-          <stringProp name="HTTPSampler.port">9443</stringProp>
+          <stringProp name="HTTPSampler.port">${appfactory_port}</stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
