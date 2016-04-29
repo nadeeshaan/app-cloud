@@ -22,6 +22,10 @@
         include("/jagg/jagg.jag");
         include("/jagg/constants.jag");
         var log = new Log();
+        var carbon = require('carbon');
+        var server = carbon.server;
+        var multitenancy = carbon.multitenancy;
+
 (function () {
 
     var samlResponse = request.getParameter("SAMLResponse");
@@ -64,6 +68,8 @@
             var isUserAuthorized = checkAuthorizationForUser(userName, permission);
             if(isUserAuthorized){
                 jagg.setUser(userName);
+                var email = getEmailAddressForUser(userName);
+                jagg.setUserEmailAddress(email);
                 session.put("LOGGED_IN_USER", ssoRelyingParty.getLoggedInUser(sessionId));
                 response.sendRedirect("/appmgt/site/pages/index.jag");
             } else {
@@ -107,15 +113,31 @@ function checkAuthorizationForUser(userName , permission) {
     } else {
         throw "username not specified";
     }
-    var carbon = require('carbon');
-    var server = carbon.server;
-    var multitenancy = carbon.multitenancy;
     var tenantManager = multitenancy.getTenantManager();
     var tenantId = tenantManager.getTenantId(tenantDomain);
     var realmService = server.osgiService('org.wso2.carbon.user.core.service.RealmService').getTenantUserRealm(tenantId);
     isUserAuthorized = realmService.getAuthorizationManager().isUserAuthorized(userName, permission, PERMISSION_EXECUTE);
     return isUserAuthorized;
 };
+
+function getEmailAddressForUser(userName) {
+    var email = null;
+
+    try {
+        var multitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+        var tenantDomain = multitenantUtils.getTenantDomain(userName);
+        var tenantManager = multitenancy.getTenantManager();
+        var tenantId = tenantManager.getTenantId(tenantDomain);
+        var realmService = server.osgiService('org.wso2.carbon.user.core.service.RealmService').getTenantUserRealm(tenantId);
+        var tenantAwareUsername = multitenantUtils.getTenantAwareUsername(userName);
+        var EMAIL_ADDRESS = Packages.org.wso2.carbon.user.core.UserCoreConstants.ClaimTypeURIs.EMAIL_ADDRESS;
+        email = realmService.getUserStoreManager().getUserClaimValue(tenantAwareUsername, EMAIL_ADDRESS, null);
+    } catch (e) {
+        log.error(e);
+    }
+
+    return email;
+}
 
 %>
 

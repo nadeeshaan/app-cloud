@@ -68,6 +68,14 @@ var jagg = jagg || (function () {
         session.put("logged.user", user);
     };
 
+    var setUserEmailAddress = function (email) {
+        session.put("logged.user.email", email);
+    };
+
+    var getUserEmailAddress = function () {
+        return session.get("logged.user.email");
+    };
+
     var getAppTypePropertyConfFilePath = function () {
         var fileNameUtils = Packages.org.apache.commons.io.FilenameUtils;
         var appTypePropertyConfPath = fileNameUtils.normalize(APP_TYPES_PROPERTIES_CONFIG);
@@ -595,7 +603,9 @@ return getThemePath() + path;
         includeJag:includeJag,
         getUserTheme:getUserTheme,
         getThemeFile:getThemeFile,
-        getAppTypePropertyConfFilePath:getAppTypePropertyConfFilePath
+        getAppTypePropertyConfFilePath:getAppTypePropertyConfFilePath,
+        setUserEmailAddress:setUserEmailAddress,
+        getUserEmailAddress:getUserEmailAddress
     };
 
 }());
