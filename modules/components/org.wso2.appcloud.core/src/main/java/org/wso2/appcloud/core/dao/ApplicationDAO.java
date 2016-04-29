@@ -1549,7 +1549,8 @@ public class ApplicationDAO {
 				maxAppCount = -1;
 			}
 		} catch (SQLException e) {
-			String msg = "Error while retrieving white listed tenant details.";
+			String msg = "Get Max App Count failed for tenant id : " + tenantID;
+			log.error(msg, e);
 			throw new AppCloudException(msg, e);
 		} finally {
 			DBUtil.closePreparedStatement(preparedStatement);
