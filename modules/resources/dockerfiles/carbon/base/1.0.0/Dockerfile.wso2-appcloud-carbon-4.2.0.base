@@ -20,10 +20,9 @@ FROM java:7-jre
 
 RUN apt-get update && \
     apt-get install -y zip && \
-    apt-get clean
+    apt-get clean && \
+    addgroup wso2 && \
+    adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
 
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
 EXPOSE 9443 9763
-
-RUN addgroup wso2 \
-    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user

@@ -19,40 +19,35 @@
 FROM java:8-jre
 
 ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update && apt-get install -y pwgen
-
 ENV WSO2_AS_VERSION 6.0.0
-
-# Get and unpack Tomcat
-RUN wget https://github.com/wso2/product-as/releases/download/v${WSO2_AS_VERSION}-m1/wso2as-${WSO2_AS_VERSION}-m1.zip -O /tmp/catalina.zip && \
-    unzip /tmp/catalina.zip -d /opt && \
-    ln -s /opt/wso2as-${WSO2_AS_VERSION}-m1 /opt/tomcat && \
-    rm /tmp/catalina.zip && \
-    rm -rf /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/examples && \
-    rm /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/jaxrs_basic.war
-
-# Make a copy of the webapps folder, in case an empty or non-existent host
-# folder is specified for the (webapps) volume.
-RUN cp -r /opt/tomcat/webapps /tmp/webapps
-
-# Add the startup script
-ADD init.sh /init.sh
-RUN chmod +x /init.sh
-
-ADD wso2carbon.jks /wso2carbon.jks
-
 ENV CATALINA_HOME /opt/tomcat
 ENV PATH $PATH:$CATALINA_HOME/bin
 ENV ADMIN_PASS ""
 ENV CERT_PASS ""
 ENV JAVA_OPTS="-Xms128m -Xmx256m -XX:PermSize=64m"
 
-EXPOSE 8080 8443
+# Add the startup script
+ADD init.sh /init.sh
 
-#Add WSO2 user
-RUN addgroup wso2 \
-    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
+ADD wso2carbon.jks /wso2carbon.jks
+
+# line 2-3. Add WSO2 user
+# line 4-9. Get and unpack Tomcat
+# line 10. Make a copy of the webapps folder, in case an empty or non-existent host
+# folder is specified for the (webapps) volume.
+RUN apt-get update && apt-get install -y pwgen && \
+    addgroup wso2 && \
+    adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user && \
+    wget https://github.com/wso2/product-as/releases/download/v${WSO2_AS_VERSION}-m1/wso2as-${WSO2_AS_VERSION}-m1.zip -O /tmp/catalina.zip && \
+    unzip /tmp/catalina.zip -d /opt && \
+    ln -s /opt/wso2as-${WSO2_AS_VERSION}-m1 /opt/tomcat && \
+    rm /tmp/catalina.zip && \
+    rm -rf /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/examples && \
+    rm /opt/wso2as-${WSO2_AS_VERSION}-m1/webapps/jaxrs_basic.war && \
+    cp -r /opt/tomcat/webapps /tmp/webapps && \
+    chmod +x /init.sh
+
+EXPOSE 8080 8443
 
 VOLUME ["/opt/tomcat/logs", "/opt/tomcat/work", "/opt/tomcat/webapps"]
 
