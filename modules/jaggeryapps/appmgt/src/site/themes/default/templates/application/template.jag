@@ -496,11 +496,19 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 $('#github-block').hide();
                 $('#url-upload-block').fadeIn();
                 uploadMethod = "url";
+                $('#artifactUrl').val("");
             }else if(selection.val() == 'github-repo-url'){
                 $('#file-upload-block').hide();
                 $('#url-upload-block').hide();
                 $('#github-block').fadeIn();
                 uploadMethod = "github";
+            } else if (selection.val() == 'deploy-sample'){
+                $('#file-upload-block').hide();
+                $('#github-block').hide();
+                $('#url-upload-block').fadeIn();
+                uploadMethod = "url";
+                $('#artifactUrl').val("sssss");
+                $('#url-upload').click();
             }
         });
 
@@ -864,6 +872,11 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="upload-from-url"
                            class="custom-radio"> Upload from URL
                 </label>
+                <label class="radio-inline">
+                    <input type="radio" name="inlineRadioOptions" id="inlineRadioSample" value="deploy-sample"
+                           class="custom-radio"> Deploy Sample App
+                </label>
+
                 <%  if(isAppTypeBuildable == 'false'){ %>
                     <label class="radio-inline">
                         <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="github-repo-url"
