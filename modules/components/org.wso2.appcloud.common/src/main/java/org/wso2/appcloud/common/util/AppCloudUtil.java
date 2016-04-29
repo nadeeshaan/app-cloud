@@ -1,6 +1,4 @@
-package org.wso2.appcloud.common.util;
-/*
- *
+/**
  *   Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *   WSO2 Inc. licenses this file to you under the Apache License,
@@ -19,6 +17,14 @@ package org.wso2.appcloud.common.util;
  *
  */
 
+package org.wso2.appcloud.common.util;
+
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import org.apache.axiom.util.base64.Base64Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -26,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.appcloud.common.AppCloudConstant;
 import org.wso2.appcloud.common.AppCloudException;
 import org.wso2.carbon.base.MultitenantConstants;
+import org.wso2.carbon.core.util.KeyStoreManager;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.*;
@@ -34,17 +41,9 @@ import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Properties;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSSigner;
-import com.nimbusds.jose.crypto.RSASSASigner;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-import org.wso2.carbon.core.util.KeyStoreManager;
-
 
 /**
- * This class is responsible for keeping utils method which needs for other modules
+ * This class is responsible for keeping utils method which needs for other modules.
  */
 public class AppCloudUtil {
 
@@ -61,7 +60,7 @@ public class AppCloudUtil {
     }
 
     /**
-     * Load key and value from the AppCloud.property file
+     * Load key and value from the AppCloud.property file.
      *
      * @throws AppCloudException
      */
@@ -94,7 +93,7 @@ public class AppCloudUtil {
     }
 
     /**
-     * Get a value from given property
+     * Get a value from given property.
      *
      * @param property
      * @return

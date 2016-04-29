@@ -30,14 +30,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * This class provide the interface for accessing the dao layer
+ * This class provide the interface for accessing the dao layer.
  */
 public class ApplicationManager {
 
     private static Log log = LogFactory.getLog(ApplicationManager.class);
 
     /**
-     * Method for adding application
+     * Method for adding application.
      *
      * @param application application object
      * @return
@@ -71,7 +71,7 @@ public class ApplicationManager {
     }
 
     /**
-     * Method for adding application version
+     * Method for adding application version.
      *
      * @param version version object
      * @throws AppCloudException
@@ -102,7 +102,7 @@ public class ApplicationManager {
     }
 
     /**
-     * Method for adding runtime properties for a specific version
+     * Method for adding runtime properties for a specific version.
      *
      * @param runtimeProperties list of runtime properties
      * @param versionHashId version hash id
@@ -131,7 +131,7 @@ public class ApplicationManager {
     }
 
     /**
-     * Method for adding tags for a specific version
+     * Method for adding tags for a specific version.
      *
      * @param tags list of tags
      * @param versionHashId version hash id
@@ -159,7 +159,7 @@ public class ApplicationManager {
 
 
     /**
-     * Method for getting the list of application of a tenant
+     * Method for getting the list of application of a tenant.
      *
      * @return
      * @throws AppCloudException
@@ -265,15 +265,7 @@ public class ApplicationManager {
     }
 
     /**
-     * Method for getting application by id
-     *
-     * @param applicationId if of the application
-     * @return
-     * @throws AppCloudException
-     */
-
-    /**
-     * Method for getting application by hash id
+     * Method for getting application by hash id.
      *
      * @param applicationHashId application hash id
      * @return
@@ -446,7 +438,7 @@ public class ApplicationManager {
 
 
     /**
-     * Method for getting all apptypes
+     * Method for getting all apptypes.
      *
      * @return
      * @throws AppCloudException
@@ -460,7 +452,7 @@ public class ApplicationManager {
 
 
     /**
-     * Method for getting all runtimes for a given application type
+     * Method for getting all runtimes for a given application type.
      *
      * @param appType application type
      * @return
@@ -474,7 +466,7 @@ public class ApplicationManager {
     }
 
     /**
-     * Method for updating application status
+     * Method for updating application status.
      *
      * @param status status of application
      * @return
@@ -600,7 +592,7 @@ public class ApplicationManager {
         return applicationCount;
     }
     /**
-     * Get container service proxy by version hash id
+     * Get container service proxy by version hash id.
      *
      * @param versionHashId
      * @return
@@ -622,9 +614,9 @@ public class ApplicationManager {
     }
 
     /**
-     * Update container service proxy service by version hash id
+     * Update container service proxy service by version hash id.
      *
-     * @param containerId
+     * @param versionHashId
      * @param host_url
      * @return
      * @throws AppCloudException
@@ -653,7 +645,7 @@ public class ApplicationManager {
      * Update default version field with mapped version for custom url
      *
      * @param applicationHashId
-     * @param defautlVersionHashId
+     * @param defaultVersionName
      * @return
      * @throws AppCloudException
      */

@@ -45,7 +45,7 @@ public class DeploymentTest  {
     }
 
     /**
-     * Test Deployment operation
+     * Test Deployment operation.
      */
     @Test(groups = {"org.wso2.carbon.appfactory.provisioning.runtime"},
           description = "Test AF Deployment")

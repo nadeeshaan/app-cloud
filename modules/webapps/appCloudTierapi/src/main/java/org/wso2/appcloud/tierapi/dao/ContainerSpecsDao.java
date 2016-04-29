@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+* Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -26,32 +26,32 @@ import java.util.List;
 public interface ContainerSpecsDao {
 
 	/*
-	 * Get all defined Container Specs
+	 * Get all defined Container Specs.
 	 */
 	public List<ContainerSpecifications> getAllContainerSpecs() throws SQLException;
 
 	/*
-	 * Get Container Spec by ID
+	 * Get Container Spec by ID.
 	 */
 	public ContainerSpecifications getContainerSpecById(int containerSpecId) throws SQLException;
 
 	/*
-	 * Get Container Spec by Runtime ID
+	 * Get Container Spec by Runtime ID.
 	 */
 	public List<ContainerSpecifications> getContainerSpecByRuntimeID (int runtimeId ) throws SQLException;
 
 	/*
-	 * Define new Container Spec
+	 * Define new Container Spec.
 	 */
 	public ContainerSpecifications defineContainerSpec(ContainerSpecifications containerSpec) throws SQLException;
 
 	/*
-	 * Delete Container Spec by ID
+	 * Delete Container Spec by ID.
 	 */
 	public boolean deleteContainerSpecById (int planId) throws SQLException;
 
 	/*
-	 * Update Container Spec by ID
+	 * Update Container Spec by ID.
 	 */
 	public ContainerSpecifications updateContainerSpecById(int containerSpecId, ContainerSpecifications containerSpec) throws SQLException;
 
