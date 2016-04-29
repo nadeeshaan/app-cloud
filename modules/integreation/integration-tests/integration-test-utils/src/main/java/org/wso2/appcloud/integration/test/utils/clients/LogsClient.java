@@ -46,7 +46,7 @@ public class LogsClient extends BaseClient{
 
 
 	/**
-     * Construct authenticates REST client to invoke appmgt functions
+     * Construct authenticates REST client to invoke appmgt functions.
      *
      * @param backEndUrl backend url
      * @param username   username

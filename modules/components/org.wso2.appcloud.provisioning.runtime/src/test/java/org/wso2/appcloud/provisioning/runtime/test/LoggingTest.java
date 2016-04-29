@@ -21,14 +21,13 @@ import io.fabric8.kubernetes.api.model.extensions.Deployment;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
-import org.testng.annotations.*;
-import org.wso2.appcloud.provisioning.runtime.beans.DeploymentLogs;
-import org.wso2.appcloud.provisioning.runtime.beans.LogQuery;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 import org.wso2.appcloud.provisioning.runtime.KubernetesRuntimeProvisioningService;
 import org.wso2.appcloud.provisioning.runtime.RuntimeProvisioningException;
+import org.wso2.appcloud.provisioning.runtime.beans.DeploymentLogs;
+import org.wso2.appcloud.provisioning.runtime.beans.LogQuery;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class LoggingTest {
     }
 
     /**
-     * Test getting snapshot logs of containers
+     * Test getting snapshot logs of containers.
      *
      * @throws RuntimeProvisioningException
      */
@@ -98,7 +97,7 @@ public class LoggingTest {
     }
 
     /**
-     * Test getting logs with specific number of records by querying in deployed containers
+     * Test getting logs with specific number of records by querying in deployed containers.
      *
      * @throws RuntimeProvisioningException
      */
@@ -147,7 +146,7 @@ public class LoggingTest {
     }
 
     /**
-     * Test getting logs in a specific duration by querying in deployed containers
+     * Test getting logs in a specific duration by querying in deployed containers.
      *
      * @throws RuntimeProvisioningException
      */
@@ -196,7 +195,7 @@ public class LoggingTest {
     }
 
     /**
-     * Test log streaming in deployed containers
+     * Test log streaming in deployed containers.
      *
      * @throws RuntimeProvisioningException
      */

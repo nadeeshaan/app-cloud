@@ -32,14 +32,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This will have the utility methods to provision kubernetes
+ * This will have the utility methods to provision kubernetes.
  */
 
 public class KubernetesProvisioningUtils {
     private static final Log log = LogFactory.getLog(KubernetesProvisioningUtils.class);
 
     /**
-     * This method will create a common Kubernetes client object with authentication to the Kubernetes master server
+     * This method will create a common Kubernetes client object with authentication to the Kubernetes master server.
      *
      * @return Kubernetes client object
      */
@@ -60,7 +60,7 @@ public class KubernetesProvisioningUtils {
     }
 
     /**
-     * This utility method will generate the namespace of the current application context
+     * This utility method will generate the namespace of the current application context.
      *
      * @param applicationContext context of the current application
      * @return namespace of the current application context
@@ -79,7 +79,7 @@ public class KubernetesProvisioningUtils {
     }
 
     /**
-     * This utility method will provide the list of pods for particular application
+     * This utility method will provide the list of pods for particular application.
      *
      * @param applicationContext context of the current application
      * @return list of pods related for the current application context
@@ -94,7 +94,7 @@ public class KubernetesProvisioningUtils {
     }
 
     /**
-     * This utility method will provide the list of services for particular application
+     * This utility method will provide the list of services for particular application.
      *
      * @param applicationContext context of the current application
      * @return list of services related for the current application context
@@ -107,8 +107,7 @@ public class KubernetesProvisioningUtils {
         return serviceList;
     }
     /**
-     * This utility method will generate the appropriate selector for filter out the necessary kinds for particular
-     * application
+     * This utility method will generate the appropriate selector for filter out the necessary kinds for particular application.
      *
      * @param applicationContext context of the current application
      * @return selector which can be use to filter out certain kinds
@@ -132,7 +131,7 @@ public class KubernetesProvisioningUtils {
     }
 
     /**
-     * Generate a unique name for an ingress
+     * Generate a unique name for an ingress.
      * @param domain
      * @return generated unique name for ingress (appName-appVersion-service)
      */
@@ -157,7 +156,7 @@ public class KubernetesProvisioningUtils {
     }
 
     /**
-     * This util will generate the deployment path for application
+     * This util will generate the deployment path for application.
      *
      * @param applicationContext application context
      * @return
@@ -172,7 +171,7 @@ public class KubernetesProvisioningUtils {
     }
 
     /**
-     * This utility method will return the pod status an application
+     * This utility method will return the pod status an application.
      *
      * @param applicationContext application context object
      * @return

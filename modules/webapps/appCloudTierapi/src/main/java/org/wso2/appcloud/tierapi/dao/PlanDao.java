@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+* Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -28,32 +28,32 @@ import java.util.List;
 public interface PlanDao {
 
 	/*
-	 * Get all defined subscription plans
+	 * Get all defined subscription plans.
 	 */
 	public List<Plan> getAllPlans() throws SQLException;
 
 	/*
-	 * Get plan by ID
+	 * Get plan by ID.
 	 */
 	public Plan getPlanByPlanId(int planId) throws SQLException;
 
 	/*
-	 * Define new Plan
+	 * Define new Plan.
 	 */
 	public Plan definePlan(Plan plan) throws SQLException;
 
 	/*
-	 * Delete Plan by ID
+	 * Delete Plan by ID.
 	 */
 	public boolean deletePlanById (int planId) throws SQLException;
 
 	/*
-	 * Update Plan by ID
+	 * Update Plan by ID.
 	 */
 	public Plan updatePlanById (int planId, Plan plan) throws SQLException;
 
 	/*
-	 * Get the allowed container specifications within the subscription plan
+	 * Get the allowed container specifications within the subscription plan.
 	 */
 	public List<ContainerSpecifications> getAllowedConSpecs(int planId) throws SQLException ;
 
