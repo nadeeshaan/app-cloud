@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 
-ADMIN_PASSWORD=${ADMIN_PASS:-$(pwgen -s 12 1)}
+if [ -z ${ADMIN_PASSWORD+x} ]; then 
+    echo "ADMIN_PASSWORD is not set.";
+    echo "Genarating admin password.";
+    ADMIN_PASSWORD=${ADMIN_PASS:-$(pwgen -s 12 1)}
+    echo "========================================================================="
+    echo "Credentials for the instance:"
+    echo
+    echo "    user name: admin"
+    echo "    password : $ADMIN_PASSWORD"
+    echo "========================================================================="
+else
+    echo "ADMIN_PASSWORD set by user.";
+fi
 
 cat >/opt/wso2as-${WSO2_AS_VERSION}-m1/conf/tomcat-users.xml <<EOL
 <?xml version="1.0" encoding="utf-8"?>
