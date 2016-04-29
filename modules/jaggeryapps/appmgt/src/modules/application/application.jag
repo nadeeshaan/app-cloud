@@ -1189,7 +1189,13 @@ var downloadFromUrl = function(artifactUrl, applicationName, versionName, apptyp
         filePath  = versionDirectoryPath + versionHashId + FILE_EXTENSTION_ALTER;
     }
     log.info("apptype: " + apptype);
-    CloudUtil.downloadFromUrl(artifactUrl , filePath);
+    try {
+        CloudUtil.downloadFromUrl(artifactUrl , filePath);
+    } catch (e) {
+        log.error("Error while downloading file from the url : " + artifactUrl);
+        log.error(e);
+        throw e;
+    }
 };
 
 var addEvent = function(name, status, description, versionHashId) {

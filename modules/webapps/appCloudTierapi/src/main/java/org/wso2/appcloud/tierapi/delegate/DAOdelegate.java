@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+* Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -27,14 +27,14 @@ public class DAOdelegate {
 	private static ContainerSpecsDao containerSpecInstance = new ContainerSpecDaoImpl();
 
 	/**
-	 * Get PlanDAO object
+	 * Get PlanDAO object.
 	 */
 	public static PlanDao getPlanInstance() {
 		return planInstance;
 	}
 
 	/**
-	 * Get PlanContainerSpec object
+	 * Get PlanContainerSpec object.
 	 */
 	public static ContainerSpecsDao getContainerSpecInstance() {
 		return containerSpecInstance;

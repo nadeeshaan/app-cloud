@@ -76,6 +76,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var contentInvalidErrorMsg = "";
     var validationFailErrorMsg = "";
     var envVariableErrorMsg = "";
+    var uploadURLErrorMsg = "";
     var uploadMethod = "file";
     var urlUploadComplete = false;
     var applicationHashId;
@@ -416,6 +417,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 },
                 runtime: {
                     validateRuntimeSelection: true
+                },
+                artifactUrl: {
+                    validateArtifactURL: true
                 }
             },
             onsubmit: false,    // Since we are handling on submit validation on click event of the "Create" button,
@@ -463,6 +467,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
         $.validator.addMethod("validateRuntimeSelection", validateRuntimeSelection, "Please select a valid runtime");
         $.validator.addMethod("validateArtifact", validateArtifact, getArtifactErrorMessage);
         $.validator.addMethod("validateEnvironmentVariable", validateEnvironmentVariable, getEnvVariableErrorMsg);
+        $.validator.addMethod("validateArtifactURL", validateArtifactURL, getUploadURLErrorMsg);
 
         $("#appIcon").change(function() {
              $("#icon").val($("#appIcon").val());
@@ -570,8 +575,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
         });
 
         $('#artifactUrl').on('focusout keyup blur click', function () { // fires on every keyup & blur
-            activateUploadButton();
+            validateArtifactURL($('#artifactUrl').val());
         });
+
     });
 
     function activateCreateApplication() {
@@ -602,10 +608,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
     function activateUploadButton() {
         if ($('#applicationName').val() && $('#applicationRevision').val()) {
             $("#btn-artifact-upload").attr("disabled", false);
-            if ($('#artifactUrl').val()) {
-                $("#url-upload").attr("disabled", false);
-            }
         }
+        validateArtifactURL($('#artifactUrl').val());
     }
 
     function checkApplicationExistence(){
@@ -664,6 +668,26 @@ jagg.template("application", function (inputs, outputs, jagg) {
         } else {
             return true;
         }
+    }
+
+    function validateArtifactURL(value){
+        var pattern = "(ftp|http|https):\/\/(\\w+:{0,1}\\w*@)?(\\S+)(:[0-9]+)?(\/|\/([\\w#!:.?+=&%@!\\-\\/]))?\." + APP_TYPE_EXTENSION;
+        var regex = new RegExp(pattern, "g");
+        alert(isValid);
+        if(value && regex.test(value)){
+            if ($('#applicationName').val() && $('#applicationRevision').val()) {
+                $("#url-upload").attr("disabled", false);
+            }
+            return true;
+        } else {
+            $("#url-upload").attr("disabled", true);
+            uploadURLErrorMsg = "Invalid URL. The URL should be in the format : http:\/\/host-name\/file-location\/file-name." + APP_TYPE_EXTENSION;
+            return false;
+        }
+    }
+
+    function getUploadURLErrorMsg(){
+        return uploadURLErrorMsg;
     }
 
     function getEnvVariableErrorMsg(){
