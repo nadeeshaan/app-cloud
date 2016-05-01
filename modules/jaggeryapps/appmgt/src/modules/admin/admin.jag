@@ -50,7 +50,7 @@ var stopIdleApplicationByRunningTimePeriod = function (versionHashId, tenantId) 
         // delete application from kubernetes
         applicationModule.deleteApplicationFromKubernetes(versionHashId);
         // update application status to stopped
-        applicationModule.updateApplicationStatus(versionHashId, APPLICATION_STOPPED);
+        applicationModule.updateApplicationStatus(versionHashId, APPLICATION_INACTIVE);
         applicationModule.deleteEventsOfAppVersions(versionHashId);
     } catch (e) {
         log.error('error occurred when stopping idle application with hashId:');

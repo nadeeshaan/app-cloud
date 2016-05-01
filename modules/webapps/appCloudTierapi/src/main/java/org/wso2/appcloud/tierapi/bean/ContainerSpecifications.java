@@ -19,7 +19,7 @@ package org.wso2.appcloud.tierapi.bean;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /*
- * class to implement the container spec details
+ * class to implement the container spec details.
  */
 @XmlRootElement
 public class ContainerSpecifications {

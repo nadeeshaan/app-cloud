@@ -30,7 +30,7 @@ import org.wso2.carbon.automation.engine.annotations.ExecutionEnvironment;
 import org.wso2.carbon.automation.engine.annotations.SetEnvironment;
 
 /**
- * Test case for testing all database related operations in app cloud
+ * Test case for testing all database related operations in app cloud.
  */
 public class DatabaseTestCase {
 

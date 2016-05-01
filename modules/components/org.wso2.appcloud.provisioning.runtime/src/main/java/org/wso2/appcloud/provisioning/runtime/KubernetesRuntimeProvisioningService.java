@@ -36,7 +36,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 /**
- * This class will implement the runtime provisioning service specific to Kubernetes
+ * This class will implement the runtime provisioning service specific to Kubernetes.
  */
 public class KubernetesRuntimeProvisioningService implements RuntimeProvisioningService {
 
@@ -129,7 +129,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
 
 
     /**
-     * Create Kubernetes Deployment and set of services according to the deployment configuration
+     * Create Kubernetes Deployment and set of services according to the deployment configuration.
      * @param config deployment configuration
      * @return list of created service names
      * @throws RuntimeProvisioningException
@@ -244,7 +244,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * Get service with service port and service specification
+     * Get service with service port and service specification.
      * @param serviceProxy service information
      * @return K8s service
      */
@@ -399,7 +399,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * Set runtime properties to kubernetes environment
+     * Set runtime properties to kubernetes environment.
      *
      * @param runtimeProperties runtime properties
      * @param deploymentConfig  includes deployment related details
@@ -505,7 +505,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * Update runtime properties already defined in the application
+     * Update runtime properties already defined in the application.
      *
      * @param runtimeProperties list of runtime properties
      * @param deploymentConfig  includes deployment related details
@@ -580,7 +580,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * Provide runtime properties for given application context
+     * Provide runtime properties for given application context.
      *
      * @return list of runtime properties
      * @throws RuntimeProvisioningException
@@ -626,8 +626,8 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * add a set of custom domains for an application version. This will create an ingress for each domain
-     * and each service
+     * add a set of custom domains for an application version.
+     * This will create an ingress for each domain and each service.
      *
      * @param domains set of domains
      * @throws RuntimeProvisioningException
@@ -684,7 +684,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * update a certain domain by replacing the ingresses created for related services with new ingresses
+     * update a certain domain by replacing the ingresses created for related services with new ingresses.
      *
      * @param oldDomain old domain name to be changed
      * @param newDomain new domain name to be changed to
@@ -757,7 +757,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * get a set of custom domains for a particular applicaiton context
+     * get a set of custom domains for a particular applicaiton context.
      *
      * @return set of domains
      * @throws RuntimeProvisioningException
@@ -777,7 +777,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * delete a custom domain and delete the ingresses created for related services
+     * delete a custom domain and delete the ingresses created for related services.
      *
      * @param domain domain name
      * @throws RuntimeProvisioningException
@@ -894,7 +894,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     }
 
     /**
-     * Delete K8s object for given kind with labels
+     * Delete K8s object for given kind with labels.
      *
      * @param k8sKind k8s object type
      */

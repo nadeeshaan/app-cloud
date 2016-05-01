@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+* Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class ContainerSpecSrvice {
 	private ContainerSpecDaoImpl ContainerSpecInstance = (ContainerSpecDaoImpl) DAOdelegate.getContainerSpecInstance();
 
 	/*
-	 * Get all Container Specifications
+	 * Get all Container Specifications.
 	 * @return                  Return all Container Specifications
 	 */
 	@GET
@@ -45,7 +45,7 @@ public class ContainerSpecSrvice {
 	}
 
 	/*
-	 * Get Plan using Container Specifications ID
+	 * Get Plan using Container Specifications ID.
 	 * @param containerSpecId            Container Specifications ID of the Container Specification
 	 * @return                  Return the Container Specifications refer to the Container Specifications ID
 	 */
@@ -58,7 +58,7 @@ public class ContainerSpecSrvice {
 	}
 
 	/*
-	 * Get Container Specifications using Runtime ID
+	 * Get Container Specifications using Runtime ID.
 	 * @param RuntimeId         runTimeId ID
 	 * @return                  Return the Container Specification refer to Runtime ID
 	 */

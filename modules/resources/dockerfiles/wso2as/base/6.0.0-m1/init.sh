@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 
-ADMIN_PASSWORD=${ADMIN_PASS:-$(pwgen -s 12 1)}
+if [ -z ${ADMIN_PASSWORD+x} ]; then 
+    echo "ADMIN_PASSWORD is not set.";
+    echo "Genarating admin password.";
+    ADMIN_PASSWORD=${ADMIN_PASS:-$(pwgen -s 12 1)}
+    echo "========================================================================="
+    echo "Credentials for the instance:"
+    echo
+    echo "    user name: admin"
+    echo "    password : $ADMIN_PASSWORD"
+    echo "========================================================================="
+else
+    echo "ADMIN_PASSWORD set by user.";
+fi
 
 cat >/opt/wso2as-${WSO2_AS_VERSION}-m1/conf/tomcat-users.xml <<EOL
 <?xml version="1.0" encoding="utf-8"?>
@@ -15,13 +27,6 @@ cat >/opt/wso2as-${WSO2_AS_VERSION}-m1/conf/tomcat-users.xml <<EOL
 </tomcat-users>
 EOL
 
-echo "========================================================================="
-echo "Credentials for the insatnce:"
-echo
-echo "    user name: admin"
-echo "    password : $ADMIN_PASSWORD"
-echo "========================================================================="
-
 # If the webapps directory is empty (the user has specified a volume), copy the
 # contents from the folder in tmp (which is created when the image was built).
 WEBAPPS_HOME="/opt/tomcat/webapps"
@@ -32,11 +37,6 @@ if [ ! "$(ls -A $WEBAPPS_HOME)" ]; then
 fi
 
 CERT_PASSWORD="wso2carbon"
-
-echo "========================================================================="
-echo "Using certificate password: $CERT_PASSWORD"
-echo "========================================================================"
-
 
 # Uncomment SSL section in server.xml
 # and insert SSL certificate information

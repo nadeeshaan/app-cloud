@@ -10,6 +10,10 @@ $(document).ready(function() {
                             "&applicationName="+applicationName + "&encodedLabels="+encodedLabels + "&encodedEnvs="
                                     + encodedEnvs + "&newVersion=true&nextVersion=" + nextVersion + "&conSpecCpu=" + conSpecCpu + "&conSpecMemory=" + conSpecMemory;
     $('#upload-revision').attr("href", uploadRevisionUrl);
+
+    if(selectedApplicationRevision.status=='inactive'){
+        displayApplicationInactiveMessage();
+    }
 });
 
 // wrapping functions
@@ -36,6 +40,20 @@ function initPageView() {
     });
 
     listTags();
+}
+/**
+ * This function is to display a message to user to inform that the application is stopped due to
+ * being idle for longer period.
+ */
+function displayApplicationInactiveMessage() {
+    jagg.message({
+                     modalStatus: true,
+                     type: 'warning',
+                     timeout: 15000,
+                     content: "<b>This application has been stopped due to inactivity for more than 24 hours</b></br>" +
+                              "This is a limitation of free accounts in App Cloud.</br> To restart, click the <b>Start</b>. button.</br>" +
+                              "Click the Support menu to contact us if you need any help."
+                 });
 }
 
 function listTags(){

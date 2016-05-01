@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DAO class for persisting or retrieving application creation related events
+ * DAO class for persisting or retrieving application creation related events.
  */
 
 public class EventsDAO {
@@ -36,7 +36,7 @@ public class EventsDAO {
     private static final Log log = LogFactory.getLog(EventsDAO.class);
 
     /**
-     * Method for adding application creation events to database
+     * Method for adding application creation events to database.
      *
      * @param versionHashId version hash id
      * @param event application creation event
@@ -73,7 +73,7 @@ public class EventsDAO {
     }
 
     /**
-     * Delete all the events related to a particular app version
+     * Delete all the events related to a particular app version.
      * @param versionHashId version hash id
      * @return
      * @throws AppCloudException
@@ -104,7 +104,7 @@ public class EventsDAO {
 
 
     /**
-     *  Method to get event stream of an application
+     *  Method to get event stream of an application.
      *
      * @param versionHashId application id
      * @return

@@ -17,7 +17,7 @@
 package org.wso2.appcloud.provisioning.runtime;
 
 /**
- * Runtime provisioning API related exception
+ * Runtime provisioning API related exception.
  */
 public class RuntimeProvisioningException extends Exception {
 
