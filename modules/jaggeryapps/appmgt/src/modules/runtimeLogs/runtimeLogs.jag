@@ -69,12 +69,40 @@ var getFormattedRuntimeLogs = function (applicationKey, selectedRevision, applic
 
 var getApplicationRevisionStatus = function(applicationKey, selectedRevision){
 
-    var versionList = ApplicationManager.getAllVersionsOfApplication(applicationKey);
-    log.info(versionList.size());
+    var selectedRevisionStatus = null;
 
-    var applicationRevisions = versionList;
-    var revisionStatus = applicationRevisions[selectedRevision].status;
+    try{
+        var versions = getVersionsOfApplication(applicationKey);
 
-    return revisionStatus;
+        for(var i=0; i < versions.length; i++){
+            if(versions[i].key == selectedRevision){
+                selectedRevisionStatus = versions[i].value;
+            }
+        }
+    } catch(e){
+        log.error("Error while getting the versions for application " + applicationKey + " and version " + selectedRevision);
+        log.error(e);
+        throw e;
+    }
 
+    return selectedRevisionStatus;
+
+}
+
+var getVersionsOfApplication = function(applicationKey){
+    var applicationVersions = [];
+    try {
+        var versions = ApplicationManager.getAllVersionsOfApplication(applicationKey);
+        for (var i = 0; i < versions.size(); i++) {
+            var versionObj = {};
+            versionObj.key = versions.get(i).versionName;
+            versionObj.value = versions.get(i).status;
+            applicationVersions.push(versionObj);
+        }
+    } catch(e){
+        log.error("Error while getting the application");
+        log.error(e);
+        throw e;
+    }
+    return applicationVersions;
 }
