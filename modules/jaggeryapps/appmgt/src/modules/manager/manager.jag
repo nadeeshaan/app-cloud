@@ -124,4 +124,31 @@ var getTenantDomainById = function (tenantId) {
     return tenantManager.getDomain(tenantId);
 };
 
+function getEmailAddressForUser(userName) {
+    var email = null;
+
+    try {
+        var multitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+        var tenantDomain = multitenantUtils.getTenantDomain(userName);
+        var tenantManager = multitenancy.getTenantManager();
+        var tenantId = tenantManager.getTenantId(tenantDomain);
+        var realmService = server.osgiService('org.wso2.carbon.user.core.service.RealmService').getTenantUserRealm(tenantId);
+        var tenantAwareUsername = multitenantUtils.getTenantAwareUsername(userName);
+        var EMAIL_ADDRESS = Packages.org.wso2.carbon.user.core.UserCoreConstants.ClaimTypeURIs.EMAIL_ADDRESS;
+        email = realmService.getUserStoreManager().getUserClaimValue(tenantAwareUsername, EMAIL_ADDRESS, null);
+    } catch (e) {
+        log.error(e);
+    }
+
+    return email;
+}
+
+var setUserEmailAddress = function (email) {
+    session.put("logged.user.email", email);
+};
+
+var getUserEmailAddress = function () {
+    return session.get("logged.user.email");
+};
+
 %>

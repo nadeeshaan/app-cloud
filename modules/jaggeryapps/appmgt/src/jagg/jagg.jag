@@ -508,7 +508,7 @@ return getThemePath() + path;
                 renderBlock(d.name, d.inputs, d.outputs, false);
             }
         } else {
-            renderBlock(bloks.name, bloks.inputs, bloks.outputs, false);
+            renderBlock(bloks.name, bloks.inputs, bloks.outputs, true);
         }
     };
 
