@@ -303,7 +303,19 @@ var log = new Log();
             response.status = 500;
             response.content = msg;
         }
-
+    } else if (action == "getSampleArtifactUrl") {
+        var appType = request.getParameter("appType");
+        var managerModule = jagg.module("manager");
+        try {
+            var url =  managerModule.getPropertyValue(appType + "_sample_artifact_url");
+            print(url);
+        } catch (e) {
+            var msg = "Error while getting sample artifact url for app type : " + appType;
+            log.error(msg);
+            log.error(e);
+            response.status = 500;
+            response.content = msg;
+        }
     } else {
         throw new Error("No action specified for: " + action);
     }
