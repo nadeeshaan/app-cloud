@@ -79,6 +79,7 @@ function initData(selectedRevision){
                selectedRevision:selectedRevision
             }, function(result){
 
+               result = result.trim();
                var revisionStatus = result;
                if(revisionStatus == "stopped"){
                    jagg.message({content: "Application is stopped. Please go to back to the application and click the" +

@@ -77,6 +77,7 @@ var getApplicationRevisionStatus = function(applicationKey, selectedRevision){
         for(var i=0; i < versions.length; i++){
             if(versions[i].key == selectedRevision){
                 selectedRevisionStatus = versions[i].value;
+                break;
             }
         }
     } catch(e){
