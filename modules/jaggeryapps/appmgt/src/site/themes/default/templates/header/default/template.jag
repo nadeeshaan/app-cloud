@@ -20,7 +20,10 @@
 include("/jagg/constants.jag")
 include("/jagg/jagg.jag");
 
-jagg.template("header/default", function(inputs, outputs, jagg) { %>
+jagg.template("header/default", function(inputs, outputs, jagg) {
+    var loggedInUserName = outputs.loggedInUserName;
+    var tenantAwareUsername = outputs.tenantAwareUsername;
+%>
 
 <!-- BOF cloud menu -->
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -41,10 +44,13 @@ jagg.template("header/default", function(inputs, outputs, jagg) { %>
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav menu-right">
+                <li>
+                    <a href="#" target="_parent"><i class="fa fa-bank"></i> <%=tenantAwareUsername%></a>
+                </li>
                 <li><a href="<%=DOCUMENTATION_REDIRECTION_URL%>" target=_blank><i class="fa fa-book"></i> Documentation</a></li>
                 <li><a href="<%=SUPPORT_REDIRECTION_URL%>" target=_blank><i class="fa fa-envelope"></i> Support</a></li>
                 <li class="dropdown user-name">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=jagg.getUserEmailAddress()%>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <%=loggedInUserName%>
                         <i class="fa fa-chevron-circle-down"></i>
                         <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/user.png"))%>" alt="user" class="user-image"></a>
                     <ul class="dropdown-menu" role="menu">

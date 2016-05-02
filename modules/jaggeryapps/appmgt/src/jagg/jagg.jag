@@ -68,14 +68,6 @@ var jagg = jagg || (function () {
         session.put("logged.user", user);
     };
 
-    var setUserEmailAddress = function (email) {
-        session.put("logged.user.email", email);
-    };
-
-    var getUserEmailAddress = function () {
-        return session.get("logged.user.email");
-    };
-
     var getAppTypePropertyConfFilePath = function () {
         var fileNameUtils = Packages.org.apache.commons.io.FilenameUtils;
         var appTypePropertyConfPath = fileNameUtils.normalize(APP_TYPES_PROPERTIES_CONFIG);
@@ -516,7 +508,7 @@ return getThemePath() + path;
                 renderBlock(d.name, d.inputs, d.outputs, false);
             }
         } else {
-            renderBlock(bloks.name, bloks.inputs, bloks.outputs, false);
+            renderBlock(bloks.name, bloks.inputs, bloks.outputs, true);
         }
     };
 
@@ -603,9 +595,7 @@ return getThemePath() + path;
         includeJag:includeJag,
         getUserTheme:getUserTheme,
         getThemeFile:getThemeFile,
-        getAppTypePropertyConfFilePath:getAppTypePropertyConfFilePath,
-        setUserEmailAddress:setUserEmailAddress,
-        getUserEmailAddress:getUserEmailAddress
+        getAppTypePropertyConfFilePath:getAppTypePropertyConfFilePath
     };
 
 }());
