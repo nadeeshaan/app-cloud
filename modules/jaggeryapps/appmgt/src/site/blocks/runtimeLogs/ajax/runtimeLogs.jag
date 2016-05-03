@@ -49,7 +49,7 @@ include("/jagg/constants.jag");
     } else if (action == "getApplicationRevisionStatus") {
         var applicationKey = request.getParameter("applicationKey");
         var selectedRevision = request.getParameter("selectedRevision");
-        var mod = jagg.module("runtimeLogs");
+        var mod = jagg.module("application");
 
         try {
             var status = mod.getApplicationRevisionStatus(applicationKey, selectedRevision);

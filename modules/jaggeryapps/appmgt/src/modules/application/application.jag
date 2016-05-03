@@ -86,22 +86,24 @@ var addApplication = function (applicationName, versionName, applicationDescript
     putSelectedRevisionToSession(applicationHashId, versionName);
 };
 
-var stopOtherVersions = function(applicationHashId, selectedRevision){
+var stopOtherVersions = function(applicationHashId, selectedRevision) {
     var application = getApplication(applicationHashId);
     var applicationVersions = application.versions;
     var keys = Object.keys(applicationVersions);
 
-    for(var i=0; i < keys.length; i++){
+    for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
-
         //Stop other versions
-        if(key != selectedRevision) {
+        if (key != selectedRevision) {
             var versionDetails = applicationVersions[key];
-            var prevVersionHashId = versionDetails.hashId;
+            var otherVersionHashId = versionDetails.hashId;
+            var applicationStatus = getApplicationRevisionStatus(applicationHashId, key);
 
-            deleteApplicationFromKubernetes(prevVersionHashId);
-            updateApplicationStatus(prevVersionHashId, APPLICATION_STOPPED);
-            deleteEventsOfAppVersions(prevVersionHashId);
+            if (applicationStatus != "stopped") {
+                deleteApplicationFromKubernetes(otherVersionHashId);
+                updateApplicationStatus(otherVersionHashId, APPLICATION_STOPPED);
+                deleteEventsOfAppVersions(otherVersionHashId);
+            }
         }
     }
 }
@@ -1472,6 +1474,44 @@ var getMaxInstanceCount = function () {
         maxAppCount = parseInt(maxInstancesJson.data.maxApplications);
     }
     return maxAppCount;
+};
+
+var getApplicationRevisionStatus = function(applicationKey, selectedRevision) {
+    var selectedRevisionStatus = null;
+
+    try {
+        var versions = getVersionsOfApplication(applicationKey);
+        for (var i = 0; i < versions.length; i++) {
+            if (versions[i].key == selectedRevision) {
+                selectedRevisionStatus = versions[i].value;
+                break;
+            }
+        }
+    } catch (e) {
+        log.error("Error while getting the versions for application " + applicationKey + " and version " + selectedRevision);
+        log.error(e);
+        throw e;
+    }
+
+    return selectedRevisionStatus;
+};
+
+var getVersionsOfApplication = function(applicationKey) {
+    var applicationVersions = [];
+
+    try {
+        var versions = ApplicationManager.getAllVersionsOfApplication(applicationKey);
+        for (var i = 0; i < versions.size(); i++) {
+            var versionObj = {};
+            versionObj.key = versions.get(i).versionName;
+            versionObj.value = versions.get(i).status;
+            applicationVersions.push(versionObj);
+        }
+    } catch (e) {
+        throw e;
+    }
+
+    return applicationVersions;
 };
 
 %>
