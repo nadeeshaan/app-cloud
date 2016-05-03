@@ -292,6 +292,8 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		long timeOutPeriod = AppCloudIntegrationTestUtils.getTimeOutPeriod();
 		Thread.sleep(timeOutPeriod);
 		String applicationHash = applicationClient.getApplicationHash(applicationName);
+		String applicationRevision =
+				AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.APP_NEW_REVISION_KEY);
 		String result = logsClient.getSnapshotLogs(applicationHash, applicationRevision);
 		assertLogContent(result);
 	}

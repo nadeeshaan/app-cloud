@@ -135,8 +135,6 @@ public class AppCloudUtil {
 
     public static void downloadFromUrl(String artifactUrl, String path) throws AppCloudException {
 
-        log.info("Inside cloud util... url: " + artifactUrl);
-        //String [] urlArray = artifactUrl.split("://");
         File filePath = new File(path);
         try {
             URL url = new URL(artifactUrl);
