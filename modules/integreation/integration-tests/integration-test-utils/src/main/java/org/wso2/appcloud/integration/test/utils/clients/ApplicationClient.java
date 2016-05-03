@@ -364,7 +364,7 @@ public class ApplicationClient extends BaseClient{
 	}
 
 	public boolean launchApplication(String launchURL, String sampleAppContent) throws Exception {
-		HttpResponse response = HttpRequestUtil.doPost(new URL(launchURL), "", getRequestHeaders());
+		HttpResponse response = HttpRequestUtil.doGet(launchURL, getRequestHeaders());
 		if (response.getResponseCode() == HttpStatus.SC_OK &&
 		    response.getData().toString().contains(sampleAppContent)) {
 			return true;
