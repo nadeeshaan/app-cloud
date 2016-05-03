@@ -657,10 +657,8 @@ public class ApplicationManager {
         ApplicationDAO applicationDAO = new ApplicationDAO();
         Connection dbConnection = DBUtil.getDBConnection();
 
-        List<Version> versionList = null;
-
         try {
-            versionList = applicationDAO.getAllVersionsOfApplication(dbConnection, applicationHashId);
+            return applicationDAO.getAllVersionsOfApplication(dbConnection, applicationHashId);
         } catch (AppCloudException e) {
             String msg = "Error while getting versions list for application with hash id : " + applicationHashId;
             throw new AppCloudException(msg, e);
@@ -668,6 +666,5 @@ public class ApplicationManager {
             DBUtil.closeConnection(dbConnection);
         }
 
-        return versionList;
     }
 }

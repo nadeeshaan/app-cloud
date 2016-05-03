@@ -46,21 +46,20 @@ include("/jagg/constants.jag");
             response.status = 400;
             response.content = msg;
         }
-    } else if (action == "getApplicationRevisionStatus"){
+    } else if (action == "getApplicationRevisionStatus") {
         var applicationKey = request.getParameter("applicationKey");
         var selectedRevision = request.getParameter("selectedRevision");
+        var mod = jagg.module("application");
 
-        var mod = jagg.module("runtimeLogs");
         try {
             var status = mod.getApplicationRevisionStatus(applicationKey, selectedRevision);
             print(status);
-        } catch(e) {
+        } catch (e) {
             var msg = "Error while getting application revision status";
-            log.error(e);
-            log.error(msg+" for application: "+applicationKey+ " and revision: "+ selectedRevision);
             response.status = 400;
             response.content = msg;
         }
+
     } else {
         log.error("No action specified");
     }
