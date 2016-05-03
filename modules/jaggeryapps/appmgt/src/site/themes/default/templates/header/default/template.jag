@@ -22,7 +22,7 @@ include("/jagg/jagg.jag");
 
 jagg.template("header/default", function(inputs, outputs, jagg) {
     var loggedInUserName = outputs.loggedInUserName;
-    var tenantAwareUsername = outputs.tenantAwareUsername;
+    var tenantDomain = outputs.tenantDomain;
 %>
 
 <!-- BOF cloud menu -->
@@ -45,7 +45,7 @@ jagg.template("header/default", function(inputs, outputs, jagg) {
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav menu-right">
                 <li>
-                    <a href="#" target="_parent"><i class="fa fa-bank"></i> <%=tenantAwareUsername%></a>
+                    <a href="#" target="_parent"><i class="fa fa-bank"></i> <%=tenantDomain%></a>
                 </li>
                 <li><a href="<%=DOCUMENTATION_REDIRECTION_URL%>" target=_blank><i class="fa fa-book"></i> Documentation</a></li>
                 <li><a href="<%=SUPPORT_REDIRECTION_URL%>" target=_blank><i class="fa fa-envelope"></i> Support</a></li>
