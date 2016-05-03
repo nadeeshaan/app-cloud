@@ -243,10 +243,14 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         type: 'POST',
                         data: formData,
                         async: true,
-                        success: function (data) {
-                            if(isNewVersion){
-                                jagg.message({content: "You can start only one version of an application at a time on" +
-                                 " a free subscription. Other versions have been stopped automatically.", type: 'info'});
+                        success: function(data) {
+                            if (isNewVersion) {
+                                jagg.message({
+                                    content: "You can start only one version of an application at a time on" +
+                                        " a free subscription. Other versions have been stopped automatically.",
+                                    type: 'info',
+                                    timeout: 3500
+                                });
                             }
                         },
                         cache: false,
@@ -357,7 +361,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     var statusStyle;
                     var event = result[i];
                     if(event.name === "Status" && event.status == "success"){
-                        setTimeout(redirectAppHome, 2000);
+                        setTimeout(redirectAppHome, 4250);
                         function redirectAppHome(){
                             window.location.replace("home.jag?applicationKey=" + applicationHashId);
                         }
