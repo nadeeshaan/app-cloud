@@ -100,6 +100,9 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		String launchURL = ((JSONObject) ((JSONObject) applicationBean
 				.get(AppCloudIntegrationTestConstants.PROPERTY_VERSIONS_NAME))
 				.get(applicationRevision)).getString(AppCloudIntegrationTestConstants.PROPERTY_DEPLOYMENT_URL);
+		if (applicationType == MSF4JApplicationTestCase.MSF4J_APPLICATION_TYPE) {
+			launchURL = launchURL + "/hello/wso2";
+		}
 		//make the launch url http
 		launchURL = launchURL.replace("https", "http");
 		Boolean isLaunchSuccessfull = applicationClient.launchApplication(launchURL, sampleAppContent);
@@ -292,6 +295,8 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		long timeOutPeriod = AppCloudIntegrationTestUtils.getTimeOutPeriod();
 		Thread.sleep(timeOutPeriod);
 		String applicationHash = applicationClient.getApplicationHash(applicationName);
+		String applicationRevision =
+				AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.APP_NEW_REVISION_KEY);
 		String result = logsClient.getSnapshotLogs(applicationHash, applicationRevision);
 		assertLogContent(result);
 	}
