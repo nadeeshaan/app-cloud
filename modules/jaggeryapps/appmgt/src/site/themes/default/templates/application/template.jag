@@ -121,16 +121,6 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 }
             }
 
-            if(containerSpecJson.length>0){
-
-                var listItems = '<option selected="selected" onClick="maxApplicationCountValidate()">' + containerSpecJson[0] + '</option>';
-                for (var i = 1; i < containerSpecJson.length; i++) {
-                 listItems += '<option onClick="maxApplicationCountValidate()">' + containerSpecJson[i] + '</option>';
-                }
-
-                $("#container").html(listItems);
-            }
-
             $("containerSpec").select2();
             $("container").select2();
             //check if application name available
