@@ -17,7 +17,7 @@
 package org.wso2.appcloud.provisioning.runtime;
 
 /**
- * This class will maintains Kubernetes related constants
+ * This class will maintains Kubernetes related constants.
  */
 public class KubernetesPovisioningConstants {
 

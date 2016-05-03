@@ -48,7 +48,7 @@ public class CustomDomainTest {
     }
 
     /**
-     * Test add CustomDomain operation
+     * Test add CustomDomain operation.
      */
     @Test(groups = {"org.wso2.carbon.appfactory.provisioning.runtime"},
             description = "Adding custom Domain")
@@ -61,7 +61,7 @@ public class CustomDomainTest {
     }
 
     /**
-     * Test get CustomDomain operation
+     * Test get CustomDomain operation.
      */
     @Test(dependsOnMethods = "testAddCustomDomain", groups = {"org.wso2.carbon.appfactory.provisioning.runtime"},
             description = "retrieving custom Domain")
@@ -73,7 +73,7 @@ public class CustomDomainTest {
     }
 
     /**
-     * Test update CustomDomain operation
+     * Test update CustomDomain operation.
      */
     @Test(dependsOnMethods = { "testAddCustomDomain", "testGetCustomDomain" },
             groups = {"org.wso2.carbon.appfactory.provisioning.runtime"},
@@ -86,7 +86,7 @@ public class CustomDomainTest {
     }
 
     /**
-     * Test delete CustomDomain operation
+     * Test delete CustomDomain operation.
      */
     @Test(dependsOnMethods = { "testGetCustomDomain", "testUpdateCustomDomain"},
             groups = {"org.wso2.carbon.appfactory.provisioning.runtime"},

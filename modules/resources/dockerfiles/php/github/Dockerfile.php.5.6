@@ -21,6 +21,6 @@ FROM wso2-appcloud/php:1.0.0-base
 ENV WEB_ROOT /var/www/html/
 ENV MNT /mnt
 
-RUN git clone GIT_REPO_URL --branch GIT_REPO_BRANCH --single-branch "$MNT/"
-RUN mv "$MNT"PROJECT_ROOT* "$WEB_ROOT/"
-RUN rm -rf "$MNT"/*
+RUN git clone GIT_REPO_URL --branch GIT_REPO_BRANCH --single-branch "$MNT/" && \
+    mv "$MNT"PROJECT_ROOT* "$WEB_ROOT/" && \
+    rm -rf "$MNT"/*

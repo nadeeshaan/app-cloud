@@ -38,6 +38,15 @@ jagg.module("manager", {
 	},
     getTenantDomainById:function () {
 		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getTenantDomainById.apply(this, arguments);
+	},
+	getEmailAddressForUser: function () {
+		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getEmailAddressForUser.apply(this, arguments);
+	},
+	setUserEmailAddress: function () {
+		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").setUserEmailAddress.apply(this, arguments);
+	},
+	getUserEmailAddress: function () {
+		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getUserEmailAddress.apply(this, arguments);
 	}
 });
 %>

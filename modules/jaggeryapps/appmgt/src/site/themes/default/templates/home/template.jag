@@ -177,7 +177,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                                       </a>
                                     </div>
                                 <%
-                                }else if(selectedApplicationRevision.status=='stopped'){
+                                }else if(selectedApplicationRevision.status=='stopped' || selectedApplicationRevision.status=='inactive'){
                                 %>
                                     <button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"
                                     url="<%=selectedApplicationRevision.deploymentURL%>" disabled>Launch App</button>
@@ -393,7 +393,8 @@ jagg.template("home", function(inputs, outputs, jagg) {
             conSpecMemory: conSpecMemory
 
         }, function (result) {
-             //jagg.message({content: "Application start request is submitted successfully.", type: 'info'});
+            jagg.message({content:"You can start only one version of an application at a time on a free subscription." +
+             " Other versions have been stopped automatically.", type: 'info'});
         });
     }
 

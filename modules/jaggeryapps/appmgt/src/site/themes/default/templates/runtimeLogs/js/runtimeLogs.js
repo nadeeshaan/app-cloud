@@ -71,12 +71,29 @@ function initData(selectedRevision){
             regerateReplicasList(selectedRevisionReplicaList);
             setLogArea(selectedRevisionLogMap[selectedRevisionReplicaList[0]]);
         } else {
-            jagg.message({content: "Deployment in progress. Please wait",
-                             type: 'information', id:'view_log', timeout:'5000'});
-            setTimeout(function(){
-                $.noty.closeAll();
-                initData(selectedRevision);
-            }, 5000);
+            
+            //Check for application revision status and display correct message
+            jagg.post("../blocks/runtimeLogs/ajax/runtimeLogs.jag", {
+               action:"getApplicationRevisionStatus",
+               applicationKey:applicationKey,
+               selectedRevision:selectedRevision
+            }, function(result){
+
+               result = result.trim();
+               var revisionStatus = result;
+               if(revisionStatus == "stopped"){
+                   jagg.message({content: "Application is stopped. Please go to back to the application and click the" +
+                   " Start button.", type: 'information', id:'view_log', timeout:'5000'});
+               } else{
+                   jagg.message({content: "Deployment in progress. Please wait",
+                       type: 'information', id:'view_log', timeout:'5000'});
+               }
+
+               setTimeout(function(){
+                   $.noty.closeAll();
+                   initData(selectedRevision);
+               }, 5000);
+            });
         }
     },function (jqXHR, textStatus, errorThrown) {
         $('#revision').prop("disabled", false);

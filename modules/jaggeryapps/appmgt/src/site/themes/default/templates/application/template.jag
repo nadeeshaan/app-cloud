@@ -40,8 +40,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
         var subscriptionPlanURL = subscriptionPlanBaseURL + "/plans/1";
 		var runtimeContainerSpecURL = subscriptionPlanBaseURL + "/containerSpecs/allowedruntime/" + runtimeID;
         var data = null;
-        var maxInstancesJson = get(subscriptionPlanURL , "" , "json");
 		var allowedRuntimeContainerSpecJson = get(runtimeContainerSpecURL, "", "json");
+		var maxApplications = outputs.maxAppCount;
     %>
 
 <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/bootstrap-3.2.0/bootstrap.min.css'))%>">
@@ -51,7 +51,6 @@ jagg.template("application", function (inputs, outputs, jagg) {
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/styles.css'))%>">
 
 <%
-    var maxApplications = JSON.parse(maxInstancesJson.data.maxApplications);
     var specCpu = new Array();
     var specCost = new Array();
     var specMemory = new Array();
@@ -77,22 +76,31 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var contentInvalidErrorMsg = "";
     var validationFailErrorMsg = "";
     var envVariableErrorMsg = "";
+    var uploadURLErrorMsg = "";
     var uploadMethod = "file";
     var urlUploadComplete = false;
     var applicationHashId;
     var notAllowedEnvVariables = jQuery.parseJSON('<%=notAllowedEnvVariables%>');
+    var newVersion = "<%=newVersion%>";
+    var isNewVersion = false;
+
+    if(newVersion == "true"){
+        isNewVersion = true;
+    }
+
     $(document).ready(function(){
 
-             if(applicationCount >= maxApplications){
+            if(!isNewVersion){
+              if(applicationCount >= maxApplications){
                 $('#outerContainer').empty();
                 $('#outerContainer').html('<div class="container-fluid"><div class="row row-centered">' +
                  '<div class="col-centered col-xs-10 col-sm-7  col-md-7 col-lg-6"><div class="cloud-new-content">' +
-                  '<h3>You cannot create more than 3 applications, including versions, on a free subscription. ' +
+                  '<h3>You cannot create more than ' + maxApplications + ' applications on a free subscription. ' +
                    'Please delete an existing application to continue...</h3></div></div></div></div>');
                 return;
+              }
             }
 
-            $("#runtime").select2();
             $("containerSpec").select2();
             $("container").select2();
             //check if application name available
@@ -125,6 +133,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
             $.each(<%=runtimes%>,function(key,value){
                 $("#runtime").append($('<option></option>').val(value.id).html(value.runtimeName));
                 $("#runtime").trigger('change');
+                $("#runtime").attr('title', function () {
+                    return value.description;
+                });
             });
 
             $.each(<%=specCpu%>,function(key,value){
@@ -233,6 +244,10 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         data: formData,
                         async: true,
                         success: function (data) {
+                            if(isNewVersion){
+                                jagg.message({content: "You can start only one version of an application at a time on" +
+                                 " a free subscription. Other versions have been stopped automatically.", type: 'info'});
+                            }
                         },
                         cache: false,
                         contentType: false,
@@ -402,6 +417,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 },
                 runtime: {
                     validateRuntimeSelection: true
+                },
+                artifactUrl: {
+                    validateArtifactURL: true
                 }
             },
             onsubmit: false,    // Since we are handling on submit validation on click event of the "Create" button,
@@ -449,6 +467,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
         $.validator.addMethod("validateRuntimeSelection", validateRuntimeSelection, "Please select a valid runtime");
         $.validator.addMethod("validateArtifact", validateArtifact, getArtifactErrorMessage);
         $.validator.addMethod("validateEnvironmentVariable", validateEnvironmentVariable, getEnvVariableErrorMsg);
+        $.validator.addMethod("validateArtifactURL", validateArtifactURL, getUploadURLErrorMsg);
 
         $("#appIcon").change(function() {
              $("#icon").val($("#appIcon").val());
@@ -473,6 +492,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 $('#github-block').hide();
                 uploadMethod = "file";
             }else if(selection.val() == 'upload-from-url'){
+                $('#artifactUrl').val("");
+                $("#artifactUrl").prop("disabled", false);
+                $("#url-upload-progress").html("");
                 $('#file-upload-block').hide();
                 $('#github-block').hide();
                 $('#url-upload-block').fadeIn();
@@ -482,8 +504,28 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 $('#url-upload-block').hide();
                 $('#github-block').fadeIn();
                 uploadMethod = "github";
+            }else if ( selection.val() == 'deploy-sample'){
+ 		        $('#github-block').hide();
+                $('#file-upload-block').hide();
+                $('#url-upload-block').fadeIn();
+                $("#artifactUrl").prop("disabled", true);
+                uploadMethod = "url";
+                getSampleArtifactUrl(appTypeName);
             }
         });
+
+        function getSampleArtifactUrl(appType) {
+           jagg.post("../blocks/application/application.jag", {
+                    action:"getSampleArtifactUrl",
+                    appType:appType
+                },function (result) {
+                    $('#artifactUrl').val(result);
+                    $('#url-upload').click();
+
+                },function (jqXHR, textStatus, errorThrown) {
+                    jagg.message({content: "Error occurred while getting sample artifact url"});
+                });
+        }
 
         function validateApplicationNameChar(value) {
             var patternNonAlphaNumExceptHyphen = /[^\w -]/g;
@@ -554,6 +596,11 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     activateCreateApplication();
                     activateUploadButton();
         });
+
+        $('#artifactUrl').on('focusout keyup blur click', function () { // fires on every keyup & blur
+            validateArtifactURL($('#artifactUrl').val());
+        });
+
     });
 
     function activateCreateApplication() {
@@ -584,8 +631,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
     function activateUploadButton() {
         if ($('#applicationName').val() && $('#applicationRevision').val()) {
             $("#btn-artifact-upload").attr("disabled", false);
-            $("#url-upload").attr("disabled", false);
         }
+        validateArtifactURL($('#artifactUrl').val());
     }
 
     function checkApplicationExistence(){
@@ -644,6 +691,25 @@ jagg.template("application", function (inputs, outputs, jagg) {
         } else {
             return true;
         }
+    }
+
+    function validateArtifactURL(value){
+        var pattern = "(ftp|http|https):\/\/(\\w+:{0,1}\\w*@)?(\\S+)(:[0-9]+)?(\/|\/([\\w#!:.?+=&%@!\\-\\/]))?\." + APP_TYPE_EXTENSION;
+        var regex = new RegExp(pattern, "g");
+        if(value && regex.test(value)){
+            if ($('#applicationName').val() && $('#applicationRevision').val()) {
+                $("#url-upload").attr("disabled", false);
+            }
+            return true;
+        } else {
+            $("#url-upload").attr("disabled", true);
+            uploadURLErrorMsg = "Invalid URL. The URL should be in the format : http:\/\/host-name\/file-location\/file-name." + APP_TYPE_EXTENSION;
+            return false;
+        }
+    }
+
+    function getUploadURLErrorMsg(){
+        return uploadURLErrorMsg;
     }
 
     function getEnvVariableErrorMsg(){
@@ -819,6 +885,10 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 <label class="radio-inline">
                     <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="upload-from-url"
                            class="custom-radio"> Upload from URL
+                </label>
+		<label class="radio-inline">
+                    <input type="radio" name="inlineRadioOptions" id="inlineRadioSample" value="deploy-sample"
+                           class="custom-radio"> Deploy Sample App
                 </label>
                 <%  if(isAppTypeBuildable == 'false'){ %>
                     <label class="radio-inline">

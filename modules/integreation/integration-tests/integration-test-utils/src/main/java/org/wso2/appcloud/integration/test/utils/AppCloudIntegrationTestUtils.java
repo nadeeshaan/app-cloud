@@ -52,7 +52,7 @@ public class AppCloudIntegrationTestUtils {
     }
 
     /**
-     * Get value passing xpath
+     * Get value passing xpath.
      *
      * @param xPath expression
      * @return value
@@ -111,7 +111,7 @@ public class AppCloudIntegrationTestUtils {
     }
 
 	/**
-	 * [{key="key1",value=value1},...]
+	 * [{key="key1",value=value1},...].
 	 * @param propertyNodes
 	 * @return
 	 */
@@ -135,7 +135,7 @@ public class AppCloudIntegrationTestUtils {
 	}
 
 	/**
-	 * [{key="key1",value=value1},...]
+	 * [{key="key1",value=value1},...].
 	 * @param propertyNodes
 	 * @return
 	 */

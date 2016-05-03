@@ -52,7 +52,7 @@ public class DatabaseClient extends BaseClient {
 
 
     /**
-     * Construct authenticates REST client to invoke appmgt functions
+     * Construct authenticates REST client to invoke appmgt functions.
      *
      * @param backEndUrl backend url
      * @param username   username
@@ -115,7 +115,8 @@ public class DatabaseClient extends BaseClient {
     }
 
     /**
-     * This will return all the database users in the system, categorized in to two :
+     * This will return all the database users in the system.
+     * categorized in to two:
      * Attached users and Available users to attach - to the given database name.
      *
      * @param databaseName

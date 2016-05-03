@@ -42,7 +42,22 @@ include("/jagg/constants.jag");
         } catch(e) {
             var msg = "Error while getting deployment logs";
             log.error(e);
-            log.error(msg+" for application: "+applicationKey+ " revision: "+applicationKey);
+            log.error(msg+" for application: "+applicationKey+ " and revision: "+ selectedRevision);
+            response.status = 400;
+            response.content = msg;
+        }
+    } else if (action == "getApplicationRevisionStatus"){
+        var applicationKey = request.getParameter("applicationKey");
+        var selectedRevision = request.getParameter("selectedRevision");
+
+        var mod = jagg.module("runtimeLogs");
+        try {
+            var status = mod.getApplicationRevisionStatus(applicationKey, selectedRevision);
+            print(status);
+        } catch(e) {
+            var msg = "Error while getting application revision status";
+            log.error(e);
+            log.error(msg+" for application: "+applicationKey+ " and revision: "+ selectedRevision);
             response.status = 400;
             response.content = msg;
         }

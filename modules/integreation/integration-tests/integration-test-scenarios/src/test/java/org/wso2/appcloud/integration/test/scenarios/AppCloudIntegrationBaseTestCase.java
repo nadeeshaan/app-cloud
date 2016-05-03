@@ -323,7 +323,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	}
 
 	/**
-	 * Retry for application status to be changed to expected value for configured no of retries
+	 * Retry for application status to be changed to expected value for configured no of retries.
 	 * @param applicationRevision Revision of the application wanted to check status for
 	 * @param expectedStatus Expected Status of the application
 	 * @param action Action to log in error messages
@@ -336,6 +336,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		int round = 1;
 		String actualStatus = null;
 		while (round <= retryCount) {
+			log.info("RetryApplicationActions round : " + round);
 			JSONObject result = applicationClient.getApplicationBean(applicationName);
 			actualStatus = ((JSONObject) ((JSONObject) result
 					.get(AppCloudIntegrationTestConstants.PROPERTY_VERSIONS_NAME))
