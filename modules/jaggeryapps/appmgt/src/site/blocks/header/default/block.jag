@@ -18,12 +18,12 @@ jagg.block("header/default", {
         } else {
             loggedInUserName = userEmailAddress;
         }
-        var tenantAwareUsername = manager.getTenantAwareUsername(user);
+        var tenantDomain = manager.getTenantDomain(true);
 
         return {
             "user": user,
             "loggedInUserName": loggedInUserName,
-            "tenantAwareUsername": tenantAwareUsername
+            "tenantDomain": tenantDomain
         };
     }
 });
