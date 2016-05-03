@@ -129,17 +129,20 @@ var log = new Log();
         var versionKey = request.getParameter("versionKey");
         var conSpecMemory = request.getParameter("conSpecMemory");
         var conSpecCpu = request.getParameter("conSpecCpu");
+        var applicationHashId = applicationModule.getApplicationHashIdByName(applicationName);
+        var versions = applicationModule.getVersionListOfApplication(applicationHashId);
 
         // redeploy application from kubernetes
         applicationModule.redeployApplication(applicationName, applicationRevision, versionKey, conSpecMemory, conSpecCpu);
 
         // stop other versions of the application
-        var applicationHashId = applicationModule.getApplicationHashIdByName(applicationName);
-        applicationModule.stopOtherVersions(applicationHashId, applicationRevision);
+        if (versions.length > 1) {
+            applicationModule.stopOtherVersions(applicationHashId, applicationRevision);
+        }
 
+        print(stringify(versions));
         response.status = 200;
         response.message = "Application starting requested is completed successfully.";
-
     } else if (action == "getApplicationCreationEvents") {
         var applicationName = request.getParameter("applicationName");
         var applicationRevision = request.getParameter("applicationRevision");

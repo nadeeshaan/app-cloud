@@ -393,12 +393,17 @@ jagg.template("home", function(inputs, outputs, jagg) {
             conSpecMemory: conSpecMemory
 
         }, function(result) {
-            jagg.message({
-                content: "You can start only one version of an application at a time on a free subscription." +
-                    " Other versions have been stopped automatically.",
-                type: 'info',
-                timeout: 3500
-            });
+            var versions = jQuery.parseJSON(result);
+
+            //check if application has more than one version
+            if (versions.length > 1) {
+                jagg.message({
+                    content: "You can start only one version of an application at a time on a free subscription." +
+                        " Other versions have been stopped automatically.",
+                    type: 'info',
+                    timeout: 3500
+                });
+            }
         });
     }
 

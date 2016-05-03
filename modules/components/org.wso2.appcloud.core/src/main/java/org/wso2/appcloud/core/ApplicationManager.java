@@ -656,7 +656,7 @@ public class ApplicationManager {
 
         ApplicationDAO applicationDAO = new ApplicationDAO();
         Connection dbConnection = DBUtil.getDBConnection();
-        
+
         try {
             return applicationDAO.getAllVersionsOfApplication(dbConnection, applicationHashId);
         } catch (AppCloudException e) {
