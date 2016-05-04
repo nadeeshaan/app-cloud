@@ -272,4 +272,48 @@ var generateDatabaseInfoForDataTable = function () {
 };
 
 
+var getAllDatabasesInfo = function () {
+    var allDBInfo = [];
+    try {
+        var allDatabases = getDatabases();
+        for (var j in allDatabases) {
+            var singleDatabaseInfo = allDatabases[j];
+            var singleDatabaseObj = {};
+            singleDatabaseObj.id = singleDatabaseInfo.dbName;
+            singleDatabaseObj.text = singleDatabaseInfo.dbName;
+            singleDatabaseObj.isNextLevel = true;
+            singleDatabaseObj.data = [];
+            var dbName = {}
+            dbName.text = "Database Name";
+            dbName.id = singleDatabaseInfo.dbName;
+            dbName.isNextLevel = false;
+            singleDatabaseObj.data.push(dbName);
+            url = {};
+            url.text = "url";
+            url.id = singleDatabaseInfo.url;
+            url.isNextLevel = false;
+            singleDatabaseObj.data.push(url);
+            var attachedUsersArray = getAttachedUsers(singleDatabaseInfo.dbName);
+            var users = {};
+            users.id = "users";
+            users.text = "users";
+            users.isNextLevel = true;
+            users.data = [];
+            for (var k in attachedUsersArray) {
+                var user = {}
+                user.text = attachedUsersArray[k];
+                user.id = attachedUsersArray[k];
+                users.data.push(user);
+            }
+            singleDatabaseObj.data.push(users);
+            allDBInfo.push(singleDatabaseObj);
+        }
+    } catch(e){
+        log.error("Error while generating database info table");
+        log.error(e);
+        throw e;
+    }
+    return stringify(allDBInfo);
+};
+
 %>

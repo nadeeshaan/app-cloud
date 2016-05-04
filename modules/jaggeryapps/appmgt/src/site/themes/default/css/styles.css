@@ -2554,6 +2554,10 @@ th.hide-column-data, td.hide-column-data {
 .custom-env-class-for-demo input[type=text] {
     width: 350px;
 }
+.custom-env-class-for-demo .select{
+    width: 350px;
+    height: 34px;
+}
 .custom-env-class-for-demo .fw-lg{
     margin: 0px 3px;
 }
