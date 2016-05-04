@@ -154,7 +154,7 @@ $(document).ready(function () {
             });
 
             $(".select2-search__field").keypress(function (e) {
-                if($(this).val() == "db:"){
+                if($(this).val() == "database:"){
                     var dbs;
                     jagg.post("../blocks/database/list/ajax/list.jag", {
                         action: "getAllDatabasesInfo"
