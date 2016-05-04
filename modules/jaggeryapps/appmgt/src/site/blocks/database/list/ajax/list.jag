@@ -39,6 +39,16 @@ var log= new Log();
             throw e;
         }
         print(result);
+    } else if (action== "getAllDatabasesInfo") {
+        try {
+            result  =  mod.getAllDatabasesInfo();
+        } catch (e) {
+            var msg = "Error while getting info of databases." ;
+            log.error(msg);
+            log.error(e);
+            throw e;
+        }
+        print(result);
     } else {
         throw new Error("No action specified");
     }
