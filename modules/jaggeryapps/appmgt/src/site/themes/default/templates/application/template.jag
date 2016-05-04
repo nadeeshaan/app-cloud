@@ -44,11 +44,12 @@ jagg.template("application", function (inputs, outputs, jagg) {
 		var maxApplications = outputs.maxAppCount;
     %>
 
-<link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/bootstrap-3.2.0/bootstrap.min.css'))%>">
+      <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/bootstrap-3.2.0/bootstrap.min.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/font-wso2-1.0.0/css/font-wso2.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/font-awesome-4.2.0/font-awesome.min.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/web-fonts/Roboto.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/styles.css'))%>">
+      <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/select2-4.0.0/select2.min.css'))%>">
 
 <%
     var specCpu = new Array();
@@ -109,6 +110,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
 
                 $("#container").html(listItems);
             }
+
+            //Set select2 container
+            initSelect2(null);
 
             if (!isNewVersion) {
                 if (applicationCount >= maxApplications) {
@@ -1016,7 +1020,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                                     </div>
                                     <div class="form-group">
                                         <label class="sr-only" for="value">Value</label>
-                                        <input type="text" class="form-control element-add-value" placeholder="Value">
+                                        <select id="value" name="value" class="form-control select2 element-add-value"></select>
                                     </div>
                                     <div class="form-group">
                                         <button class="btn btn-primary btn-primary-add btn-primary-add-val" disabled>Add</button>
@@ -1045,7 +1049,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                                     </div>
                                     <div class="form-group">
                                         <label class="sr-only" for="value">Value</label>
-                                        <input type="text" class="form-control element-add-value" placeholder="Value">
+                                        <select id="value" name="value" class="form-control select2 element-add-value"></select>
                                     </div>
                                     <div class="form-group">
                                         <button class="btn btn-primary btn-primary-add btn-primary-add-val" disabled>Add</button>
@@ -1100,5 +1104,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
 
       <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/custom/custom.js'))%>"></script>
       <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('templates/application/js/application.js'))%>"></script>
+      <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/select2-4.0.0/select2.min.js'))%>"></script>
+      <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/common.js'))%>"></script>
+
     <%
 }); %>
