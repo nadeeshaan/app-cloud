@@ -1,17 +1,30 @@
 <%
+
 jagg.block("header/default", {
-    initializer:function (data) {
+
+    initialize: function (data) {
 
     },
+    getInputs: function () {
 
-    getOutputs:function (inputs) {
+    },
+    getOutputs: function (inputs) {
+        var user = jagg.getUser();
+        var manager = jagg.module("manager");
+        var userEmailAddress = manager.getEmailAddressForUser(user);
+        var loggedInUserName;
+        if (userEmailAddress == null) {
+            loggedInUserName = user;
+        } else {
+            loggedInUserName = userEmailAddress;
+        }
+        var tenantDomain = manager.getTenantDomain(true);
 
-        var user =jagg.getUser();
         return {
-            "user": user
+            "user": user,
+            "loggedInUserName": loggedInUserName,
+            "tenantDomain": tenantDomain
         };
     }
-
-
 });
 %>

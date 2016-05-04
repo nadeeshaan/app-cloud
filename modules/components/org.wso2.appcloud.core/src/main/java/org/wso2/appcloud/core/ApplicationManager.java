@@ -651,4 +651,20 @@ public class ApplicationManager {
 		}
 		return maxAppCount;
 	}
+
+    public static List<Version> getAllVersionsOfApplication(String applicationHashId) throws AppCloudException {
+
+        ApplicationDAO applicationDAO = new ApplicationDAO();
+        Connection dbConnection = DBUtil.getDBConnection();
+
+        try {
+            return applicationDAO.getAllVersionsOfApplication(dbConnection, applicationHashId);
+        } catch (AppCloudException e) {
+            String msg = "Error while getting versions list for application with hash id : " + applicationHashId;
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+
+    }
 }

@@ -83,22 +83,42 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var notAllowedEnvVariables = jQuery.parseJSON('<%=notAllowedEnvVariables%>');
     var newVersion = "<%=newVersion%>";
     var isNewVersion = false;
-
-    if(newVersion == "true"){
-        isNewVersion = true;
-    }
+    var allowedRuntimeContainerSpecJson = jQuery.parseJSON('<%=allowedRuntimeContainerSpecJson%>');
+    var containerSpecNamesJson = [];
 
     $(document).ready(function(){
 
-            if(!isNewVersion){
-              if(applicationCount >= maxApplications){
-                $('#outerContainer').empty();
-                $('#outerContainer').html('<div class="container-fluid"><div class="row row-centered">' +
-                 '<div class="col-centered col-xs-10 col-sm-7  col-md-7 col-lg-6"><div class="cloud-new-content">' +
-                  '<h3>You cannot create more than ' + maxApplications + ' applications on a free subscription. ' +
-                   'Please delete an existing application to continue...</h3></div></div></div></div>');
-                return;
-              }
+            if (newVersion == "true") {
+                isNewVersion = true;
+            }
+
+            //Get allowed container specification names
+            for (var i = 0; i < allowedRuntimeContainerSpecJson["data"].length; i++) {
+                containerSpecNamesJson.push(allowedRuntimeContainerSpecJson.data[i].conSpecName);
+            }
+
+            //Set conatiner specifications in the select option
+            if (containerSpecNamesJson.length > 0) {
+                var listItems = '<option selected="selected" onClick="maxApplicationCountValidate()">' +
+                    containerSpecNamesJson[0] + '</option>';
+
+                for (var i = 1; i < containerSpecNamesJson.length; i++) {
+                    listItems += '<option onClick="maxApplicationCountValidate()">' + containerSpecNamesJson[i] +
+                        '</option>';
+                }
+
+                $("#container").html(listItems);
+            }
+
+            if (!isNewVersion) {
+                if (applicationCount >= maxApplications) {
+                    $('#outerContainer').empty();
+                    $('#outerContainer').html('<div class="container-fluid"><div class="row row-centered">' +
+                        '<div class="col-centered col-xs-10 col-sm-7  col-md-7 col-lg-6"><div class="cloud-new-content">' +
+                        '<h3>You cannot create more than ' + maxApplications + ' applications on a free subscription. ' +
+                        'Please delete an existing application to continue...</h3></div></div></div></div>');
+                    return;
+                }
             }
 
             $("containerSpec").select2();
@@ -243,10 +263,14 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         type: 'POST',
                         data: formData,
                         async: true,
-                        success: function (data) {
-                            if(isNewVersion){
-                                jagg.message({content: "You can start only one version of an application at a time on" +
-                                 " a free subscription. Other versions have been stopped automatically.", type: 'info'});
+                        success: function(data) {
+                            if (isNewVersion) {
+                                jagg.message({
+                                    content: "You can start only one version of an application at a time on" +
+                                        " a free subscription. Other versions have been stopped automatically.",
+                                    type: 'info',
+                                    timeout: 3500
+                                });
                             }
                         },
                         cache: false,
@@ -357,7 +381,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     var statusStyle;
                     var event = result[i];
                     if(event.name === "Status" && event.status == "success"){
-                        setTimeout(redirectAppHome, 2000);
+                        setTimeout(redirectAppHome, 4250);
                         function redirectAppHome(){
                             window.location.replace("home.jag?applicationKey=" + applicationHashId);
                         }
@@ -492,6 +516,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 $('#github-block').hide();
                 uploadMethod = "file";
             }else if(selection.val() == 'upload-from-url'){
+                $('#artifactUrl').val("");
+                $("#artifactUrl").prop("disabled", false);
+                $("#url-upload-progress").html("");
                 $('#file-upload-block').hide();
                 $('#github-block').hide();
                 $('#url-upload-block').fadeIn();
@@ -501,8 +528,28 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 $('#url-upload-block').hide();
                 $('#github-block').fadeIn();
                 uploadMethod = "github";
+            }else if ( selection.val() == 'deploy-sample'){
+ 		        $('#github-block').hide();
+                $('#file-upload-block').hide();
+                $('#url-upload-block').fadeIn();
+                $("#artifactUrl").prop("disabled", true);
+                uploadMethod = "url";
+                getSampleArtifactUrl(appTypeName);
             }
         });
+
+        function getSampleArtifactUrl(appType) {
+           jagg.post("../blocks/application/application.jag", {
+                    action:"getSampleArtifactUrl",
+                    appType:appType
+                },function (result) {
+                    $('#artifactUrl').val(result);
+                    $('#url-upload').click();
+
+                },function (jqXHR, textStatus, errorThrown) {
+                    jagg.message({content: "Error occurred while getting sample artifact url"});
+                });
+        }
 
         function validateApplicationNameChar(value) {
             var patternNonAlphaNumExceptHyphen = /[^\w -]/g;
@@ -863,6 +910,10 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="upload-from-url"
                            class="custom-radio"> Upload from URL
                 </label>
+		<label class="radio-inline">
+                    <input type="radio" name="inlineRadioOptions" id="inlineRadioSample" value="deploy-sample"
+                           class="custom-radio"> Deploy Sample App
+                </label>
                 <%  if(isAppTypeBuildable == 'false'){ %>
                     <label class="radio-inline">
                         <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="github-repo-url"
@@ -926,21 +977,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
 
 			<div class="form-group">
                 <label for="container">Container Specification: </label>
-                <select name="container" id="container" class="form-control"  >
-                     <%
-                        if(allowedRuntimeContainerSpecJson.data.length>0) {
-                     %>
-                        <option onClick="maxApplicationCountValidate()" selected="Selected" ><%=allowedRuntimeContainerSpecJson.data[0].conSpecName%></option>
-                     <%
-                        }
-                        for(var i=1;i<allowedRuntimeContainerSpecJson.data.length;i++)
-                        {
-                     %>
-                        <option onClick="maxApplicationCountValidate()"> <%=allowedRuntimeContainerSpecJson.data[i].conSpecName%></option>
-                     <%
-                        }
-                     %>
-                </select>
+                <select name="container" id="container" class="form-control" ></select>
             </div>
             <div class="form-group">
                 <label for="application-icon">Icon:

@@ -22,16 +22,16 @@ ENV MSF4J_HOME /srv/msf4j
 ENV PATH $MSF4J_HOME:$PATH
 ENV HTTPS_CONF /opt/conf/https/
 
-RUN mkdir -p "$MSF4J_HOME" \
-    && mkdir -p "HTTPS_CONF/"
+RUN mkdir -p "$MSF4J_HOME" && \
+    mkdir -p "HTTPS_CONF/" && \
+    addgroup wso2 && \
+    adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
+
 COPY wso2carbon.jks "$HTTPS_CONF"
 COPY netty-transports.yaml "$HTTPS_CONF" 
 
 WORKDIR $MSF4J_HOME
 
 EXPOSE 8080 8443
-
-RUN addgroup wso2 \
-    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
 
 

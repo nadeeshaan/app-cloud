@@ -126,7 +126,7 @@ button[disabled]{
     text-decoration: none;
 }
 .cu-btn-md {
-    padding: 10px 22px;
+    padding: 10px 15px;
     line-height: 1.3em;
 }
 .cu-btn-lg {}
