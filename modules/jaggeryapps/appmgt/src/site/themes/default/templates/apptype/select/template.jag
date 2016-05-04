@@ -68,7 +68,7 @@ jagg.template("apptype/select", function(inputs, outputs, jagg) {
                   </div>
                </div>
                 <div class="col-sm-4 col-md-4 col-lg-5 description-action">
-                   <a href="" class="cu-btn cu-btn-md cu-btn-blue">
+                   <a href="" id="continueButton" class="cu-btn cu-btn-md cu-btn-blue">
                    <span class="fw-stack fw-lg">
                        <i class="fw fw-circle-outline fw-stack-2x"></i>
                        <i class="fw fw-right-arrow fw-stack-1x"></i>
@@ -105,7 +105,7 @@ jagg.template("apptype/select", function(inputs, outputs, jagg) {
         //content replace with custom html attributes call data
         $('.app-type-info-template').find('.data-appname').html(appName);
         $('.app-type-info-template').find('.app-description').html(appDescription);
-        $('.app-type-info-template').find("a").attr("href", appCreationPage);
+        $('.app-type-info-template').find('#continueButton').attr("href", appCreationPage);
         var appendHtml =$('.app-type-info-template').html();
         //The tile count adjust according to the resolution to keep responsiveness
         if(width >= 1170){
