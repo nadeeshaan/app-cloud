@@ -86,11 +86,11 @@ function drawInitialEnvTagPane(addBlock, key, value){
         '<div class="form-inline  property-seperator prop-key-vals-holder">\n'+
         '<div class="form-group">\n'+
         '<label class="sr-only" for="key">Key</label>\n'+
-        '<input type="text" class="form-control element-key-holder" id="key" placeholder="Key" value="' + key + '">\n'+
+        '<input type="text" class="form-control element-key-holder" id="key" placeholder="Key" value="' + key + '" disabled>\n'+
         '</div>\n'+
         '<div class="form-group">\n'+
         '<label class="sr-only" for="value">Value</label>\n'+
-        '<input type="text" class="form-control element-value-holder" id="value" placeholder="Value" value="' + value + '">\n'+
+        '<input type="text" class="form-control element-value-holder" id="value" placeholder="Value" value="' + value + '" disabled>\n'+
         '</div>\n'+
         '<div class="form-group edit-key-values">\n'+
         '<span class="fw-stack fw-lg">\n'+
@@ -109,13 +109,15 @@ function drawInitialEnvTagPane(addBlock, key, value){
         '</div>\n'+
         '<div class="form-group">\n'+
         '<label class="sr-only" for="value">Value</label>\n'+
-        '<input type="text" class="form-control element-add-value" id="value" placeholder="Value">\n'+
+        '<select id="value" name="value" class="form-control select2 element-add-value"></select>\n' +
         '</div>\n'+
         '<div class="form-group">\n'+
         '<button class="btn btn-primary btn-primary-add btn-primary-add-val" disabled>Add</button>\n'+
         '</div>\n'+
         '</div>\n'
     );
+
+    initSelect2(null);
 }
 function drawEnvTagPane(panelBody, key, value){
     panelBody.append(

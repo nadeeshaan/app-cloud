@@ -2507,14 +2507,14 @@ th.hide-column-data, td.hide-column-data {
 .editroles .fw-stack span{
     color:#0498d5;
 }
-#user-name-select + .select2-container .select2-selection--multiple{
+.select2-container .select2-selection--multiple{
     height:34px;
 }
-#user-name-select + .select2-container .select2-selection--multiple li{
+.select2-container .select2-selection--multiple li{
     border:none;
     background-color:#fff;
 }
-#user-name-select + .select2-container .select2-selection--multiple li span.select2-selection__choice__remove{
+.select2-container .select2-selection--multiple li span.select2-selection__choice__remove{
     display:none;
 }
 .modal-header button.close-override{
