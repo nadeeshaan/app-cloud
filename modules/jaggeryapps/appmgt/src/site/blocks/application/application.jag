@@ -75,26 +75,38 @@ var log = new Log();
             response.status = 400; // bad request
             response.message = "Application with same name and version already exists!";
         } else {
-            if (isFileAttached) {
-                applicationModule.uploadExistingArchive(uploadedArtifact, appTypeName, applicationName,
-                                                        applicationRevision);
-            }
-            if (uploadedFileName) {
-                applicationModule.addApplication(applicationName, applicationRevision, applicationDescription, replicas,
-                                                 runtimeId, appTypeName, runtimeProperties, tags, appIcon,
-                                                 uploadedFileName, isNewVersion, conSpecMemory, conSpecCpu);
+            var applicationCount = applicationModule.getApplicationCount();
+            var maxAppCount = applicationModule.getMaxInstanceCount();
+            if (applicationCount < maxAppCount) {
+                if ((conSpecMemory <= 512) && (conSpecCpu <= 300)) {
+                    if (isFileAttached) {
+                        applicationModule.uploadExistingArchive(uploadedArtifact, appTypeName, applicationName,
+                                applicationRevision);
+                    }
+                    if (uploadedFileName) {
+                        applicationModule.addApplication(applicationName, applicationRevision, applicationDescription, replicas,
+                                runtimeId, appTypeName, runtimeProperties, tags, appIcon,
+                                uploadedFileName, isNewVersion, conSpecMemory, conSpecCpu);
+                    } else {
+                        var gitRepoUrl = request.getParameter("gitRepoUrl");
+                        var gitRepoBranch = request.getParameter("gitRepoBranch");
+                        var projectRoot = request.getParameter("projectRoot");
+                        var token = request.getParameter("token");
+                        gitHubAppModule.addApplicationViaGitHub(applicationName, applicationRevision, applicationDescription,
+                                replicas, runtimeId, appTypeName, runtimeProperties, tags,
+                                appIcon, gitRepoUrl, gitRepoBranch, projectRoot, token,
+                                isNewVersion, conSpecMemory, conSpecCpu);
+                    }
+                    response.status = 200;
+                    response.message = "Application creation is successfully submitted";
+                } else {
+                    response.status = 400; //bad request
+                    response.message = "Maximum limit of conSpecMemory is 512 and conSpecCpu 300";
+                }
             } else {
-                var gitRepoUrl = request.getParameter("gitRepoUrl");
-                var gitRepoBranch = request.getParameter("gitRepoBranch");
-                var projectRoot = request.getParameter("projectRoot");
-                var token = request.getParameter("token");
-                gitHubAppModule.addApplicationViaGitHub(applicationName, applicationRevision, applicationDescription,
-                                                        replicas, runtimeId, appTypeName, runtimeProperties, tags,
-                                                        appIcon, gitRepoUrl, gitRepoBranch, projectRoot, token,
-                                                        isNewVersion, conSpecMemory, conSpecCpu);
+                response.status = 400; //bad request
+                response.message = "Maximum number of applications that you can create is " + maxAppCount;
             }
-            response.status = 200;
-            response.message = "Application creation is successfully submitted";
         }
     }else if(action == "stopApplication"){
         var applicationName = request.getParameter("applicationName");
