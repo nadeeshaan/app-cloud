@@ -216,6 +216,10 @@ jagg.module("application", {
 
     getApplicationRevisionStatus:function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").getApplicationRevisionStatus.apply(this, arguments);
+    },
+
+    getAppLaunchURL: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").constructAppLaunchURL.apply(this, arguments);
     }
 });
 %>
