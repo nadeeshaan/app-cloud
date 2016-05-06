@@ -59,13 +59,9 @@ var addApplication = function (applicationName, versionName, applicationDescript
     var tenantId = modManager.getTenantId();
     var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
     var versionHashId = Util.getVersionHashId(applicationName, versionName, tenantId);
-
- //   if(uploadedFileName.indexOf("VERSION_HASH_ID") > -1){
-   //     uploadedFileName = versionHashId + "." + uploadedFileName.split(".")[1];
-   // }
- if(artifactUrl){
-     uploadedFileName = versionHashId + "." + uploadedFileName.split(".")[1];
-     log.info("Artifact url is : " + artifactUrl + " Uploaded file name : " + uploadedFileName);
+    if (artifactUrl) {
+        uploadedFileName = versionHashId + "." + uploadedFileName.split(".")[1];
+        log.info("Artifact url is : " + artifactUrl + " Uploaded file name : " + uploadedFileName);
     }
 
     if(isNewVersion == 'true'){
