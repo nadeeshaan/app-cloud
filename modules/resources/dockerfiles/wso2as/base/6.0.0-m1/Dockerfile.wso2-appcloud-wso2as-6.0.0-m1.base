@@ -49,5 +49,5 @@ RUN apt-get update && apt-get install -y pwgen && \
 
 EXPOSE 8080 8443
 
-VOLUME ["/opt/tomcat/logs", "/opt/tomcat/work", "/opt/tomcat/webapps"]
+#VOLUME ["/opt/tomcat/logs", "/opt/tomcat/work", "/opt/tomcat/webapps"]
 

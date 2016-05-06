@@ -16,6 +16,7 @@
 
 package org.wso2.appcloud.core.docker;
 
+import com.google.common.base.Strings;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.ConfigBuilder;
 import io.fabric8.docker.client.DefaultDockerClient;
@@ -69,19 +70,36 @@ public class DockerOpClient {
     }
 
     public void createDockerFile(String runtimeId, String artifactName, String dockerFilePath,
-                                 String dockerTemplateFilePath)
+                                 String dockerTemplateFilePath, String artifactUrl)
             throws IOException, AppCloudException {
 
-        String dockerFileTemplatePath = DockerUtil.getDockerFileTemplatePath(runtimeId, dockerTemplateFilePath, "default");
-        String artifactNameWithoutExtension = artifactName.substring(0, artifactName.lastIndexOf("."));
         List<String> dockerFileConfigs = new ArrayList<String>();
-        for(String line: FileUtils.readLines(new File(dockerFileTemplatePath))) {
-            if(line.contains("ARTIFACT_NAME")) {
-                dockerFileConfigs.add(line.replace("ARTIFACT_NAME", artifactName));
-            } else if (line.contains("ARTIFACT_DIR")) {
-                dockerFileConfigs.add(line.replace("ARTIFACT_DIR", artifactNameWithoutExtension));
-            } else {
-                dockerFileConfigs.add(line);
+        if (Strings.isNullOrEmpty(artifactUrl)) {
+            String dockerFileTemplatePath = DockerUtil
+                    .getDockerFileTemplatePath(runtimeId, dockerTemplateFilePath, "default");
+            String artifactNameWithoutExtension = artifactName.substring(0, artifactName.lastIndexOf("."));
+            for (String line : FileUtils.readLines(new File(dockerFileTemplatePath))) {
+                if (line.contains("ARTIFACT_NAME")) {
+                    dockerFileConfigs.add(line.replace("ARTIFACT_NAME", artifactName));
+                } else if (line.contains("ARTIFACT_DIR")) {
+                    dockerFileConfigs.add(line.replace("ARTIFACT_DIR", artifactNameWithoutExtension));
+                } else {
+                    dockerFileConfigs.add(line);
+                }
+            }
+        } else {
+            String dockerFileTemplatePath = DockerUtil
+                    .getDockerFileTemplatePath(runtimeId, dockerTemplateFilePath, "url");
+            String artifactNameWithoutExtension = artifactName.substring(0, artifactName.lastIndexOf("."));
+
+            for (String line : FileUtils.readLines(new File(dockerFileTemplatePath))) {
+                if (line.contains("ARTIFACT_NAME")) {
+                    dockerFileConfigs.add(line.replace("ARTIFACT_NAME", artifactName));
+                } else if (line.contains("ARTIFACT_URL")) {
+                    dockerFileConfigs.add(line.replace("ARTIFACT_URL", artifactUrl));
+                } else {
+                    dockerFileConfigs.add(line);
+                }
             }
         }
         FileUtils.writeLines(new File(dockerFilePath), dockerFileConfigs);
