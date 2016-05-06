@@ -51,7 +51,7 @@ var Arrays = Packages.java.util.Arrays;
  * @param runtimeId runtime id of the application
  */
 var addApplication = function (applicationName, versionName, applicationDescription, replicas,
-                               runtimeId, appTypeName, runtimePropertiesArray, tagArray, appIcon, uploadedFileName, isNewVersion, conSpecMemory, conSpecCpu) {
+                               runtimeId, appTypeName, runtimePropertiesArray, tagArray, appIcon, uploadedFileName, isNewVersion, conSpecMemory, conSpecCpu, artifactUrl) {
 
     log.info("Started creating App => name : " + applicationName + " Version : " + versionName + " Description " +
              ": " + applicationDescription + " runtimeId : " + runtimeId + " apptype : " + appTypeName );
@@ -59,8 +59,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
     var tenantId = modManager.getTenantId();
     var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
     var versionHashId = Util.getVersionHashId(applicationName, versionName, tenantId);
-
-    if(uploadedFileName.indexOf("VERSION_HASH_ID") > -1){
+    if (artifactUrl) {
         uploadedFileName = versionHashId + "." + uploadedFileName.split(".")[1];
     }
 
@@ -78,7 +77,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
      var runtimeProperties = generateRuntimePropsList(runtimePropertiesArray);
 
 
-    var absFileUploadedPath =  createDockerFile(applicationName, versionName, runtimeId, uploadedFileName, versionHashId, dockerOpClient);
+    var absFileUploadedPath =  createDockerFile(applicationName, versionName, runtimeId, uploadedFileName, versionHashId, dockerOpClient, artifactUrl);
     buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerOpClient);
     pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerOpClient);
 
@@ -323,7 +322,7 @@ var createAppVersionInDataBase = function( versionName,   runtimeId, runtimeProp
 }
 
 
-var createDockerFile =  function(applicationName, versionName, runtimeId, uploadedFileName, versionHashId, dockerOpClient){
+var createDockerFile =  function(applicationName, versionName, runtimeId, uploadedFileName, versionHashId, dockerOpClient, artifactUrl){
     var msg = "Docker file creation successfully triggered in appcloud";
     addEvent(DOCKER_FILE_CREATE, EVENT_PENDING, msg, versionHashId);
     var absFileUploadedPath;
@@ -337,13 +336,13 @@ var createDockerFile =  function(applicationName, versionName, runtimeId, upload
 
         var uploadArtifactTmpName;
         var checkFileExtZIP = isFileExtZIP(uploadedFileName);
-        if (checkFileExtZIP) {
+        if (checkFileExtZIP && !artifactUrl) {
             var fileName = uploadedFileName.substring(0, uploadedFileName.lastIndexOf("."));
             uploadArtifactTmpName = fileName + FILE_EXTENSTION_ALTER;
         } else {
             uploadArtifactTmpName = uploadedFileName;
         }
-        dockerOpClient.createDockerFile(runtimeId, uploadArtifactTmpName, dockerFilePath,dockerTemplateFilePath);
+        dockerOpClient.createDockerFile(runtimeId, uploadArtifactTmpName, dockerFilePath,dockerTemplateFilePath, artifactUrl);
 
     } catch(e){
         var msg = "Error while creating docker file";
