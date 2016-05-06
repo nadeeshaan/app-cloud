@@ -70,8 +70,7 @@ public class DockerOpClient {
     }
 
     public void createDockerFile(String runtimeId, String artifactName, String dockerFilePath,
-                                 String dockerTemplateFilePath, String artifactUrl)
-            throws IOException, AppCloudException {
+            String dockerTemplateFilePath, String artifactUrl, String hostName) throws IOException, AppCloudException {
 
         List<String> dockerFileConfigs = new ArrayList<String>();
         if (Strings.isNullOrEmpty(artifactUrl)) {
@@ -83,6 +82,8 @@ public class DockerOpClient {
                     dockerFileConfigs.add(line.replace("ARTIFACT_NAME", artifactName));
                 } else if (line.contains("ARTIFACT_DIR")) {
                     dockerFileConfigs.add(line.replace("ARTIFACT_DIR", artifactNameWithoutExtension));
+                } else if (line.contains("HOST_NAME")) {
+                    dockerFileConfigs.add(line.replace("HOST_NAME", hostName));
                 } else {
                     dockerFileConfigs.add(line);
                 }
@@ -97,6 +98,8 @@ public class DockerOpClient {
                     dockerFileConfigs.add(line.replace("ARTIFACT_NAME", artifactName));
                 } else if (line.contains("ARTIFACT_URL")) {
                     dockerFileConfigs.add(line.replace("ARTIFACT_URL", artifactUrl));
+                } else if (line.contains("HOST_NAME")) {
+                    dockerFileConfigs.add(line.replace("HOST_NAME", hostName));
                 } else {
                     dockerFileConfigs.add(line);
                 }
@@ -106,7 +109,7 @@ public class DockerOpClient {
     }
 
     public void createDockerFileForGitHub(String runtimeId, String gitRepoUrl, String gitRepoBranch,
-                                          String dockerFilePath, String projectRoot, String dockerGitHubTemplateFilePath)
+            String dockerFilePath, String projectRoot, String dockerGitHubTemplateFilePath, String hostName)
             throws IOException, AppCloudException {
 
         String dockerFileTemplatePath = DockerUtil.getDockerFileTemplatePath(runtimeId, dockerGitHubTemplateFilePath, "github");
@@ -120,6 +123,9 @@ public class DockerOpClient {
             }
             if (line.contains("PROJECT_ROOT")) {
                 line = line.replace("PROJECT_ROOT", projectRoot);
+            }
+            if (line.contains("HOST_NAME")) {
+                line = line.replace("HOST_NAME", hostName);
             }
             dockerFileConfigs.add(line);
         }
