@@ -61,7 +61,6 @@ var addApplication = function (applicationName, versionName, applicationDescript
     var versionHashId = Util.getVersionHashId(applicationName, versionName, tenantId);
     if (artifactUrl) {
         uploadedFileName = versionHashId + "." + uploadedFileName.split(".")[1];
-        log.info("Artifact url is : " + artifactUrl + " Uploaded file name : " + uploadedFileName);
     }
 
     if(isNewVersion == 'true'){
