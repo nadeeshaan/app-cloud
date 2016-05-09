@@ -79,7 +79,9 @@ var log = new Log();
             var isAppCountLowerThanMax = false;
 
             if (isNewVersion) {
-                isAppCountLowerThanMax = true;
+                if(applicationModule.getApplicationHashIdByName(applicationName) != null){
+                    isAppCountLowerThanMax = true;
+                }
             } else {
                 var applicationCount = applicationModule.getApplicationCount();
                 var maxAppCount = applicationModule.getMaxInstanceCount();
