@@ -43,7 +43,8 @@ var log = new Log();
         var replicas = 1;
         var runtimeId = request.getParameter("runtime");
         var isNewVersion = request.getParameter("isNewVersion");
-        if(isNewVersion == null) {
+        //"null" when request comes from ui, null when request comes from rest api
+        if(isNewVersion == "null" || isNewVersion == null) {
             isNewVersion = false;
         }
 
