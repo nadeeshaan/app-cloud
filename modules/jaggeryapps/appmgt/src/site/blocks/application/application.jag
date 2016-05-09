@@ -76,26 +76,33 @@ var log = new Log();
             response.status = 400; // bad request
             response.message = "Application with same name and version already exists!";
         } else {
-            var msg = "Application creation failed because";
             var isAppCountLowerThanMax = false;
 
+            //Added to restrict application creation using the REST api
+            //If the user is trying to create a new version first check if an application with the given name exists
+            //before creating the new application version
             if (isNewVersion) {
                 if (applicationModule.getApplicationHashIdByName(applicationName) != null) {
                     isAppCountLowerThanMax = true;
                 } else {
-                    log.warn(msg + " no application with " + applicationName + " exists.");
+                    log.warn("Application creation request not accepted because" + msg + " no application with " +
+                            applicationName + " exists.");
                 }
             } else {
+                //Since the user is trying to create a new application we check if the existing application count is less
+                //than the maximum amount of applications that can be created
                 var applicationCount = applicationModule.getApplicationCount();
                 var maxAppCount = applicationModule.getMaxInstanceCount();
                 if (applicationCount < maxAppCount) {
                     isAppCountLowerThanMax = true;
                 } else {
-                    log.warn(msg + " the application count has reached maximum limit of " + maxAppCount);
+                    log.warn("Application creation request not accepted because" + msg + " the application count has " +
+                            "reached maximum limit of " + maxAppCount);
                 }
             }
 
             if (isAppCountLowerThanMax) {
+                //Check for the memory and cpu values of the application creation request
                 if ((conSpecMemory <= 512) && (conSpecCpu <= 300)) {
                     if (isFileAttached) {
                         applicationModule.uploadExistingArchive(uploadedArtifact, appTypeName, applicationName,
@@ -119,10 +126,12 @@ var log = new Log();
                     response.message = "Application creation is successfully submitted";
                 } else {
                     if (conSpecMemory > 512) {
-                        log.warn(" the maximum memory limit of container specification is 512.");
+                        log.warn("Application creation request not accepted because the maximum memory limit of " +
+                                "container specification is 512.");
                     }
                     if (conSpecCpu > 300) {
-                        log.warn(" the maximum cpu limit of container specification is 300.");
+                        log.warn("Application creation request not accepted because the maximum cpu limit of container "
+                                + "specification is 300.");
                     }
                     response.status = 400; //bad request
                     response.message = "Maximum limit of conSpecMemory is 512 and conSpecCpu 300";
