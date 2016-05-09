@@ -26,7 +26,7 @@ COPY base-init.sh /base-init.sh
 COPY crt-config.cnf /crt-config.cnf
 
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y libcurl4-gnutls-dev libpng-dev unzip cron re2c php5-imap python git && \
+    apt-get install -y libcurl4-gnutls-dev libpng-dev unzip wget cron re2c php5-imap python git && \
     docker-php-ext-install curl gd zip mbstring mysqli && \
     a2enmod headers expires deflate rewrite && \
     apt-get install openssl && \

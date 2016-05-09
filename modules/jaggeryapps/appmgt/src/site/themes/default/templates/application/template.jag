@@ -236,6 +236,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 if(uploadMethod === "file"){
                     formData.append('uploadedFileName', $("#uploadedFileName").val());
                 } else if (uploadMethod === "url" ) {
+                    formData.append('artifactUrl', $("#artifactUrl").val());
                     if (appTypeName == "war") {
                         formData.append('uploadedFileName', "VERSION_HASH_ID.war");
                     } else if (appTypeName == "mss") {
@@ -599,21 +600,27 @@ jagg.template("application", function (inputs, outputs, jagg) {
 
         $('#url-upload').click(function(){
             $("#url-upload-progress").html("<i class=\"fa fa-circle-o-notch fa-spin\"></i>");
-            jagg.post("../blocks/application/application.jag", {
-                action:"downloadFromUrl",
-                artfactUrl:$("#artifactUrl").val(),
-                applicationName:$("#applicationName").val(),
-                applicationRevision:$("#applicationRevision").val(),
-                appTypeName:appTypeName
-            },function (result) {
+            if(isValidUploadUrl()){
                 $("#url-upload-progress").html("<i class=\"fa fa-check\"></i>");
+                $("#artifactUrl").prop("disabled", true);
                 urlUploadComplete = true;
-                activateCreateApplication();
-            },function (jqXHR, textStatus, errorThrown) {
-                jagg.message({content: "Error occurred while downloading artifact from url.", type: 'error', id:'view_log'});
-            });
+            } else {
+                $("#url-upload-progress").html("");
+                $("#url-upload").prop("disabled", false);
+                $("#artifactUrl").prop("disabled", false);
+            }
+            activateCreateApplication();
         });
 
+
+        /**
+         * This method is to validate the upload url from the front end.
+         * @returns {boolean}
+         */
+        function isValidUploadUrl() {
+            // TODO this method logic need to be improved, check artifact exitst + add alerts via library
+            return true;
+        }
         var createNewAppForm = $("#applicationName");
         createNewAppForm.on('focusout ', function () {
             checkApplicationExistence();

@@ -16,6 +16,7 @@
 
 package org.wso2.appcloud.core.docker;
 
+import com.google.common.base.Strings;
 import io.fabric8.docker.client.Config;
 import io.fabric8.docker.client.ConfigBuilder;
 import io.fabric8.docker.client.DefaultDockerClient;
@@ -69,26 +70,46 @@ public class DockerOpClient {
     }
 
     public void createDockerFile(String runtimeId, String artifactName, String dockerFilePath,
-                                 String dockerTemplateFilePath)
-            throws IOException, AppCloudException {
+            String dockerTemplateFilePath, String artifactUrl, String hostName) throws IOException, AppCloudException {
 
-        String dockerFileTemplatePath = DockerUtil.getDockerFileTemplatePath(runtimeId, dockerTemplateFilePath, "default");
-        String artifactNameWithoutExtension = artifactName.substring(0, artifactName.lastIndexOf("."));
         List<String> dockerFileConfigs = new ArrayList<String>();
-        for(String line: FileUtils.readLines(new File(dockerFileTemplatePath))) {
-            if(line.contains("ARTIFACT_NAME")) {
-                dockerFileConfigs.add(line.replace("ARTIFACT_NAME", artifactName));
-            } else if (line.contains("ARTIFACT_DIR")) {
-                dockerFileConfigs.add(line.replace("ARTIFACT_DIR", artifactNameWithoutExtension));
-            } else {
-                dockerFileConfigs.add(line);
+        if (Strings.isNullOrEmpty(artifactUrl)) {
+            String dockerFileTemplatePath = DockerUtil
+                    .getDockerFileTemplatePath(runtimeId, dockerTemplateFilePath, "default");
+            String artifactNameWithoutExtension = artifactName.substring(0, artifactName.lastIndexOf("."));
+            for (String line : FileUtils.readLines(new File(dockerFileTemplatePath))) {
+                if (line.contains("ARTIFACT_NAME")) {
+                    dockerFileConfigs.add(line.replace("ARTIFACT_NAME", artifactName));
+                } else if (line.contains("ARTIFACT_DIR")) {
+                    dockerFileConfigs.add(line.replace("ARTIFACT_DIR", artifactNameWithoutExtension));
+                } else if (line.contains("HOST_NAME")) {
+                    dockerFileConfigs.add(line.replace("HOST_NAME", hostName));
+                } else {
+                    dockerFileConfigs.add(line);
+                }
+            }
+        } else {
+            String dockerFileTemplatePath = DockerUtil
+                    .getDockerFileTemplatePath(runtimeId, dockerTemplateFilePath, "url");
+            String artifactNameWithoutExtension = artifactName.substring(0, artifactName.lastIndexOf("."));
+
+            for (String line : FileUtils.readLines(new File(dockerFileTemplatePath))) {
+                if (line.contains("ARTIFACT_NAME")) {
+                    dockerFileConfigs.add(line.replace("ARTIFACT_NAME", artifactName));
+                } else if (line.contains("ARTIFACT_URL")) {
+                    dockerFileConfigs.add(line.replace("ARTIFACT_URL", artifactUrl));
+                } else if (line.contains("HOST_NAME")) {
+                    dockerFileConfigs.add(line.replace("HOST_NAME", hostName));
+                } else {
+                    dockerFileConfigs.add(line);
+                }
             }
         }
         FileUtils.writeLines(new File(dockerFilePath), dockerFileConfigs);
     }
 
     public void createDockerFileForGitHub(String runtimeId, String gitRepoUrl, String gitRepoBranch,
-                                          String dockerFilePath, String projectRoot, String dockerGitHubTemplateFilePath)
+            String dockerFilePath, String projectRoot, String dockerGitHubTemplateFilePath, String hostName)
             throws IOException, AppCloudException {
 
         String dockerFileTemplatePath = DockerUtil.getDockerFileTemplatePath(runtimeId, dockerGitHubTemplateFilePath, "github");
@@ -102,6 +123,9 @@ public class DockerOpClient {
             }
             if (line.contains("PROJECT_ROOT")) {
                 line = line.replace("PROJECT_ROOT", projectRoot);
+            }
+            if (line.contains("HOST_NAME")) {
+                line = line.replace("HOST_NAME", hostName);
             }
             dockerFileConfigs.add(line);
         }
