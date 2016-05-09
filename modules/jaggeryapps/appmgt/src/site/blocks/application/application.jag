@@ -76,17 +76,22 @@ var log = new Log();
             response.status = 400; // bad request
             response.message = "Application with same name and version already exists!";
         } else {
+            var msg = "Application creation failed because";
             var isAppCountLowerThanMax = false;
 
             if (isNewVersion) {
-                if(applicationModule.getApplicationHashIdByName(applicationName) != null){
+                if (applicationModule.getApplicationHashIdByName(applicationName) != null) {
                     isAppCountLowerThanMax = true;
+                } else {
+                    log.warn(msg + " no application with " + applicationName + " exists.");
                 }
             } else {
                 var applicationCount = applicationModule.getApplicationCount();
                 var maxAppCount = applicationModule.getMaxInstanceCount();
                 if (applicationCount < maxAppCount) {
                     isAppCountLowerThanMax = true;
+                } else {
+                    log.warn(msg + " the application count has reached maximum limit of " + maxAppCount);
                 }
             }
 
@@ -113,6 +118,12 @@ var log = new Log();
                     response.status = 200;
                     response.message = "Application creation is successfully submitted";
                 } else {
+                    if (conSpecMemory > 512) {
+                        log.warn(" the maximum memory limit of container specification is 512.");
+                    }
+                    if (conSpecCpu > 300) {
+                        log.warn(" the maximum cpu limit of container specification is 300.");
+                    }
                     response.status = 400; //bad request
                     response.message = "Maximum limit of conSpecMemory is 512 and conSpecCpu 300";
                 }
