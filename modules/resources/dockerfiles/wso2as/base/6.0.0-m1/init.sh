@@ -44,6 +44,7 @@ sed -i '$!N;s/<!--\s*\n\s*<Connector port="8443"/<Connector port="8443" keyAlias
                keystoreFile="\/wso2carbon.jks" keystorePass="'$CERT_PASSWORD'"/g;P;D' \
                /opt/wso2as-${WSO2_AS_VERSION}-m1/conf/server.xml
 
+sed -i '/<Context>/a <JarScanner scanClassPath="false" />' /opt/wso2as-${WSO2_AS_VERSION}-m1/conf/context.xml
 sed -i '$!N;s/clientAuth="false" sslProtocol="TLS" \/>\n\s*-->/clientAuth="false" sslProtocol="TLS" \/>/g;P;D' \
 /opt/wso2as-${WSO2_AS_VERSION}-m1/conf/server.xml
 
