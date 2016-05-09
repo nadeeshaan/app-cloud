@@ -43,8 +43,7 @@ var log = new Log();
         var replicas = 1;
         var runtimeId = request.getParameter("runtime");
         var isNewVersion = request.getParameter("isNewVersion");
-        //"null" when request comes from ui, null when request comes from rest api
-        if(isNewVersion == "null" || isNewVersion == null) {
+        if (!isNewVersion || isNewVersion == "false") {
             isNewVersion = false;
         }
 
@@ -83,15 +82,20 @@ var log = new Log();
             //If the user is trying to create a new version first check if an application with the given name exists
             //before creating the new application version
             if (isNewVersion) {
-                if (applicationModule.getApplicationHashIdByName(applicationName) != null) {
-                    isAppCountLowerThanMax = true;
+                //Check if valid argument given for isNewVersion
+                if (isNewVersion == "true") {
+                    if (applicationModule.getApplicationHashIdByName(applicationName) != null) {
+                        isAppCountLowerThanMax = true;
+                    } else {
+                        log.warn("Application creation request not accepted because no application with application name " +
+                                applicationName + " exists.");
+                    }
                 } else {
-                    log.warn("Application creation request not accepted because no application with " +
-                            applicationName + " exists.");
+                    log.warn("Application creation request not accepted because invalid argument for isNewVersion");
                 }
             } else {
-                //Since the user is trying to create a new application we check if the existing application count is less
-                //than the maximum amount of applications that can be created
+                //Since the user is trying to create a new application we check if the existing application count is
+                //less than the maximum amount of applications that can be created
                 var applicationCount = applicationModule.getApplicationCount();
                 var maxAppCount = applicationModule.getMaxInstanceCount();
                 if (applicationCount < maxAppCount) {
