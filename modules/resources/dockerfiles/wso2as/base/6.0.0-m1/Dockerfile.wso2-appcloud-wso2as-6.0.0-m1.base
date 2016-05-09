@@ -47,6 +47,8 @@ RUN apt-get update && apt-get install -y pwgen && \
     cp -r /opt/tomcat/webapps /tmp/webapps && \
     chmod +x /init.sh
 
+COPY catalina.properties /opt/tomcat/conf/
+
 EXPOSE 8080 8443
 
 #VOLUME ["/opt/tomcat/logs", "/opt/tomcat/work", "/opt/tomcat/webapps"]
