@@ -219,7 +219,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 var formData = new FormData($(this)[0]);
                 formData.append('runtimeProperties', JSON.stringify(runtimeProperties));
                 formData.append('action', 'createApplication');
-                formData.append('isNewVersion', '<%=newVersion%>');
+                formData.append('isNewVersion', isNewVersion);
                 formData.append('appTypeName', appTypeName);
                 formData.append('applicationName', $("#applicationName").val());
                 var optionRuntime = $("#runtime option:selected").val();
@@ -241,7 +241,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         formData.append('uploadedFileName', "VERSION_HASH_ID.war");
                     } else if (appTypeName == "mss") {
                         formData.append('uploadedFileName', "VERSION_HASH_ID.jar");
-                    } else if (appTypeName == "php") {
+                    } else if (appTypeName == "php" || appTypeName == "jaggery") {
                         formData.append('uploadedFileName', "VERSION_HASH_ID.zip");
                     }
                 } else if (uploadMethod === "github" ) {

@@ -16,31 +16,16 @@
 #
 # ------------------------------------------------------------------------
 
-FROM java:7-jre
+FROM wso2-appcloud/jaggery:0.11.0-base
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV WSO2AS_ZIP wso2as-5.3.0.zip
-ENV INSTALL_PATH /opt/
-ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
-ENV JAVA_OPTS="-Xms128m -Xmx256m -XX:PermSize=64m"
+ENV JAGGERY_APP_ZIP ARTIFACT_NAME
+ENV URL ARTIFACT_URL
+ENV JAGGERY_APP_HOME /opt/wso2as-5.3.0/repository/deployment/server/jaggeryapps/
+ENV APP_HOST HOST_NAME
 
-ENV WSO2_AS_VERSION 5.3.0
+WORKDIR "$JAGGERY_APP_HOME"
+RUN wget "$URL" -O "$JAGGERY_APP_ZIP"
+RUN sed -i '/<!--HostName>/c\\t<HostName>'$APP_HOST'</HostName>' /opt/wso2as-5.3.0/repository/conf/carbon.xml && \
+    sed -i '/<!--MgtHostName>/c\\t<MgtHostName>'$APP_HOST'</MgtHostName>' /opt/wso2as-5.3.0/repository/conf/carbon.xml
 
-RUN apt-get update && \
-    apt-get install -y git wget
-
-# Add the startup script
-ADD init.sh /init.sh
-RUN chmod +x /init.sh
-
-COPY $WSO2AS_ZIP $INSTALL_PATH
-RUN cd /opt && unzip $WSO2AS_ZIP
-
-#Add WSO2 user
-RUN addgroup wso2 \
-    && adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
-
-EXPOSE 9443 9763
 CMD ["/init.sh"]
-
-
