@@ -241,7 +241,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         formData.append('uploadedFileName', "VERSION_HASH_ID.war");
                     } else if (appTypeName == "mss") {
                         formData.append('uploadedFileName', "VERSION_HASH_ID.jar");
-                    } else if (appTypeName == "php") {
+                    } else if (appTypeName == "php" || appTypeName == "jaggery") {
                         formData.append('uploadedFileName', "VERSION_HASH_ID.zip");
                     }
                 } else if (uploadMethod === "github" ) {
