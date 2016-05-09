@@ -22,7 +22,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV WSO2AS_ZIP wso2as-5.3.0.zip
 ENV INSTALL_PATH /opt/
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
-ENV JAVA_OPTS "-Xms128m -Xmx512m -XX:PermSize=128m"
+ENV JAVA_OPTS="-Xms128m -Xmx256m -XX:PermSize=64m"
 
 ENV WSO2_AS_VERSION 5.3.0
 
