@@ -85,7 +85,7 @@ var log = new Log();
                 if (applicationModule.getApplicationHashIdByName(applicationName) != null) {
                     isAppCountLowerThanMax = true;
                 } else {
-                    log.warn("Application creation request not accepted because" + msg + " no application with " +
+                    log.warn("Application creation request not accepted because no application with " +
                             applicationName + " exists.");
                 }
             } else {
@@ -96,7 +96,7 @@ var log = new Log();
                 if (applicationCount < maxAppCount) {
                     isAppCountLowerThanMax = true;
                 } else {
-                    log.warn("Application creation request not accepted because" + msg + " the application count has " +
+                    log.warn("Application creation request not accepted because the application count has " +
                             "reached maximum limit of " + maxAppCount);
                 }
             }
