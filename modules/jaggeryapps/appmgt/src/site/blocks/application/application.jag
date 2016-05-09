@@ -76,9 +76,19 @@ var log = new Log();
             response.status = 400; // bad request
             response.message = "Application with same name and version already exists!";
         } else {
-            var applicationCount = applicationModule.getApplicationCount();
-            var maxAppCount = applicationModule.getMaxInstanceCount();
-            if (applicationCount < maxAppCount) {
+            var isAppCountLowerThanMax = false;
+
+            if (isNewVersion) {
+                isAppCountLowerThanMax = true;
+            } else {
+                var applicationCount = applicationModule.getApplicationCount();
+                var maxAppCount = applicationModule.getMaxInstanceCount();
+                if (applicationCount < maxAppCount) {
+                    isAppCountLowerThanMax = true;
+                }
+            }
+
+            if (isAppCountLowerThanMax) {
                 if ((conSpecMemory <= 512) && (conSpecCpu <= 300)) {
                     if (isFileAttached) {
                         applicationModule.uploadExistingArchive(uploadedArtifact, appTypeName, applicationName,
