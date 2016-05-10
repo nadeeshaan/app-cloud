@@ -23,7 +23,7 @@ ENV MNT /mnt
 ENV APP_HOST HOST_NAME
 
 RUN git clone GIT_REPO_URL --branch GIT_REPO_BRANCH --single-branch "$MNT/" && \
-    mv "$MNT"PROJECT_ROOT "$JAGGERY_APP_HOME/" && \
+    mv "$MNT"PROJECT_ROOT "$JAGGERY_APP_HOME/ROOT" && \
     rm -rf "$MNT"/* && \
     sed -i '/<!--HostName>/c\\t<HostName>'$APP_HOST'</HostName>' /opt/wso2as-5.3.0/repository/conf/carbon.xml && \
     sed -i '/<!--MgtHostName>/c\\t<MgtHostName>'$APP_HOST'</MgtHostName>' /opt/wso2as-5.3.0/repository/conf/carbon.xml
