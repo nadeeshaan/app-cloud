@@ -37,8 +37,8 @@ RUN chmod +x /init.sh
 COPY $WSO2AS_ZIP $INSTALL_PATH
 RUN cd /opt && unzip $WSO2AS_ZIP
 
-COPY patches /opt/wso2as-5.3.0/repository/components/patches/
-COPY modules /opt/wso2as-5.3.0/modules/
+COPY patches/ /opt/wso2as-5.3.0/repository/components/patches/
+COPY modules/ /opt/wso2as-5.3.0/modules/
 
 #Add WSO2 user
 RUN addgroup wso2 \
