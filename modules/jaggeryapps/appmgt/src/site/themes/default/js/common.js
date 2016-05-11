@@ -1,6 +1,6 @@
 //Select2 functionality initialization
-function initSelect2(data) {
-    var $select = $('#value.select2').select2({
+function initSelect2(data, element) {
+    var $select = $(element).select2({
         placeholder: "Value, for db values type database:",
         data: data,
         multiple: true,
@@ -31,7 +31,7 @@ function initSelect2(data) {
         } else if (e.params.data.isNextLevel) {
             $select.empty();
             $select.trigger('change');
-            $select = initSelect2(e.params.data.data);
+            $select = initSelect2(e.params.data.data, element);
             $select.select2('open');
         }
     });
@@ -56,7 +56,7 @@ function initSelect2(data) {
             }, function(result) {
                 dbs = JSON.parse(result);
                 $select.trigger('change');
-                $select = initSelect2(dbs);
+                $select = initSelect2(dbs, element);
                 $select.select2('open');
             });
         }

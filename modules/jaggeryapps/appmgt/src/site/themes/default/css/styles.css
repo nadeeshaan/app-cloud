@@ -1660,6 +1660,22 @@ a.btn-action {
     -moz-border-radius: 0px;
     border-radius: 0px;
 }
+
+.form-control[disabled].select2{
+    width: 350px;
+}
+
+/* This is to remove the arrow of select element in IE */
+select::-ms-expand {	display: none; }
+select{
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.form-control[disabled].element-value-holder{
+    width: 350px;
+}
+
 /* custom URL section */
 .form-section{
     margin-top: 3em;
