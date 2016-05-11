@@ -5,7 +5,7 @@ sed -i '/-Xms256m/d' /opt/wso2as-5.3.0/bin/wso2server.sh
 
 sed -i "/port=\"9763\"/a  \\\t\t   proxyPort=\"80\"" /opt/wso2as-5.3.0/repository/conf/tomcat/catalina-server.xml
 sed -i "/port=\"9443\"/a  \\\t\t   proxyPort=\"443\"" /opt/wso2as-5.3.0/repository/conf/tomcat/catalina-server.xml
-sed -i '/<WebContextRoot>/c\\t<WebContextRoot>/carbon</WebContextRoot>' /opt/wso2as-5.3.0/repository/conf/carbon.xml
+sed -i '/<WebContextRoot>/c\\t<WebContextRoot>/as</WebContextRoot>' /opt/wso2as-5.3.0/repository/conf/carbon.xml
 
 #Changing admin password
 if [ -z ${ADMIN_PASSWORD+x} ]; then

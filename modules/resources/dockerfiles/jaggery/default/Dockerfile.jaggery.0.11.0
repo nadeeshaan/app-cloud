@@ -24,7 +24,7 @@ ENV APP_HOST HOST_NAME
 
 COPY "$JAGGERY_APP_ZIP" "$JAGGERY_APP_HOME"
 WORKDIR "$JAGGERY_APP_HOME"
-RUN mv "$JAGGERY_APP_ZIP" ROOT.zip && \
+RUN mv "$JAGGERY_APP_ZIP" ${JAGGERY_APP_ZIP%.upload}.zip && \
     sed -i '/<!--HostName>/c\\t<HostName>'$APP_HOST'</HostName>' /opt/wso2as-5.3.0/repository/conf/carbon.xml && \
     sed -i '/<!--MgtHostName>/c\\t<MgtHostName>'$APP_HOST'</MgtHostName>' /opt/wso2as-5.3.0/repository/conf/carbon.xml
 
