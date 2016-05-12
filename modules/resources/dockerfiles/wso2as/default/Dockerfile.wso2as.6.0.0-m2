@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------
 #
-# Copyright 2016 WSO2, Inc. (http://wso2.com)
+# Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,15 +16,11 @@
 #
 # ------------------------------------------------------------------------
 
-FROM wso2-appcloud/jaggery:0.11.0-base
+FROM wso2-appcloud/wso2as:6.0.0-m2-base
 
-ENV URL ARTIFACT_URL
-ENV JAGGERY_APP_HOME /opt/wso2as-5.3.0/repository/deployment/server/jaggeryapps/
-ENV APP_HOST HOST_NAME
+ENV APP_WAR ARTIFACT_NAME
+ENV WEB_APP_HOME /opt/tomcat/webapps/
 
-WORKDIR "$JAGGERY_APP_HOME"
-RUN wget "$URL"
-RUN sed -i '/<!--HostName>/c\\t<HostName>'$APP_HOST'</HostName>' /opt/wso2as-5.3.0/repository/conf/carbon.xml && \
-    sed -i '/<!--MgtHostName>/c\\t<MgtHostName>'$APP_HOST'</MgtHostName>' /opt/wso2as-5.3.0/repository/conf/carbon.xml
+COPY "$APP_WAR" "$WEB_APP_HOME/"
 
 CMD ["/init.sh"]
