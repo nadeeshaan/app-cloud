@@ -48,7 +48,7 @@ function initSelect2(data) {
         }
     });
 
-    $(".select2-search__field").keypress(function(e) {
+    $(".select2-search__field").keyup(function(e) {
         if ($(this).val() == "database:") {
             var dbs;
             jagg.post("../blocks/database/list/ajax/list.jag", {
