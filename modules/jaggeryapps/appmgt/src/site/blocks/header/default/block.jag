@@ -1,4 +1,6 @@
 <%
+include("/jagg/jagg.jag");
+include("/jagg/constants.jag");
 
 jagg.block("header/default", {
 
@@ -19,11 +21,15 @@ jagg.block("header/default", {
             loggedInUserName = userEmailAddress;
         }
         var tenantDomain = manager.getTenantDomain(true);
+        var docUrl = manager.getPropertyValue(DOCUMENTATION_REDIRECTION_URL);
+        var supportUrl = manager.getPropertyValue(SUPPORT_REDIRECTION_URL);
 
         return {
             "user": user,
             "loggedInUserName": loggedInUserName,
-            "tenantDomain": tenantDomain
+            "tenantDomain": tenantDomain,
+            "docUrl": docUrl,
+            "supportUrl": supportUrl
         };
     }
 });
