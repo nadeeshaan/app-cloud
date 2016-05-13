@@ -1,7 +1,7 @@
 //Select2 functionality initialization
-function initSelect2(data, element) {
+function initSelect2(data, element, prev) {
     var $select = $(element).select2({
-        placeholder: "Value, for db values type database:",
+        placeholder: "Value",
         data: data,
         multiple: true,
         dropdownAutoWidth: true,

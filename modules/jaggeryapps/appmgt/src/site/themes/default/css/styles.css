@@ -101,6 +101,21 @@ button[disabled]{
     opacity: 0.65;
     cursor: not-allowed;
 }
+.fw-cancel, .fw-edit, .fw-save {
+    cursor: pointer;
+}
+.edit-disable, .edit-disable * {
+    cursor: default;
+    pointer-events: none;
+}
+.edit-enable, .edit-enable * {
+    cursor: pointer;
+    pointer-events: auto;
+}
+.select2-disable, .select2-disable * {
+    background-color: #CACACA;
+    pointer-events: none;
+}
 
 .cu-btn {
     font-size: 1.1em;
@@ -199,6 +214,9 @@ button[disabled]{
     text-align: center;
     margin-right: -4px;
 }
+.add-env[disabled] {
+    cursor: default;
+}
 a.btn-action {
     color: #fff;
     text-decoration: none;
@@ -207,6 +225,7 @@ a.btn-action {
     text-transform: uppercase;
     height: 53px;
     padding: 9px 10px;
+    cursor: pointer;
 }
 /* cloud popover menu related styles */
 
@@ -1665,7 +1684,7 @@ a.btn-action {
     width: 350px;
 }
 
-/* This is to remove the arrow of select element in IE */
+/* This is to remove the arrow of select element in  */
 select::-ms-expand {	display: none; }
 select{
     -webkit-appearance: none;

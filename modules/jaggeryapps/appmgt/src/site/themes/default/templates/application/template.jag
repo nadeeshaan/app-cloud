@@ -1023,6 +1023,15 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
+                                <span>
+                                    If you want to access database details type database: in the value box.
+                                    <br>
+                                    You will be able to see list of options to select from (Database name, URL, Attached users).
+                                    <br>
+                                    Select one of the above options to add the values as environment variables.
+                                    <br>
+                                    <br>
+                                </span>
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
                                     Env Variables
                                     <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>

@@ -53,6 +53,13 @@ jagg.template("envs", function(inputs, outputs, jagg) {
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 msg-issues">
                 This allows you to set environment variables which is used in your application.
+                <br>
+                <br>
+                If you want to access database details type database: in the value box.
+                <br>
+                You will be able to see list of options to select from (Database name, URL, Attached users).
+                <br>
+                Select one of the above options to add the values as environment variables.
             </div>
         </div>
         <div class="env-list">
@@ -71,7 +78,7 @@ $(document).ready(function() {
         var parsedResult = JSON.parse(result);
         for (var i = 0; i < parsedResult.length; i++) {
             $(".env-list").prepend(
-                '<div class="form-inline  property-seperator custom-env-class-for-demo">' +
+                '<div class="form-inline custom-env-class-for-demo">' +
                 '<div class="form-group">' +
                 '<label class="sr-only" for="key">Key</label>' +
                 '<input type="text" class="form-control env-key" id="key" placeholder="Key" readonly value="' + parsedResult[i].key + '">' +
@@ -97,7 +104,7 @@ $(document).ready(function() {
         $(".add-env").click(function() {
             //Disable "Add Environment Variable" button
             var addEnv = document.getElementsByClassName('add-env')[0];
-            $(addEnv).off('click');
+            $(addEnv).css('pointer-events', 'none');
             $(addEnv).attr("title", "Save Environment Variable to Enable");
 
             $(".env-list").prepend(
@@ -128,17 +135,15 @@ $(document).ready(function() {
 
             //Disable Other environment variables "Edit" button
             var editElements = document.getElementsByClassName('fw-edit');
-
             for(var i=1; i < editElements.length; i++){
-                $(editElements[i]).prop('disabled', true);
-                //$(editElements[i]).css('color', '#333231');
+                $(editElements[i]).addClass("edit-disable");
             }
 
         });
 
         $(document).on('click', '.fw-edit', function() {
             var addEnv = document.getElementsByClassName('add-env')[0];
-            $(addEnv).off('click');
+            $(addEnv).css('pointer-events', 'none');
             $(addEnv).attr("title", "Save Environment Variable to Enable");
 
             var keyElem = $(this).parent().parent().parent().find('#key')[0];
@@ -168,7 +173,10 @@ $(document).ready(function() {
             var editElements = document.getElementsByClassName('edit-env');
             for(var i=0; i < editElements.length; i++){
                 if(!(parentElement === editElements[i])) {
-                    $(editElements[i]).css("pointer-events", "none");
+                    if(editElements[i].className.indexOf('edit-enable') >= 0){
+                        $(editElements[i]).removeClass("edit-enable");
+                    }
+                    $(editElements[i]).addClass("edit-disable");
                 }
             }
         });
@@ -176,6 +184,19 @@ $(document).ready(function() {
         $(document).on('click', '.fw-cancel', function() {
             var isNewRow = $(this).hasClass('cancel-new-entry');
             if (isNewRow) {
+                //Enable "Add Environment Variable" button
+                var addEnv = document.getElementsByClassName('add-env')[0];
+                $(addEnv).css('pointer-events', 'auto');
+
+                //Enable other environment variables "Edit" Button
+                var brotherElement = $(this).parent().parent().find('.edit-env')[0];
+                var editElements = document.getElementsByClassName('edit-env');
+                for(var i=0; i < editElements.length; i++){
+                    if(!(brotherElement === editElements[i])) {
+                        $(editElements[i]).addClass("edit-enable");
+                    }
+                }
+
                 $(this).parent().parent().parent().remove();
                 return;
             }
@@ -200,6 +221,10 @@ $(document).ready(function() {
             var updatedValue = $(this).parent().parent().parent().find('#value')[0].value;
 
             if (!updatedKey || !updatedValue) {
+                jagg.message({
+                    content: "Please fill necessary details before saving",
+                    type: 'info'
+                });
                 return;
             }
 
@@ -218,45 +243,32 @@ $(document).ready(function() {
 
             displayAppRedeployNotification();
 
+            //Enable "Add Environment Variable" button
             var addEnv = document.getElementsByClassName('add-env')[0];
-            $(addEnv).on("click", function() {
-                $(".env-list").prepend(
-                    '<div class="form-inline  property-seperator custom-env-class-for-demo">' +
-                    '<div class="form-group">' +
-                    '<label class="sr-only" for="key">Key</label>' +
-                    '<input type="text" class="form-control" id="key" placeholder="Key">' +
-                    '</div>' +
-                    '<div class="form-group">' +
-                    '<label class="sr-only" for="value">Value</label>' +
-                    '<select id="value" name="value" class="form-control select2"></select>' +
-                    '</div>' +
-                    '<div class="form-group edit-key-values">' +
-                    '<span class="fw-stack fw-lg">' +
-                    '<i class="fw fw-circle-outline fw-stack-2x fw-inverse"></i>' +
-                    '<i id="editIcon" class="fw  fw-edit fw-stack-1x fw-inverse" style="display: none"></i>' +
-                    '<i id="saveIcon" class="fw  fw-save fw-stack-1x save-new-entry fw-inverse"></i>' +
-                    '</span>' +
-                    '<span class="fw-stack fw-lg">' +
-                    '<i class="fw fw-circle-outline fw-stack-2x fw-inverse"></i>' +
-                    '<i class="fw fw-cancel fw-stack-1x cancel-new-entry fw-inverse"></i>' +
-                    '</span>' +
-                    '</div>' +
-                    '</div>');
-                $(addEnv).attr("title", "Add New Environment Variable");
-
-                var valueElem = $(this).parent().parent().parent().find('#value')[0];
-                initSelect2(null, valueElem);
-            });
+            $(addEnv).css('pointer-events', 'auto');
 
             //Enable Other environment variables "Edit" button
             var parentElement = $(this).parent().filter('.edit-env')[0];
             var editElements = document.getElementsByClassName('edit-env');
             for(var i=0; i < editElements.length; i++){
                 if(!(parentElement === editElements[i])) {
-                    $(editElements[i]).css("pointer-events", "auto");
+                    $(editElements[i]).removeClass("edit-disable");
                 }
             }
 
+            //Disable value entering box
+            var brotherElement = $(this).parent().parent().find('.edit-env')[0];
+            var editElements = document.getElementsByClassName('edit-env');
+            for(var i=0; i < editElements.length; i++){
+                if(!(brotherElement === editElements[i])) {
+                    $(editElements[i]).addClass("edit-enable");
+                }
+            }
+
+            var valueSelectionBox = $(this).parent().parent().parent().find('.select2-container')[0];
+            $(valueSelectionBox).addClass('select2-disable');
+
+            //Disable input selection inline field also
         });
     });
 
