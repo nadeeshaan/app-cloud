@@ -1,5 +1,10 @@
-//Select2 functionality initialization
+/**
+ * @param data - datasource for select2 initialization
+ * @param element - html element containing the select2 container
+ * @returns {*|jQuery}
+ */
 function initSelect2(data, element) {
+    /* Initialize select2 selection box for html element*/
     var $select = $(element).select2({
         placeholder: "Value",
         data: data,
@@ -21,6 +26,7 @@ function initSelect2(data, element) {
         }
     });
 
+    /* Display values based on selected value in dropdown */
     $select.on("select2:select", function(e) {
         var l = $select.select2('data');
         e.params.data.text = e.params.data.id;
@@ -42,6 +48,8 @@ function initSelect2(data, element) {
             var data = highlighted.data('data');
             var id = data.id;
             var display = data.name;
+
+            /* Display selected value in selection box */
             if (id != 0) {
                 $select.select2("val", id);
             } else {

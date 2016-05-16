@@ -127,6 +127,7 @@ $(document).ready(function() {
                 '</div>' +
                 '</div>');
 
+            //Initialize select2 container on newly added env variable
             var valueElem = $(this).parent().parent().parent().find('#value')[0];
             initSelect2(null, valueElem);
 
@@ -139,6 +140,7 @@ $(document).ready(function() {
         });
 
         $(document).on('click', '.fw-edit', function() {
+            //Disable "Add Environment Variable" Button
             var addEnv = document.getElementsByClassName('add-env')[0];
             $(addEnv).css('pointer-events', 'none');
             $(addEnv).attr("title", "Save Environment Variable to Enable");
@@ -158,11 +160,14 @@ $(document).ready(function() {
             var keyElem = $(this).parent().parent().parent().find('#key')[0];
             var valueElem = $(this).parent().parent().parent().find('#value')[0];
             keyElem.readOnly = false;
-
-            $(this).hide();
-            $(this).parent().find('#saveIcon').show();
             prevKey = keyElem.value;
             prevValue = valueElem.value;
+
+            //Hide edit icon and display save icon
+            $(this).hide();
+            $(this).parent().find('#saveIcon').show();
+
+            //Remove displayed value and reinitialize select2 container
             $(valueElem).children('option').remove();
             $(valueElem).prop('disabled', false);
             initSelect2(null, valueElem);
@@ -208,6 +213,7 @@ $(document).ready(function() {
             var updatedKey = $(this).parent().parent().parent().find('#key')[0].value;
             var updatedValue = $(this).parent().parent().parent().find('#value')[0].value;
 
+            //Validation when user submits empty keys and values
             if (!updatedKey || !updatedValue) {
                 jagg.message({
                     content: "Please fill necessary details before saving",
@@ -244,15 +250,16 @@ $(document).ready(function() {
                 }
             }
 
-            //Disable value entering box
-            var brotherElement = $(this).parent().parent().find('.edit-env')[0];
+            //Enable other env variables edit icons
+            var siblingElement = $(this).parent().parent().find('.edit-env')[0];
             var editElements = document.getElementsByClassName('edit-env');
             for(var i=0; i < editElements.length; i++){
-                if(!(brotherElement === editElements[i])) {
+                if(!(siblingElement === editElements[i])) {
                     $(editElements[i]).addClass("edit-enable");
                 }
             }
 
+            //Disable current env variables Value text-box
             var valueSelectionBox = $(this).parent().parent().parent().find('.select2-container')[0];
             $(valueSelectionBox).addClass('select2-disable');
             var selectionRenderedBox = $(this).parent().parent().parent().find('.select2-selection__rendered')[0];

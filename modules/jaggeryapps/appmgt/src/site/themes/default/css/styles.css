@@ -104,6 +104,8 @@ button[disabled]{
 .fw-cancel, .fw-edit, .fw-save {
     cursor: pointer;
 }
+
+/* Disable and Enable edit icon */
 .edit-disable, .edit-disable * {
     cursor: default;
     pointer-events: none;
@@ -112,6 +114,8 @@ button[disabled]{
     cursor: pointer;
     pointer-events: auto;
 }
+
+/* Disable select2 selection box */
 .select2-disable, .select2-disable * {
     background-color: #CACACA;
     pointer-events: none;
@@ -1680,13 +1684,18 @@ a.btn-action {
     border-radius: 0px;
 }
 
+/* Set width of select2 selection box */
 .form-control[disabled].select2{
     width: 350px;
 }
 
-/* This is to remove the arrow of select element in  */
-select::-ms-expand {	display: none; }
-select{
+/* Remove the arrow of select2 element */
+.select2::-ms-expand {
+    display: none;
+}
+
+.select2 {
+    -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
 }
@@ -1749,7 +1758,7 @@ select{
     color: #cecece;
     word-break: break-all;
     word-wrap: break-word;
-    border: 1px solid #444;    
+    border: 1px solid #444;
     background-color:#333;
     border-radius:0;
     max-height: 340px;
@@ -1821,7 +1830,7 @@ select{
 
 }
 @media (max-width: 992px) {
- .version-url{
+    .version-url{
         width:45.1%;
     }
     .block-general h3, .block-team h3, .block-database h3{
@@ -1883,13 +1892,13 @@ select{
         width:100%;
     }
     .version-number{
-      margin-bottom:1px;
+        margin-bottom:1px;
     }
-     .version-number,.version-number button,.version-number .dropdown-menu{
+    .version-number,.version-number button,.version-number .dropdown-menu{
         width:100%;
     }
     .btn-launch-app{
-       width:60%;
+        width:60%;
     }
     .btn-edit-code{
         margin-left:0px;
@@ -1981,19 +1990,19 @@ select{
     border-top-color:#464646;
 }
 #password_strength_wrap {
-        border: 1px solid #D5CEC8;
-        display: none;
-        float: left;
-        padding: 10px;
-        position: relative;
-        max-width: 320px;
+    border: 1px solid #D5CEC8;
+    display: none;
+    float: left;
+    padding: 10px;
+    position: relative;
+    max-width: 320px;
 }
 #password_strength_wrap:before, #password_strength_wrap:after{
-        content: ' ';
-        height: 0;
-        position: absolute;
-        width: 0;
-        border: 10px solid transparent; /* arrow size */
+    content: ' ';
+    height: 0;
+    position: absolute;
+    width: 0;
+    border: 10px solid transparent; /* arrow size */
 }
 #password_strength_wrap:before{
     border-bottom: 7px solid rgba(0, 0, 0, 0);
@@ -2016,15 +2025,15 @@ select{
     top: 11px;
 }
 #pswd_info ul {
-        list-style-type: none;
-        margin: 5px 0 0;
-        padding: 0;
+    list-style-type: none;
+    margin: 5px 0 0;
+    padding: 0;
 }
 #pswd_info .status_icon{
     margin-right:5px;
 }
 #pswd_info ul li.valid {
-        color: #27ae60;
+    color: #27ae60;
 }
 #passwordStrength {
     display: block;
@@ -2565,22 +2574,22 @@ th.hide-column-data, td.hide-column-data {
 }
 
 .modal {
-  text-align: center;
+    text-align: center;
 }
 
 @media screen and (min-width: 768px) {
-  .modal:before {
-    display: inline-block;
-    vertical-align: middle;
-    content: " ";
-    height: 100%;
-  }
+    .modal:before {
+        display: inline-block;
+        vertical-align: middle;
+        content: " ";
+        height: 100%;
+    }
 }
 
 .modal-dialog {
-  display: inline-block;
-  text-align: left;
-  vertical-align: middle;
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
 }
 
 .custom-env-class-for-demo .form-group {
