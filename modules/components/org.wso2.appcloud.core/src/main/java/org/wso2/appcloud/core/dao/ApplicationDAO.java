@@ -1562,7 +1562,8 @@ public class ApplicationDAO {
 		PreparedStatement preparedStatement;
 		try {
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_WHITE_LIST_APPLICATION_VERSION);
-			preparedStatement.setString(1, versionHashId);
+			preparedStatement.setBoolean(1, true);
+			preparedStatement.setString(2, versionHashId);
 			preparedStatement.execute();
 		} catch (SQLException e) {
 			String msg = "White listing failed for version hash : " + versionHashId;

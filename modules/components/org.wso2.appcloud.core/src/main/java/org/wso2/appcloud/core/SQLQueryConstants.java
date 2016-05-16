@@ -214,8 +214,8 @@ public class SQLQueryConstants {
     public static final String  UPDATE_APPLICATION_DEFAULT_VERSION = "UPDATE AC_APPLICATION " +
             "SET default_version=? WHERE hash_id=?";
 
-	public static final String  UPDATE_WHITE_LIST_APPLICATION_VERSION = "UPDATE AC_VERSION" +
-	                                                                    "SET is_white_listed=true WHERE hash_id=?";
+	public static final String  UPDATE_WHITE_LIST_APPLICATION_VERSION = "UPDATE AC_VERSION " +
+	                                                                    "SET is_white_listed=? WHERE hash_id=?";
 
 
 
