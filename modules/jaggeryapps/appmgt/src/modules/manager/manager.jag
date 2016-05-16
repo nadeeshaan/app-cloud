@@ -118,6 +118,11 @@ var getTenantId = function (fromCarbonContext) {
     return tenantManager.getTenantId(tenantDomain);
 };
 
+var getTenantIdForGivenTenantDomain = function (tenantDomain) {
+    var tenantManager = multitenancy.getTenantManager();
+    return tenantManager.getTenantId(tenantDomain);
+};
+
 var getTenantDomainById = function (tenantId) {
     var carbon = require('carbon');
     var tenantManager = multitenancy.getTenantManager();

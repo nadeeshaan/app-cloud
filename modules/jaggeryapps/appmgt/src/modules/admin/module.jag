@@ -20,6 +20,12 @@
 jagg.module("admin", {
     stopIdleApplicationsByRunningTimePeriod:function () {
         return jagg.require(jagg.getModulesDir() + "admin/admin.jag").stopIdleApplicationsByRunningTimePeriod.apply(this, arguments);
+    },
+    whiteListApplicationVersion:function () {
+        return jagg.require(jagg.getModulesDir() + "admin/admin.jag").whiteListApplicationVersion.apply(this, arguments);
+    },
+    whiteListTenant:function () {
+        return jagg.require(jagg.getModulesDir() + "admin/admin.jag").whiteListTenant.apply(this, arguments);
     }
 });
 %>

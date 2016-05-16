@@ -1558,4 +1558,32 @@ public class ApplicationDAO {
 		return maxAppCount;
 	}
 
+	public void whiteListApplicationVersion(Connection dbConnection, String versionHashId) throws AppCloudException {
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_WHITE_LIST_APPLICATION_VERSION);
+			preparedStatement.setBoolean(1, true);
+			preparedStatement.setString(2, versionHashId);
+			preparedStatement.execute();
+		} catch (SQLException e) {
+			String msg = "White listing failed for version hash : " + versionHashId;
+			log.error(msg, e);
+			throw new AppCloudException(msg, e);
+		}
+	}
+
+	public void whiteListTenant(Connection dbConnection, int tenantId, int maxAppCount) throws AppCloudException {
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_WHITE_LISTED_TENANT);
+			preparedStatement.setInt(1, tenantId);
+			preparedStatement.setInt(2, maxAppCount);
+			preparedStatement.execute();
+		} catch (SQLException e) {
+			String msg = "White listing failed for tenant id : " + tenantId;
+			log.error(msg, e);
+			throw new AppCloudException(msg, e);
+		}
+	}
+
 }
