@@ -1,5 +1,5 @@
 //Select2 functionality initialization
-function initSelect2(data, element, prev) {
+function initSelect2(data, element) {
     var $select = $(element).select2({
         placeholder: "Value",
         data: data,
@@ -18,7 +18,7 @@ function initSelect2(data, element, prev) {
                     text: term
                 };
             }
-        },
+        }
     });
 
     $select.on("select2:select", function(e) {
@@ -44,21 +44,27 @@ function initSelect2(data, element, prev) {
             var display = data.name;
             if (id != 0) {
                 $select.select2("val", id);
+            } else {
+                $select.select2("val", $(this).val());
             }
         }
     });
 
     $(".select2-search__field").keyup(function(e) {
-        if ($(this).val() == "database:") {
-            var dbs;
-            jagg.post("../blocks/database/list/ajax/list.jag", {
-                action: "getAllDatabasesInfo"
-            }, function(result) {
-                dbs = JSON.parse(result);
-                $select.trigger('change');
-                $select = initSelect2(dbs, element);
-                $select.select2('open');
-            });
+        //Identify if : character is pressed by checking for keycode 186 (;) and shift key. Then check if the required
+        //string (database:) is typed
+        if(event.keyCode == 186 && event.shiftKey){
+            if ($(this).val() == "database:") {
+                var dbs;
+                jagg.post("../blocks/database/list/ajax/list.jag", {
+                    action: "getAllDatabasesInfo"
+                }, function(result) {
+                    dbs = JSON.parse(result);
+                    $select.trigger('change');
+                    $select = initSelect2(dbs, element);
+                    $select.select2('open');
+                });
+            }
         }
     });
 

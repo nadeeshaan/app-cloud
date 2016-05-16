@@ -52,14 +52,11 @@ jagg.template("envs", function(inputs, outputs, jagg) {
 
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 msg-issues">
-                This allows you to set environment variables which is used in your application.
+                This allows you to set environment variables that are used in your application. Type in the <b>value</b> or <b>database:</b> tag in the Value text-box.
                 <br>
-                <br>
-                If you want to access database details type database: in the value box.
-                <br>
-                You will be able to see list of options to select from (Database name, URL, Attached users).
-                <br>
-                Select one of the above options to add the values as environment variables.
+                By using <b>database:</b> you can add database related environment variables. The list of available databases will appear. Select a database of your choice. Thereafter,
+                select the type of environment variable (i.e., <b>Database Name</b>, <b>URL</b>, <b>Attached Users</b>) that you wish to add to get
+                specific details of the environment variable, which corresponds to the database that you selected (e.g., the exact URL of the database).
             </div>
         </div>
         <div class="env-list">
@@ -146,28 +143,6 @@ $(document).ready(function() {
             $(addEnv).css('pointer-events', 'none');
             $(addEnv).attr("title", "Save Environment Variable to Enable");
 
-            var keyElem = $(this).parent().parent().parent().find('#key')[0];
-            var valueElem = $(this).parent().parent().parent().find('#value')[0];
-
-            keyElem.readOnly = false;
-            valueElem.readOnly = false;
-
-            $(this).hide();
-            $(this).parent().find('#saveIcon').show();
-            prevKey = keyElem.value;
-            prevValue = valueElem.value;
-
-            $(valueElem).children('option').remove();
-            $(valueElem).prop('disabled', false);
-
-            var dbs;
-            jagg.post("../blocks/database/list/ajax/list.jag", {
-                action: "getAllDatabasesInfo"
-            }, function(result) {
-                dbs = JSON.parse(result);
-                initSelect2(null, valueElem);
-            });
-
             //Disable Other environment variables "Edit" button
             var parentElement = $(this).parent().filter('.edit-env')[0];
             var editElements = document.getElementsByClassName('edit-env');
@@ -179,6 +154,19 @@ $(document).ready(function() {
                     $(editElements[i]).addClass("edit-disable");
                 }
             }
+
+            var keyElem = $(this).parent().parent().parent().find('#key')[0];
+            var valueElem = $(this).parent().parent().parent().find('#value')[0];
+            keyElem.readOnly = false;
+
+            $(this).hide();
+            $(this).parent().find('#saveIcon').show();
+            prevKey = keyElem.value;
+            prevValue = valueElem.value;
+            $(valueElem).children('option').remove();
+            $(valueElem).prop('disabled', false);
+            initSelect2(null, valueElem);
+
         });
 
         $(document).on('click', '.fw-cancel', function() {
@@ -267,8 +255,13 @@ $(document).ready(function() {
 
             var valueSelectionBox = $(this).parent().parent().parent().find('.select2-container')[0];
             $(valueSelectionBox).addClass('select2-disable');
+            var selectionRenderedBox = $(this).parent().parent().parent().find('.select2-selection__rendered')[0];
+            $(selectionRenderedBox).css('height', "100%");
+            var inlineBox = $(this).parent().parent().parent().find('.select2-search--inline')[0];
+            $(inlineBox).css('display', "none");
+            var rootParent = $(this).parent().parent().parent()[0];
+            $(rootParent).removeClass('property-seperator');
 
-            //Disable input selection inline field also
         });
     });
 

@@ -284,19 +284,19 @@ var getAllDatabasesInfo = function () {
             singleDatabaseObj.isNextLevel = true;
             singleDatabaseObj.data = [];
             var dbName = {}
-            dbName.text = "Database Name";
+            dbName.text = "Name";
             dbName.id = singleDatabaseInfo.dbName;
             dbName.isNextLevel = false;
             singleDatabaseObj.data.push(dbName);
             url = {};
-            url.text = "url";
+            url.text = "URL";
             url.id = singleDatabaseInfo.url;
             url.isNextLevel = false;
             singleDatabaseObj.data.push(url);
             var attachedUsersArray = getAttachedUsers(singleDatabaseInfo.dbName);
             var users = {};
             users.id = "users";
-            users.text = "users";
+            users.text = "Users";
             users.isNextLevel = true;
             users.data = [];
             for (var k in attachedUsersArray) {
