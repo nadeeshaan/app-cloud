@@ -368,6 +368,22 @@ var log = new Log();
             response.status = 500;
             response.content = msg;
         }
+    } else if (action == "isUploadUrlValid") {
+
+        var appTypeName = request.getParameter("appTypeName");
+        var managerModule = jagg.module("manager");
+        var expectedExtenstion = managerModule.getPropertyValue(appTypeName + "_app_extension");
+        var url = request.getParameter("url");
+        var currentExtension = stringify(url.split(/[. ]+/).pop());
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.send();
+        if (expectedExtenstion.equals(currentExtension) && xhr.status == 200) {
+            print(true);
+        } else {
+            print(false);
+        }
     } else {
         throw new Error("No action specified for: " + action);
     }
