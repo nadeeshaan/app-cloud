@@ -47,6 +47,9 @@ jagg.module("manager", {
 	},
 	getUserEmailAddress: function () {
 		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getUserEmailAddress.apply(this, arguments);
+	},
+	getTenantIdForGivenTenantDomain: function () {
+		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getTenantIdForGivenTenantDomain.apply(this, arguments);
 	}
 });
 %>

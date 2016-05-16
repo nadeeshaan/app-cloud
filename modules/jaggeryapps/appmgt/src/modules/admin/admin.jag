@@ -24,6 +24,7 @@ var log = new Log("module/admin/admin.jag");
 var carbon = require('carbon');
 var context = carbon.multitenancy.getPrivilegedCarbonContext();
 var ApplicationManager = Packages.org.wso2.appcloud.core.ApplicationManager;
+var Util = Packages.org.wso2.appcloud.core.Util;
 var applicationModule = jagg.module("application");
 var managerModule = jagg.module("manager");
 
@@ -60,5 +61,21 @@ var stopIdleApplicationByRunningTimePeriod = function (versionHashId, tenantId) 
     }
 };
 
+
+var whiteListApplicationVersion = function (applicationName, applicationRevision, tenantDomain) {
+    var versionHashId = getVersionHashId(applicationName, applicationRevision, tenantDomain);
+    ApplicationManager.whiteListApplicationVersion(versionHashId);
+};
+
+var whiteListTenant = function (tenantDomain, maxAppCount) {
+    var tenantId = modManager.getTenantIdForGivenTenantDomain(tenantDomain);
+    ApplicationManager.whiteListTenant(tenantId, maxAppCount);
+};
+
+var getVersionHashId = function(applicationName, versionName, tenantDomain){
+    var tenantId = modManager.getTenantIdForGivenTenantDomain(tenantDomain);
+    var versionHashId = Util.getVersionHashId(applicationName, versionName, tenantId)
+    return versionHashId;
+}
 
 %>

@@ -667,4 +667,30 @@ public class ApplicationManager {
         }
 
     }
+
+	public static void whiteListApplicationVersion(String versionHashId) throws AppCloudException {
+		ApplicationDAO applicationDAO = new ApplicationDAO();
+		Connection dbConnection = DBUtil.getDBConnection();
+		try {
+			applicationDAO.whiteListApplicationVersion(dbConnection, versionHashId);
+		} catch (AppCloudException e){
+			String msg = "Error whitelisting application version hash id : " + versionHashId;
+			throw new AppCloudException(msg, e);
+		} finally {
+			DBUtil.closeConnection(dbConnection);
+		}
+	}
+
+	public static void whiteListTenant(int tenantId, int maxAppCount) throws AppCloudException {
+		ApplicationDAO applicationDAO = new ApplicationDAO();
+		Connection dbConnection = DBUtil.getDBConnection();
+		try {
+			applicationDAO.whiteListTenant(dbConnection, tenantId, maxAppCount);
+		} catch (AppCloudException e){
+			String msg = "Error whitelisting tenant for tenant id : " + tenantId;
+			throw new AppCloudException(msg, e);
+		} finally {
+			DBUtil.closeConnection(dbConnection);
+		}
+	}
 }

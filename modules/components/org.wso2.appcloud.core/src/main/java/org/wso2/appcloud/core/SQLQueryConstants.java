@@ -91,6 +91,9 @@ public class SQLQueryConstants {
             "INSERT INTO AC_CONTAINER_SERVICE_PROXY (name, protocol, port, backend_port, container_id, tenant_id, host_url) " +
                     "values (?, ?, ?, ?, ?, ?, ?)";
 
+	public static final String ADD_WHITE_LISTED_TENANT =
+			"INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count) values (?, ?)";
+
 
 
     /*Select Queries*/
@@ -210,6 +213,9 @@ public class SQLQueryConstants {
 
     public static final String  UPDATE_APPLICATION_DEFAULT_VERSION = "UPDATE AC_APPLICATION " +
             "SET default_version=? WHERE hash_id=?";
+
+	public static final String  UPDATE_WHITE_LIST_APPLICATION_VERSION = "UPDATE AC_VERSION" +
+	                                                                    "SET is_white_listed=true WHERE hash_id=?";
 
 
 

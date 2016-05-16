@@ -43,8 +43,36 @@ var log = new Log('site/blocks/admin/admin.jag');
             response.message = "Some of idle applications could not be stopped.";
             print(response);
         }
+    } else if (action == "whiteListApplicationVersion") {
+        var applicationName = request.getParameter("applicationName");
+        var applicationRevision = request.getParameter("applicationRevision");
+        var tenantDomain = request.getParameter("tenantDomain");
+        try {
+            adminModule.whiteListApplicationVersion(applicationName, applicationRevision, tenantDomain);
 
-    } else {
+            response.status = 200;
+            response.message = "White listed the given application version.";
+            print(response);
+        } catch (e) {
+            response.status = 400;
+            response.message = "White listing application version failed.";
+            print(response);
+        }
+    } else if (action == "whiteListTenant") {
+        var tenantDomain = request.getParameter("tenantDomain");
+        var maxAppCount = request.getParameter("maxAppCount");
+        try {
+            adminModule.whiteListTenant(tenantDomain, maxAppCount);
+
+            response.status = 200;
+            response.message = "White listed the given tenant.";
+            print(response);
+        } catch (e) {
+            response.status = 400;
+            response.message = "White listing tenant failed.";
+            print(response);
+        }
+    } else  {
         throw new Error("No action specified for: " + action);
     }
 }());
