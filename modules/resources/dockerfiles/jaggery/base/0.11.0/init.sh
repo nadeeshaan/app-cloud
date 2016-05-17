@@ -24,4 +24,4 @@ else
 fi
 
 
-/opt/wso2as-5.3.0/bin/wso2server.sh -Dprofile=jaggery
+/opt/wso2as-5.3.0/bin/wso2server.sh
