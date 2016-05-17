@@ -48,8 +48,8 @@ RUN apt-get update && apt-get install -y pwgen && \
     chmod +x /init.sh
 
 COPY catalina.properties /opt/tomcat/conf/
-COPY wso2as.xml /op/tomcat/conf/wso2/
-COPY lib/ /opt/tomcat/lib
+COPY wso2as.xml /opt/tomcat/conf/wso2/
+COPY lib/ /opt/tomcat/lib/
 
 EXPOSE 8080 8443
 
