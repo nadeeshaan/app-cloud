@@ -117,7 +117,8 @@ function drawInitialEnvTagPane(addBlock, key, value){
         '</div>\n'
     );
 
-    initSelect2(null);
+    var valueElem = document.getElementById("value");
+    initSelect2(null, valueElem, "");
 }
 function drawEnvTagPane(panelBody, key, value){
     panelBody.append(

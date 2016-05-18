@@ -112,7 +112,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
             }
 
             //Set select2 container
-            initSelect2(null);
+            var valueElem = document.getElementById("value");
+            initSelect2(null, valueElem, "");
 
             if (!isNewVersion) {
                 if (applicationCount >= maxApplications) {
@@ -1029,6 +1030,12 @@ jagg.template("application", function (inputs, outputs, jagg) {
                             </h4>
                         </div>
                         <div id="collapseOne" class="panel-collapse collapse in">
+                            <div class="info-block">
+                                Type in the <b>value</b> or <b>database:</b> tag in the Value text-box.
+                                By using <b>database:</b> you can add database related env variables. The list of available databases will appear. Select a database of your choice. Thereafter,
+                                select the type of env variable (i.e., <b>Database Name</b>, <b>URL</b>, <b>Attached Users</b>) that you wish to add to get
+                                specific details of the env variable, which corresponds to the database that you selected (e.g., the exact URL of the database).
+                            </div>
                             <div class="panel-body" id="env-pane">
                                 <div class="form-inline property-seperator">
                                     <div class="form-group">

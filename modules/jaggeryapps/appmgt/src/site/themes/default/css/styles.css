@@ -101,6 +101,25 @@ button[disabled]{
     opacity: 0.65;
     cursor: not-allowed;
 }
+.fw-cancel, .fw-edit, .fw-save {
+    cursor: pointer;
+}
+
+/* Disable and Enable edit icon */
+.edit-disable, .edit-disable * {
+    cursor: default;
+    pointer-events: none;
+}
+.edit-enable, .edit-enable * {
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+/* Disable select2 selection box */
+.select2-disable, .select2-disable * {
+    background-color: #CACACA;
+    pointer-events: none;
+}
 
 .cu-btn {
     font-size: 1.1em;
@@ -199,6 +218,9 @@ button[disabled]{
     text-align: center;
     margin-right: -4px;
 }
+.add-env[disabled] {
+    cursor: default;
+}
 a.btn-action {
     color: #fff;
     text-decoration: none;
@@ -207,6 +229,7 @@ a.btn-action {
     text-transform: uppercase;
     height: 53px;
     padding: 9px 10px;
+    cursor: pointer;
 }
 /* cloud popover menu related styles */
 
@@ -1660,6 +1683,27 @@ a.btn-action {
     -moz-border-radius: 0px;
     border-radius: 0px;
 }
+
+/* Set width of select2 selection box */
+.form-control[disabled].select2{
+    width: 350px;
+}
+
+/* Remove the arrow of select2 element */
+.select2::-ms-expand {
+    display: none;
+}
+
+.select2 {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.form-control[disabled].element-value-holder{
+    width: 350px;
+}
+
 /* custom URL section */
 .form-section{
     margin-top: 3em;
@@ -1714,7 +1758,7 @@ a.btn-action {
     color: #cecece;
     word-break: break-all;
     word-wrap: break-word;
-    border: 1px solid #444;    
+    border: 1px solid #444;
     background-color:#333;
     border-radius:0;
     max-height: 340px;
@@ -1786,7 +1830,7 @@ a.btn-action {
 
 }
 @media (max-width: 992px) {
- .version-url{
+    .version-url{
         width:45.1%;
     }
     .block-general h3, .block-team h3, .block-database h3{
@@ -1848,13 +1892,13 @@ a.btn-action {
         width:100%;
     }
     .version-number{
-      margin-bottom:1px;
+        margin-bottom:1px;
     }
-     .version-number,.version-number button,.version-number .dropdown-menu{
+    .version-number,.version-number button,.version-number .dropdown-menu{
         width:100%;
     }
     .btn-launch-app{
-       width:60%;
+        width:60%;
     }
     .btn-edit-code{
         margin-left:0px;
@@ -1946,19 +1990,19 @@ a.btn-action {
     border-top-color:#464646;
 }
 #password_strength_wrap {
-        border: 1px solid #D5CEC8;
-        display: none;
-        float: left;
-        padding: 10px;
-        position: relative;
-        max-width: 320px;
+    border: 1px solid #D5CEC8;
+    display: none;
+    float: left;
+    padding: 10px;
+    position: relative;
+    max-width: 320px;
 }
 #password_strength_wrap:before, #password_strength_wrap:after{
-        content: ' ';
-        height: 0;
-        position: absolute;
-        width: 0;
-        border: 10px solid transparent; /* arrow size */
+    content: ' ';
+    height: 0;
+    position: absolute;
+    width: 0;
+    border: 10px solid transparent; /* arrow size */
 }
 #password_strength_wrap:before{
     border-bottom: 7px solid rgba(0, 0, 0, 0);
@@ -1981,15 +2025,15 @@ a.btn-action {
     top: 11px;
 }
 #pswd_info ul {
-        list-style-type: none;
-        margin: 5px 0 0;
-        padding: 0;
+    list-style-type: none;
+    margin: 5px 0 0;
+    padding: 0;
 }
 #pswd_info .status_icon{
     margin-right:5px;
 }
 #pswd_info ul li.valid {
-        color: #27ae60;
+    color: #27ae60;
 }
 #passwordStrength {
     display: block;
@@ -2530,22 +2574,22 @@ th.hide-column-data, td.hide-column-data {
 }
 
 .modal {
-  text-align: center;
+    text-align: center;
 }
 
 @media screen and (min-width: 768px) {
-  .modal:before {
-    display: inline-block;
-    vertical-align: middle;
-    content: " ";
-    height: 100%;
-  }
+    .modal:before {
+        display: inline-block;
+        vertical-align: middle;
+        content: " ";
+        height: 100%;
+    }
 }
 
 .modal-dialog {
-  display: inline-block;
-  text-align: left;
-  vertical-align: middle;
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
 }
 
 .custom-env-class-for-demo .form-group {
@@ -2555,6 +2599,7 @@ th.hide-column-data, td.hide-column-data {
     width: 350px;
 }
 .custom-env-class-for-demo .select{
+    border-radius: 0px;
     width: 350px;
     height: 34px;
 }
@@ -2749,4 +2794,16 @@ body.top-notification-active .action-bar {
 ul#appVersionList {
     max-height: 150px;
     overflow-y: auto;
+}
+
+.info-block {
+    color: #10171d;
+    font-size: 12px;
+    padding: 5px;
+    text-align: justify;
+    background: rgb(246,248,249); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(246,248,249,1) 0%, rgba(229,235,238,1) 15%, rgba(215,222,227,1) 78%, rgba(245,247,249,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, rgba(246,248,249,1) 0%,rgba(229,235,238,1) 15%,rgba(215,222,227,1) 78%,rgba(245,247,249,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, rgba(246,248,249,1) 0%,rgba(229,235,238,1) 15%,rgba(215,222,227,1) 78%,rgba(245,247,249,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#f5f7f9',GradientType=0 );
 }
