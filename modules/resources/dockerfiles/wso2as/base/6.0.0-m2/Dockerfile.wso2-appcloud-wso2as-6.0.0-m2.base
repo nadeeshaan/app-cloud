@@ -50,6 +50,7 @@ RUN apt-get update && apt-get install -y pwgen && \
 COPY catalina.properties /opt/tomcat/conf/
 COPY wso2as.xml /opt/tomcat/conf/wso2/
 COPY lib/ /opt/tomcat/lib/
+COPY client-truststore.jks /opt/tomcat/conf/wso2/
 
 EXPOSE 8080 8443
 
