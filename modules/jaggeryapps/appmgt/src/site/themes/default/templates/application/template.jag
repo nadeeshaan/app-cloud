@@ -113,7 +113,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
 
             //Set select2 container
             var valueElem = document.getElementById("value");
-            initSelect2(null, valueElem);
+            initSelect2(null, valueElem, "");
 
             if (!isNewVersion) {
                 if (applicationCount >= maxApplications) {

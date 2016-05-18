@@ -78,11 +78,11 @@ $(document).ready(function() {
                 '<div class="form-inline custom-env-class-for-demo">' +
                 '<div class="form-group">' +
                 '<label class="sr-only" for="key">Key</label>' +
-                '<input type="text" class="form-control env-key" id="key" placeholder="Key" readonly value="' + parsedResult[i].key + '">' +
+                '<input type="text" class="form-control env-key element-key-holder" placeholder="Key" readonly value="' + parsedResult[i].key + '">' +
                 '</div>' +
                 '<div class="form-group">' +
                 '<label class="sr-only" for="value">Value</label>' +
-                '<select id="value" name="value" class="form-control select2" disabled><option>' + parsedResult[i].value + '</option></select>' +
+                '<select name="value" class="form-control select2 element-value-holder" disabled><option>' + parsedResult[i].value + '</option></select>' +
                 '</div>' +
                 '<div class="form-group edit-key-values">' +
                 '<span class="fw-stack fw-lg edit-env">' +
@@ -100,19 +100,18 @@ $(document).ready(function() {
 
         $(".add-env").click(function() {
             //Disable "Add Environment Variable" button
-            var addEnv = document.getElementsByClassName('add-env')[0];
-            $(addEnv).css('pointer-events', 'none');
-            $(addEnv).attr("title", "Save Environment Variable to Enable");
+            $(this).css('pointer-events', 'none');
+            $(this).attr("title", "Save Environment Variable to Enable");
 
             $(".env-list").prepend(
                 '<div class="form-inline  property-seperator custom-env-class-for-demo">' +
                 '<div class="form-group">' +
                 '<label class="sr-only" for="key">Key</label>' +
-                '<input type="text" class="form-control" id="key" placeholder="Key">' +
+                '<input type="text" class="form-control element-key-holder" placeholder="Key">' +
                 '</div>' +
                 '<div class="form-group">' +
                 '<label class="sr-only" for="value">Value</label>' +
-                '<select id="value" name="value" class="form-control select2"></select>' +
+                '<select name="value" class="form-control select2 element-value-holder"></select>' +
                 '</div>' +
                 '<div class="form-group edit-key-values">' +
                 '<span class="fw-stack fw-lg edit-env">' +
@@ -128,37 +127,37 @@ $(document).ready(function() {
                 '</div>');
 
             //Initialize select2 container on newly added env variable
-            var valueElem = $(this).parent().parent().parent().find('#value')[0];
-            initSelect2(null, valueElem);
+            var valueElem = $(this).parent().parent().parent().find('.element-value-holder')[0];
+            initSelect2(null, valueElem, "");
 
             //Disable Other environment variables "Edit" button
-            var editElements = document.getElementsByClassName('fw-edit');
-            for(var i=1; i < editElements.length; i++){
-                $(editElements[i]).addClass("edit-disable");
-            }
+            $(".fw-edit").each( function(i) {
+                if (i!=0) {
+                    $(this).addClass("edit-disable");
+                }
+            });
 
         });
 
         $(document).on('click', '.fw-edit', function() {
             //Disable "Add Environment Variable" Button
-            var addEnv = document.getElementsByClassName('add-env')[0];
-            $(addEnv).css('pointer-events', 'none');
-            $(addEnv).attr("title", "Save Environment Variable to Enable");
+            $(".add-env").css('pointer-events', 'none');
+            $(".add-env").attr("title", "Save Environment Variable to Enable");
 
             //Disable Other environment variables "Edit" button
             var parentElement = $(this).parent().filter('.edit-env')[0];
-            var editElements = document.getElementsByClassName('edit-env');
-            for(var i=0; i < editElements.length; i++){
-                if(!(parentElement === editElements[i])) {
-                    if(editElements[i].className.indexOf('edit-enable') >= 0){
-                        $(editElements[i]).removeClass("edit-enable");
+            $('.edit-env').each(function() {
+                var currentElement = $(this).get(0);
+                if(currentElement !== parentElement) {
+                    if( $(this).hasClass('edit-enable')){
+                        $(this).removeClass('edit-enable');
                     }
-                    $(editElements[i]).addClass("edit-disable");
+                    $(this).addClass('edit-disable');
                 }
-            }
+            });
 
-            var keyElem = $(this).parent().parent().parent().find('#key')[0];
-            var valueElem = $(this).parent().parent().parent().find('#value')[0];
+            var keyElem = $(this).parent().parent().parent().find('.element-key-holder')[0];
+            var valueElem = $(this).parent().parent().parent().find('.element-value-holder')[0];
             keyElem.readOnly = false;
             prevKey = keyElem.value;
             prevValue = valueElem.value;
@@ -170,7 +169,7 @@ $(document).ready(function() {
             //Remove displayed value and reinitialize select2 container
             $(valueElem).children('option').remove();
             $(valueElem).prop('disabled', false);
-            initSelect2(null, valueElem);
+            initSelect2(null, valueElem, "");
 
         });
 
@@ -178,24 +177,24 @@ $(document).ready(function() {
             var isNewRow = $(this).hasClass('cancel-new-entry');
             if (isNewRow) {
                 //Enable "Add Environment Variable" button
-                var addEnv = document.getElementsByClassName('add-env')[0];
-                $(addEnv).css('pointer-events', 'auto');
+                $(".add-env").css('pointer-events', 'auto');
+                $(".add-env").attr("title", "Add Environment Variable");
 
                 //Enable other environment variables "Edit" Button
-                var brotherElement = $(this).parent().parent().find('.edit-env')[0];
-                var editElements = document.getElementsByClassName('edit-env');
-                for(var i=0; i < editElements.length; i++){
-                    if(!(brotherElement === editElements[i])) {
-                        $(editElements[i]).addClass("edit-enable");
+                var siblingElement = $(this).parent().parent().find('.edit-env')[0];
+                $('.edit-env').each(function() {
+                    var currentElement = $(this).get(0);
+                    if(currentElement !== siblingElement) {
+                        $(this).addClass('edit-enable');
                     }
-                }
+                });
 
                 $(this).parent().parent().parent().remove();
                 return;
             }
             var tr = $(this).parent().parent().parent();
-            var key = $(this).parent().parent().parent().find('#key')[0].value;
-            var value = $(this).parent().parent().parent().find('#value')[0].value;
+            var key = $(this).parent().parent().parent().find('.element-key-holder')[0].value;
+            var value = $(this).parent().parent().parent().find('.element-value-holder')[0].value;
 
             jagg.popMessage({
                 type: 'confirm',
@@ -210,8 +209,8 @@ $(document).ready(function() {
         });
 
         $(document).on('click', '.fw-save', function() {
-            var updatedKey = $(this).parent().parent().parent().find('#key')[0].value;
-            var updatedValue = $(this).parent().parent().parent().find('#value')[0].value;
+            var updatedKey = $(this).parent().parent().parent().find('.element-key-holder')[0].value;
+            var updatedValue = $(this).parent().parent().parent().find('.element-value-holder')[0].value;
 
             //Validation when user submits empty keys and values
             if (!updatedKey || !updatedValue) {
@@ -232,32 +231,23 @@ $(document).ready(function() {
             }
             $(this).parent().find('#saveIcon').hide();
             $(this).parent().find('#editIcon').show();
-            $(this).parent().parent().parent().find('#key')[0].readOnly = true;
-            $(this).parent().parent().parent().find('#value')[0].readOnly = true;
+            $(this).parent().parent().parent().find('.element-key-holder')[0].readOnly = true;
+            $(this).parent().parent().parent().find('.element-value-holder')[0].readOnly = true;
 
             displayAppRedeployNotification();
 
             //Enable "Add Environment Variable" button
-            var addEnv = document.getElementsByClassName('add-env')[0];
-            $(addEnv).css('pointer-events', 'auto');
+            $(".add-env").css('pointer-events', 'auto');
+            $(".add-env").attr("title", "Add Environment Variable");
 
             //Enable Other environment variables "Edit" button
             var parentElement = $(this).parent().filter('.edit-env')[0];
-            var editElements = document.getElementsByClassName('edit-env');
-            for(var i=0; i < editElements.length; i++){
-                if(!(parentElement === editElements[i])) {
-                    $(editElements[i]).removeClass("edit-disable");
+            $('.edit-env').each(function() {
+                var currentElement = $(this).get(0);
+                if(currentElement !== parentElement){
+                    $(this).removeClass("edit-disable");
                 }
-            }
-
-            //Enable other env variables edit icons
-            var siblingElement = $(this).parent().parent().find('.edit-env')[0];
-            var editElements = document.getElementsByClassName('edit-env');
-            for(var i=0; i < editElements.length; i++){
-                if(!(siblingElement === editElements[i])) {
-                    $(editElements[i]).addClass("edit-enable");
-                }
-            }
+            });
 
             //Disable current env variables Value text-box
             var valueSelectionBox = $(this).parent().parent().parent().find('.select2-container')[0];
@@ -265,7 +255,7 @@ $(document).ready(function() {
             var selectionRenderedBox = $(this).parent().parent().parent().find('.select2-selection__rendered')[0];
             $(selectionRenderedBox).css('height', "100%");
             var inlineBox = $(this).parent().parent().parent().find('.select2-search--inline')[0];
-            $(inlineBox).css('display', "none");
+            $(inlineBox).hide();
             var rootParent = $(this).parent().parent().parent()[0];
             $(rootParent).removeClass('property-seperator');
 
