@@ -39,16 +39,23 @@ function login(userName, password){
  	var tenantManager= multitenancy.getTenantManager();
 	var finalResult={};
 	try{
-        	context.startTenantFlow();
-        	context.getThreadLocalCarbonContext().setTenantId(tenantManager.getTenantId(tenantDomain));
-        	context.getThreadLocalCarbonContext().setTenantDomain(tenantDomain);
-        	context.getThreadLocalCarbonContext().setUsername(userName);
+        context.startTenantFlow();
+        context.getThreadLocalCarbonContext().setTenantId(tenantManager.getTenantId(tenantDomain));
+        context.getThreadLocalCarbonContext().setTenantDomain(tenantDomain);
+        context.getThreadLocalCarbonContext().setUsername(userName);
 		var result = server.Server.prototype.authenticate(userName,password);
 		if(result === true){
-			jagg.setUser(userName);
-			finalResult.error="false";
-			finalResult.message="User successfully logged in";
-			finalResult.username=userName;
+		    var permission = modManager.getPropertyValue(LOGIN_PERMISSION);
+            var isUserAuthorized = modManager.checkAuthorizationForUser(userName, permission);
+            if (isUserAuthorized){
+                jagg.setUser(userName);
+                finalResult.error="false";
+                finalResult.message="User successfully logged in";
+                finalResult.username=userName;
+			} else {
+			    finalResult.error="true";
+                finalResult.message="Authorization Failed.";
+			}
 		}else{
 			finalResult.error="true";
 			finalResult.message="Authenitcation Failed.";

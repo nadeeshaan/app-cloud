@@ -50,6 +50,9 @@ jagg.module("manager", {
 	},
 	getTenantIdForGivenTenantDomain: function () {
 		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getTenantIdForGivenTenantDomain.apply(this, arguments);
+	},
+	checkAuthorizationForUser: function () {
+		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").checkAuthorizationForUser.apply(this, arguments);
 	}
 });
 %>
