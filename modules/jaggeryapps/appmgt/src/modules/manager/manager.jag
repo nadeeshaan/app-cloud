@@ -156,4 +156,29 @@ var getUserEmailAddress = function () {
     return session.get("logged.user.email");
 };
 
+var checkAuthorizationForUser = function (userName , permission) {
+    var carbon = require('carbon');
+    var server = carbon.server;
+    var isUserAuthorized = false;
+    var tenantDomain = null;
+    if(userName){
+        if (userName.indexOf("@") != -1) {
+            tenantDomain = userName.substring(userName.lastIndexOf('@') + 1);
+            userName = userName.substring(0, userName.lastIndexOf('@'));
+        } else {	// else assume super tenant
+            tenantDomain = SUPER_TENANT_DOMAIN_NAME;
+        }
+    } else {
+        throw "username not specified";
+    }
+    var carbon = require('carbon');
+    var server = carbon.server;
+    var multitenancy = carbon.multitenancy;
+    var tenantManager = multitenancy.getTenantManager();
+    var tenantId = tenantManager.getTenantId(tenantDomain);
+    var realmService = server.osgiService('org.wso2.carbon.user.core.service.RealmService').getTenantUserRealm(tenantId);
+    isUserAuthorized = realmService.getAuthorizationManager().isUserAuthorized(userName, permission, PERMISSION_EXECUTE);
+    return isUserAuthorized;
+};
+
 %>
