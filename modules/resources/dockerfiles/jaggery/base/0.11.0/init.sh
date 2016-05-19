@@ -23,5 +23,15 @@ else
     echo "ADMIN_PASSWORD set by user.";
 fi
 
+#Remove bundles from plugins dir and the bundles.info to minimize jaggery runtime
+PLUGINS_DIR_PATH="/opt/wso2as-5.3.0/repository/components/plugins/"
+DEFAULT_PROFILE_BUNDLES_INFO_FILE="/opt/wso2as-5.3.0/repository/components/default/configuration/org.eclipse.equinox.simpleconfigurator/bundles.info"
+LIST_OF_BUNDLES_FILE="removed-bundles.txt"
+
+while read in; do rm -rf "$PLUGINS_DIR_PATH""$in" && sed -i "/$in/d" "$DEFAULT_PROFILE_BUNDLES_INFO_FILE"; done < $LIST_OF_BUNDLES_FILE
+
+#Remove sample
+rm -rf /opt/wso2as-5.3.0/repository/deployment/server/axis2services/*
+rm -rf /opt/wso2as-5.3.0/repository/deployment/server/webapps/*
 
 /opt/wso2as-5.3.0/bin/wso2server.sh
