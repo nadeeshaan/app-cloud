@@ -158,6 +158,12 @@ var log = new Log();
         applicationModule.updateApplicationStatus(versionKey, APPLICATION_STOPPED);
         applicationModule.deleteEventsOfAppVersions(versionKey);
 
+        //Check if the pods have been completely deleted
+        var isPodDeleted = applicationModule.isPodDeleted(applicationName, applicationRevision, versionKey);
+        while(!isPodDeleted){
+            isPodDeleted = applicationModule.isPodDeleted(applicationName, applicationRevision, versionKey);
+        }
+
         response.status = 200;
         response.message = "Application is successfully stopped.";
 

@@ -505,10 +505,24 @@ var updateApplicationStatus = function(versionHashId, status){
 };
 
 var redeployVersion = function(applicationName, versionName, versionHashId, conSpecMemory, conSpecCpu){
-    deleteApplicationFromKubernetes(versionHashId);
-    updateApplicationStatus(versionHashId, APPLICATION_STOPPED);
-    deleteEventsOfAppVersions(versionHashId);
-    redeployApplication(applicationName, versionName, versionHashId, conSpecMemory, conSpecCpu);
+    try {
+        deleteApplicationFromKubernetes(versionHashId);
+        updateApplicationStatus(versionHashId, APPLICATION_STOPPED);
+        deleteEventsOfAppVersions(versionHashId);
+
+        var msg = "Successfully triggered stopping container";
+        addEvent(STOP_CONTAINERS, EVENT_PENDING, msg, versionHashId);
+        var hasContainerStopped = isPodDeleted(applicationName, versionName, versionHashId);
+        while (!hasContainerStopped) {
+            hasContainerStopped = isPodDeleted(applicationName, versionName, versionHashId);
+        }
+        msg = "Successfully completed stopping container";
+        addEvent(STOP_CONTAINERS, EVENT_SUCCEEDED, msg, versionHashId);
+        redeployApplication(applicationName, versionName, versionHashId, conSpecMemory, conSpecCpu);
+    } catch (e) {
+        var msg = "Stopping application failed";
+        addEvent(STOP_CONTAINERS, EVENT_FAILED, msg, versionHashId);
+    }
     return true;
 };
 
@@ -1556,6 +1570,30 @@ var getVersionsOfApplication = function(applicationKey) {
 var getRuntimePropertyMap = function (runtimePropertyArray) {
     var runtimePropertyList = generateRuntimePropsList(runtimePropertyArray);
     return getRuntimeProperties(runtimePropertyList);
+};
+
+var isPodDeleted = function(applicationName, versionName, versionHashId){
+
+    var isPodDeleted = false;
+
+    try{
+        var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(applicationName, versionName, null , modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
+        var podList = KubernetesProvisioningUtils.getPods(applicationCtx);
+        var itemsList = podList.getItems();
+        
+        while (itemsList.size() != 0) {
+            podList = KubernetesProvisioningUtils.getPods(applicationCtx);
+            itemsList = podList.getItems();
+        }
+
+        isPodDeleted = true;
+    } catch(e){
+        log.error("Error while getting the pods list for application " + applicationName + " and version " + versionName);
+        log.error(e);
+        throw e;
+    }
+
+    return isPodDeleted;
 };
 
 %>
