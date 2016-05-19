@@ -520,7 +520,7 @@ var redeployVersion = function(applicationName, versionName, versionHashId, conS
         addEvent(STOP_CONTAINERS, EVENT_SUCCEEDED, msg, versionHashId);
         redeployApplication(applicationName, versionName, versionHashId, conSpecMemory, conSpecCpu);
     } catch (e) {
-        var msg = "Stopping application failed";
+        var msg = "Stopping container failed";
         addEvent(STOP_CONTAINERS, EVENT_FAILED, msg, versionHashId);
     }
     return true;
