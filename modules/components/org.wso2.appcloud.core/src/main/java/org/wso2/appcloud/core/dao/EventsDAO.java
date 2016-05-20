@@ -114,14 +114,14 @@ public class EventsDAO {
 
         Connection dbConnection = DBUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
-
+        ResultSet resultSet = null;
         List<Event> eventList = new ArrayList<>();
 
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_EVENTS_OF_APPLICATION);
             preparedStatement.setString(1, versionHashId);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
             Event event;
             while (resultSet.next()) {
                 event = new Event();
@@ -138,6 +138,7 @@ public class EventsDAO {
             log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
+            DBUtil.closeResultSet(resultSet);
             DBUtil.closePreparedStatement(preparedStatement);
             DBUtil.closeConnection(dbConnection);
         }
