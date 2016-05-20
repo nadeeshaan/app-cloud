@@ -1577,8 +1577,8 @@ public class ApplicationDAO {
 			throw new AppCloudException(msg, e);
 		} finally {
             DBUtil.closeResultSet(resultSet);
-			DBUtil.closePreparedStatement(preparedStatement);
-		}
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
 		return maxAppCount;
 	}
 
