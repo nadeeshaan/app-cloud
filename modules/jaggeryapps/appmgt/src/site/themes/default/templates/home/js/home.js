@@ -160,7 +160,7 @@ function changeSelectedRevision(newRevision){
                                  'data-toggle="tooltip" title="Adding replicas to your application will not support in this release."></i>' +
                                  '</span></figcaption></figure></div>');
 
-    } else if(selectedApplicationRevision.status == 'stopped'){
+    } else if(selectedApplicationRevision.status == 'stopped' || selectedApplicationRevision.status == 'inactive'){
 
         $('#version-app-launch-block').empty();
         $('#version-app-launch-block').html('<button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"' +
