@@ -14,6 +14,7 @@ $(document).ready(function() {
     if(selectedApplicationRevision.status=='inactive'){
         displayApplicationInactiveMessage();
     }
+    displayAppHostUrlChangeMessage();
 });
 
 // wrapping functions
@@ -54,6 +55,16 @@ function displayApplicationInactiveMessage() {
                               "This is a limitation of free accounts in App Cloud.</br> To restart, click the <b>Start</b>. button.</br>" +
                               "Click the Support menu to contact us if you need any help."
                  });
+}
+
+function displayAppHostUrlChangeMessage() {
+    jagg.message({
+        modalStatus: true,
+        type: 'warning',
+        timeout: 20000,
+        content: "Please restart your application if it was created before <b>25/05/2016</b>, as we have changed the application URL to introduce an https endpoint. " +
+        "The new URL pattern is <b>tenant-appname-version.wso2apps.com.</b>"
+    });
 }
 
 function listTags(){
