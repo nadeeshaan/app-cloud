@@ -32,6 +32,7 @@ import org.wso2.appcloud.provisioning.runtime.beans.Container;
 import org.wso2.appcloud.provisioning.runtime.beans.ResourceQuotaLimit;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
@@ -296,26 +297,30 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
         Map<String, BufferedReader> logOutPut = new HashMap<>();
         KubernetesClient kubernetesClient = KubernetesProvisioningUtils.getFabric8KubernetesClient();
         PodList podList = KubernetesProvisioningUtils.getPods(applicationContext);
-        if (podList != null) {
+	    if (podList != null) {
             try {
                 int podCounter = 1;
-                for (Pod pod : podList.getItems()) {
-                    for (io.fabric8.kubernetes.api.model.Container container : KubernetesHelper.getContainers(pod)) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Streaming logs in pod : " + pod.getMetadata().getName() + "-" + container
-                                    .getName());
-                        }
-                        LogWatch logs = kubernetesClient.pods().inNamespace(namespace.getMetadata().getName())
-                                .withName(pod.getMetadata().getName()).inContainer(container.getName()).watchLog();
+	            Map<String, LogWatch> watches = new HashMap<>();
+	            for (Pod pod : podList.getItems()) {
+		            for (io.fabric8.kubernetes.api.model.Container container : KubernetesHelper.getContainers(pod)) {
+			            String logWatchKey = container.getName();
+			            if (log.isDebugEnabled()) {
+				            log.debug("Streaming logs in pod : " + pod.getMetadata().getName() + "-" + container
+						            .getName());
+			            }
+			            LogWatch logs = kubernetesClient.pods().inNamespace(namespace.getMetadata().getName())
+			                                            .withName(pod.getMetadata().getName()).inContainer(container.getName()).watchLog();
 
-                        //logStream should close by after the streaming done in front end
-                        //you can use closeLogStream() method in DeploymentStreamLogs
-                        BufferedReader logStream = new BufferedReader(new InputStreamReader(logs.getOutput()));
-                        logOutPut.put("Replica-" + podCounter + "-" + container.getName(), logStream);
-                        deploymentLogStream.setDeploymentLogs(logOutPut);
-                    }
-                    podCounter++;
-                }
+			            //logStream should close by after the streaming done in front end
+			            //you can use closeLogStream() method in DeploymentStreamLogs
+			            BufferedReader logStream = new BufferedReader(new InputStreamReader(logs.getOutput()));
+			            logOutPut.put("Replica-" + podCounter + "-" + container.getName(), logStream);
+			            deploymentLogStream.setDeploymentLogs(logOutPut);
+			            watches.put(logWatchKey, logs);
+		            }
+		            podCounter++;
+	            }
+	            deploymentLogStream.setWatches(watches);
             } catch (KubernetesClientException e) {
                 log.error("Error while streaming runtime logs for application : " + applicationContext.getId()
                         + " tenant domain : " + applicationContext.getTenantInfo().getTenantDomain(), e);
@@ -323,7 +328,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
                         "Error while streaming runtime logs for application : " + applicationContext.getId()
                                 + " tenant domain : " + applicationContext.getTenantInfo().getTenantDomain(), e);
             }
-        } else {
+	    } else {
             log.error("Pod list returned as null for application : " + applicationContext.getId() + " tenant domain : "
                     + applicationContext.getTenantInfo().getTenantDomain());
             throw new RuntimeProvisioningException(

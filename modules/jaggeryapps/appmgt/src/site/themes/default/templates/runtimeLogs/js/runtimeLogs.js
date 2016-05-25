@@ -31,7 +31,7 @@ $(document).ready(function () {
         lineWrapping: true,
         theme:'icecoder'
     });
-    initData(selectedRevision);
+    initData(selectedRevision, true);
 });
 
 function regerateReplicasList(selectedRevisionReplicaList) {
@@ -46,7 +46,11 @@ function regerateReplicasList(selectedRevisionReplicaList) {
     }
 }
 
-function setLogArea(logVal){
+function setLogArea(logVal, isFirstRequest){
+    if(!isFirstRequest) {
+        var currentLog = $('#build-logs').val();
+        logVal = currentLog + logVal;
+    }
     $('#build-logs').val(logVal);
     editor.setValue(logVal);
     var scroller = editor.getScrollInfo();
@@ -54,13 +58,16 @@ function setLogArea(logVal){
     $('.log-search').focus();
 }
 
-function initData(selectedRevision){
+function initData(selectedRevision, isFirstRequest){
     $('#replicas').empty();
-    setLogArea("Loading...");
+    if(isFirstRequest) {
+        setLogArea("Loading...", true);
+    }
     jagg.post("../blocks/runtimeLogs/ajax/runtimeLogs.jag", {
         action:"getSnapshotLogs",
         applicationKey:applicationKey,
-        selectedRevision:selectedRevision
+        selectedRevision:selectedRevision,
+        isFirstRequest:isFirstRequest
     },function (result) {
         initelements();
         result = result.replace(/\t+/g, "    ");
@@ -69,7 +76,11 @@ function initData(selectedRevision){
             $("#log-reload").removeClass("btn-action btn disabled").addClass("btn-action");
             selectedRevisionReplicaList = Object.keys(selectedRevisionLogMap);
             regerateReplicasList(selectedRevisionReplicaList);
-            setLogArea(selectedRevisionLogMap[selectedRevisionReplicaList[0]]);
+            setLogArea(selectedRevisionLogMap[selectedRevisionReplicaList[0]], isFirstRequest);
+            setInterval(function(){ initData(selectedRevision, false); }, 7500);
+//            if(isFirstRequest) {
+//                setTimeout(function(){location.reload();}, 180000);
+//            }
         } else {
             //Check for application revision status and display correct message
             jagg.post("../blocks/runtimeLogs/ajax/runtimeLogs.jag", {
@@ -97,7 +108,7 @@ function initData(selectedRevision){
                 }
                 setTimeout(function() {
                     $.noty.closeAll();
-                    initData(selectedRevision);
+                    initData(selectedRevision, true);
                 }, 5000);
             }, function(jqXHR, textStatus, errorThrown) {
                 jagg.message({
@@ -131,18 +142,18 @@ function initelements(){
     revisionElement.on('change', function (e) {
         selectedRevision = this.value;
         $(this).prop("disabled", true);
-        initData(selectedRevision);
+        initData(selectedRevision, true);
     });
 
     $('#replicas').on('change', function (e) {
         selectedReplica = this.value;
-        setLogArea(selectedRevisionLogMap[selectedReplica]);
+        setLogArea(selectedRevisionLogMap[selectedReplica],true);
     });
 
     $('#log-reload').on('click', function (e) {
         $("#log-reload").removeClass("btn-action").addClass("btn-action btn disabled");
         selectedReplica = $('#replicas').val();
-        setLogArea("Loading...");
-        setTimeout(function(){initData(selectedRevision);setLogArea(selectedRevisionLogMap[selectedReplica]);}, 1000);
+        setLogArea("Loading...", true);
+        setTimeout(function(){initData(selectedRevision, true);setLogArea(selectedRevisionLogMap[selectedReplica], true);}, 1000);
     });
 }
