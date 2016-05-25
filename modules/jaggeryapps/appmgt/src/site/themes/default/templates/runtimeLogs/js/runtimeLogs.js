@@ -77,10 +77,7 @@ function initData(selectedRevision, isFirstRequest){
             selectedRevisionReplicaList = Object.keys(selectedRevisionLogMap);
             regerateReplicasList(selectedRevisionReplicaList);
             setLogArea(selectedRevisionLogMap[selectedRevisionReplicaList[0]], isFirstRequest);
-            setInterval(function(){ initData(selectedRevision, false); }, 7500);
-//            if(isFirstRequest) {
-//                setTimeout(function(){location.reload();}, 180000);
-//            }
+            setInterval(function(){ initData(selectedRevision, false); }, 3000);
         } else {
             //Check for application revision status and display correct message
             jagg.post("../blocks/runtimeLogs/ajax/runtimeLogs.jag", {
