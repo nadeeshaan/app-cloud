@@ -41,7 +41,7 @@ var getRuntimeLogs = function (applicationKey, selectedRevision, applicationType
                                                                                modManager.getTenantId(),
                                                                                modManager.getTenantDomain(), versionHashId);
         var kubService = new KubernetesRuntime(applicationCtx);
-        return kubService.streamRuntimeLogs(jagg.getUser());
+        return kubService.streamRuntimeLogs();
     } catch(e){
         log.error("Error while getting runtime logs for application : " + applicationName + " revision : " + selectedRevision);
         log.error(e);
