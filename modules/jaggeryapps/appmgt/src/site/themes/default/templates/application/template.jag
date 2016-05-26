@@ -1083,7 +1083,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                                         <label class="sr-only" for="key">Key</label>
                                         <input type="text" class="form-control element-add-key" placeholder="Key">
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group custom-env-class-for-demo">
                                         <label class="sr-only" for="value">Value</label>
                                         <input type="text" class="form-control element-add-value" placeholder="Value">
                                     </div>
