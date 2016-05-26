@@ -36,7 +36,8 @@ INSERT INTO `AC_APP_TYPE` (`id`, `name`, `description`) VALUES
 (1, 'war', 'Allows you to create dynamic websites using Servlets and JSPs, instead of the static HTML webpages and JAX-RS/JAX-WS services.'),
 (2, 'mss', 'WSO2 Microservices Framework for Java (WSO2 MSF4J) offers the best option to create microservices in Java using annotation-based programming model.'),
 (3, 'php', 'Allows you to create dynamic web page content using PHP web applications.'),
-(4, 'jaggery', 'Allows you to create dynamic web page content using Jaggery web applications.');
+(4, 'jaggery', 'Allows you to create dynamic web page content using Jaggery web applications.'),
+(5, 'wso2dataservice', 'Allows you to deploy WSO2 Data services.');
 
 
 -- -----------------------------------------------------
@@ -62,7 +63,8 @@ INSERT INTO `AC_RUNTIME` (`id`, `name`, `repo_url`, `image_name`, `tag`, `descri
 (2, 'OpenJDK 8', 'registry.docker.appfactory.private.wso2.com:5000', 'msf4j', '1.0', 'OS:Debian, JAVA Version:8u72'),
 (3, 'Apache 2.4.10', 'registry.docker.appfactory.private.wso2.com:5000','php','5.6', 'OS:Debian, PHP Version:5.6.20'),
 (4, 'Carbon 4.2.0', 'registry.docker.appfactory.private.wso2.com:5000','carbon','4.2.0', 'OS:Debian, Java Version:7u101'),
-(5, 'Jaggery 0.11.0 ', 'registry.docker.appfactory.private.wso2.com:5000', 'jaggery', '0.11.0', 'OS:Debian, Java Version:7u101');
+(5, 'Jaggery 0.11.0 ', 'registry.docker.appfactory.private.wso2.com:5000', 'jaggery', '0.11.0', 'OS:Debian, Java Version:7u101'),
+(6, 'WSO2 Data Services Server - 3.5.0','registry.docker.appfactory.private.wso2.com:5000', 'wso2dataservice', '3.5.0', ' OS:Debian, Java Version:7u101');
 
 
 
@@ -220,7 +222,8 @@ INSERT INTO `AC_APP_TYPE_RUNTIME` (`app_type_id`, `runtime_id`) VALUES
 (1, 1),
 (2, 2),
 (3, 3),
-(4, 5);
+(4, 5),
+(5, 6);
 
 
 -- -----------------------------------------------------
@@ -395,7 +398,9 @@ INSERT INTO `AC_RUNTIME_TRANSPORT` (`transport_id`, `runtime_id`) VALUES
 (2, 3),
 (3, 4),
 (6, 5),
-(5, 5);
+(5, 5),
+(5, 6),
+(6, 6);
 
 INSERT INTO `AC_CONTAINER_SPECIFICATIONS` (`CON_SPEC_NAME`, `CPU`, `MEMORY`, `COST_PER_HOUR`) VALUES
 ('SMALL(128MB RAM and 0.1x vCPU)', 100, 128, 1),
@@ -414,7 +419,8 @@ INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
 (3, 1),
 (3, 2),
 (3, 3),
-(5, 3);
+(5, 3),
+(6, 3);
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
