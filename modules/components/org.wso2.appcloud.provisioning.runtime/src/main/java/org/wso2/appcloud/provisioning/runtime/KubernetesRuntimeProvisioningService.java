@@ -32,7 +32,6 @@ import org.wso2.appcloud.provisioning.runtime.beans.Container;
 import org.wso2.appcloud.provisioning.runtime.beans.ResourceQuotaLimit;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
@@ -956,4 +955,23 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
             throw new RuntimeProvisioningException(message, e);
         }
     }
+
+	@Override
+	public Map<String, String> getPodRestartCounts() throws RuntimeProvisioningException {
+		Map<String, String> podRestartCounts = new HashMap<>();
+		PodList podList = KubernetesProvisioningUtils.getPods(applicationContext);
+		if (podList != null) {
+			int podCounter = 0;
+			for (Pod pod : podList.getItems()) {
+				podRestartCounts.put(String.valueOf(podCounter), String.valueOf(pod.getStatus().getContainerStatuses().get(0).getRestartCount()));
+				podCounter++;
+			}
+			return podRestartCounts;
+		} else {
+			String message = "Couldnot find a pod associated with pod for application : " + applicationContext.getId() +
+			                 ", version : " + applicationContext.getVersion();
+			log.error(message);
+			throw new RuntimeProvisioningException(message);
+		}
+	}
 }
