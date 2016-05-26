@@ -205,13 +205,12 @@ public class LoggingTest {
         LogQuery query = new LogQuery(true, -1, 1);
         Map<String, String> selector = new HashMap<>();
         selector.put("app", "My-JAXRS");
-	    String username = "admin@carbon.super";
 
         //Initially waits until deployment successful
         Thread.sleep(30000);
         for (int i = 0; i < 5; i++) {
             if (testUtils.getPodStatus(namespace, selector)) {
-                afKubClient.streamRuntimeLogs(username);
+                afKubClient.streamRuntimeLogs();
             } else {
                 //If deployment is not successful check again in 30 seconds
                 Thread.sleep(30000);
