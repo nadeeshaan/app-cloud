@@ -161,6 +161,8 @@ var log = new Log();
         //Wait for the pod to get completely deleted
         try {
             applicationModule.waitForPodToGetDeleted(applicationName, applicationRevision, versionKey);
+            response.status = 200;
+            response.message = "Application is successfully stopped.";
         } catch (e) {
             var msg = "Error while waiting for the pod to get deleted for application " + applicationName +
                         " and version " + applicationRevision ;
@@ -169,9 +171,6 @@ var log = new Log();
             response.status = 500;
             response.content = msg;
         }
-        response.status = 200;
-        response.message = "Application is successfully stopped.";
-
     } else if(action == "redeployApplication"){
         var applicationName = request.getParameter("applicationName");
         var applicationRevision = request.getParameter("applicationRevision");
@@ -201,8 +200,6 @@ var log = new Log();
             applicationModule.stopOtherVersions(applicationHashId, applicationRevision);
         }
 
-        response.status = 200;
-        response.message = "Application starting requested is completed successfully.";
         print(stringify(versions));
     } else if (action == "getApplicationCreationEvents") {
         var applicationName = request.getParameter("applicationName");
