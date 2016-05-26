@@ -33,6 +33,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.concurrent.CountDownLatch;
 
 public class DockerOpClient {
@@ -69,63 +71,27 @@ public class DockerOpClient {
         dockerClient = new DefaultDockerClient(config);
     }
 
-    public void createDockerFile(String runtimeId, String artifactName, String dockerFilePath,
-            String dockerTemplateFilePath, String artifactUrl, String hostName) throws IOException, AppCloudException {
+    public void createDockerFile(String dockerFilePath, String runtimeId, String dockerTemplateFilePath,
+            String dockerFileCategory, Map<String, String> dockerFilePropertyMap,
+            Map<String, String> customDockerFileProperties) throws IOException, AppCloudException {
 
-        List<String> dockerFileConfigs = new ArrayList<String>();
-        if (Strings.isNullOrEmpty(artifactUrl)) {
-            String dockerFileTemplatePath = DockerUtil
-                    .getDockerFileTemplatePath(runtimeId, dockerTemplateFilePath, "default");
-            String artifactNameWithoutExtension = artifactName.substring(0, artifactName.lastIndexOf("."));
-            for (String line : FileUtils.readLines(new File(dockerFileTemplatePath))) {
-                if (line.contains("ARTIFACT_NAME")) {
-                    dockerFileConfigs.add(line.replace("ARTIFACT_NAME", artifactName));
-                } else if (line.contains("ARTIFACT_DIR")) {
-                    dockerFileConfigs.add(line.replace("ARTIFACT_DIR", artifactNameWithoutExtension));
-                } else if (line.contains("HOST_NAME")) {
-                    dockerFileConfigs.add(line.replace("HOST_NAME", hostName));
-                } else {
-                    dockerFileConfigs.add(line);
-                }
-            }
-        } else {
-            String dockerFileTemplatePath = DockerUtil
-                    .getDockerFileTemplatePath(runtimeId, dockerTemplateFilePath, "url");
-            String artifactNameWithoutExtension = artifactName.substring(0, artifactName.lastIndexOf("."));
+        customDockerFileProperties.keySet().removeAll(dockerFilePropertyMap.keySet());
+        dockerFilePropertyMap.putAll(customDockerFileProperties);
 
-            for (String line : FileUtils.readLines(new File(dockerFileTemplatePath))) {
-                if (line.contains("ARTIFACT_NAME")) {
-                    dockerFileConfigs.add(line.replace("ARTIFACT_NAME", artifactName));
-                } else if (line.contains("ARTIFACT_URL")) {
-                    dockerFileConfigs.add(line.replace("ARTIFACT_URL", artifactUrl));
-                } else if (line.contains("HOST_NAME")) {
-                    dockerFileConfigs.add(line.replace("HOST_NAME", hostName));
-                } else {
-                    dockerFileConfigs.add(line);
-                }
-            }
-        }
-        FileUtils.writeLines(new File(dockerFilePath), dockerFileConfigs);
-    }
+        String dockerFileTemplatePath = DockerUtil
+                .getDockerFileTemplatePath(runtimeId, dockerTemplateFilePath, dockerFileCategory);
+        List<String> dockerFileConfigs = new ArrayList<>();
 
-    public void createDockerFileForGitHub(String runtimeId, String gitRepoUrl, String gitRepoBranch,
-            String dockerFilePath, String projectRoot, String dockerGitHubTemplateFilePath, String hostName)
-            throws IOException, AppCloudException {
-
-        String dockerFileTemplatePath = DockerUtil.getDockerFileTemplatePath(runtimeId, dockerGitHubTemplateFilePath, "github");
-        List<String> dockerFileConfigs = new ArrayList<String>();
         for (String line : FileUtils.readLines(new File(dockerFileTemplatePath))) {
-            if (line.contains("GIT_REPO_URL")) {
-                line = line.replace("GIT_REPO_URL", gitRepoUrl);
-            }
-            if (line.contains("GIT_REPO_BRANCH")) {
-                line = line.replace("GIT_REPO_BRANCH", gitRepoBranch);
-            }
-            if (line.contains("PROJECT_ROOT")) {
-                line = line.replace("PROJECT_ROOT", projectRoot);
-            }
-            if (line.contains("HOST_NAME")) {
-                line = line.replace("HOST_NAME", hostName);
+            StringTokenizer stringTokenizer = new StringTokenizer(line);
+            //Search if line contains keyword to replace with the value
+            while (stringTokenizer.hasMoreElements()) {
+                String element = stringTokenizer.nextElement().toString().trim();
+                String value;
+                if (dockerFilePropertyMap.containsKey(element)) {
+                    value = dockerFilePropertyMap.get(element);
+                    line = line.replace(element, value);
+                }
             }
             dockerFileConfigs.add(line);
         }

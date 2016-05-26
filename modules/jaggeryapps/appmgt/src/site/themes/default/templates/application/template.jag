@@ -236,7 +236,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
 
                 if(uploadMethod === "file"){
                     formData.append('uploadedFileName', $("#uploadedFileName").val());
+                    formData.append('appCreationMethod', 'default');
                 } else if (uploadMethod === "url" ) {
+                    formData.append('appCreationMethod', 'url');
                     formData.append('artifactUrl', $("#artifactUrl").val());
                     if (appTypeName == "war") {
                         formData.append('uploadedFileName', "VERSION_HASH_ID.war");
@@ -246,6 +248,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         formData.append('uploadedFileName', "VERSION_HASH_ID.zip");
                     }
                 } else if (uploadMethod === "github" ) {
+                    formData.append('appCreationMethod', 'github');
                     formData.append('gitRepoUrl', $("#gitRepoUrl").val());
                     formData.append('gitRepoBranch', $("#gitRepoBranch").val());
                     if($("#projectRoot").val()){

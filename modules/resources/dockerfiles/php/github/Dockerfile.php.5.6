@@ -20,7 +20,8 @@ FROM wso2-appcloud/php:1.0.0-base
 
 ENV WEB_ROOT /var/www/html/
 ENV MNT /mnt
+ENV GIT_BASE_DIR PROJECT_ROOT
 
 RUN git clone GIT_REPO_URL --branch GIT_REPO_BRANCH --single-branch "$MNT/" && \
-    mv "$MNT"PROJECT_ROOT* "$WEB_ROOT/" && \
+    mv "$MNT""$GIT_BASE_DIR"* "$WEB_ROOT/" && \
     rm -rf "$MNT"/*
