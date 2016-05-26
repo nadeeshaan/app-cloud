@@ -220,6 +220,9 @@ jagg.module("application", {
 
     getAppLaunchURL: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").constructAppLaunchURL.apply(this, arguments);
+    },
+    getRuntimePropertyMap: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").getRuntimePropertyMap.apply(this, arguments);
     }
 });
 %>

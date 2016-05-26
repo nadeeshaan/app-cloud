@@ -21,4 +21,5 @@ FROM wso2-appcloud/msf4j:1.0.0-base
 ENV MSF4J_JAR ARTIFACT_NAME
 COPY "$MSF4J_JAR" "$MSF4J_HOME/"
 
-CMD ["java", "-Xms128m", "-Xmx256m", "-XX:PermSize=64m", "-jar", "-Dtransports.netty.conf=/opt/conf/https/netty-transports.yaml", "ARTIFACT_NAME"]
+#sh -c use to variable substitution on $MSF4J_JAR
+CMD ["sh", "-c", "java -Xms128m -Xmx256m -XX:PermSize=64m -jar -Dtransports.netty.conf=/opt/conf/https/netty-transports.yaml $MSF4J_JAR"]
