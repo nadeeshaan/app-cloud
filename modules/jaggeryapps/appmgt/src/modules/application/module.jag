@@ -227,8 +227,8 @@ jagg.module("application", {
     getRuntimePropertyMap: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").getRuntimePropertyMap.apply(this, arguments);
     },
-    isPodDeleted: function () {
-        return jagg.require(jagg.getModulesDir() + "application/application.jag").isPodDeleted.apply(this, arguments);
+    waitForPodToGetDeleted: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").waitForPodToGetDeleted.apply(this, arguments);
     }
 });
 %>

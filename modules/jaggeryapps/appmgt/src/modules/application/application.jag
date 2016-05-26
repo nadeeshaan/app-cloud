@@ -512,10 +512,7 @@ var redeployVersion = function(applicationName, versionName, versionHashId, conS
 
         var msg = "Successfully triggered stopping container";
         addEvent(STOP_CONTAINERS, EVENT_PENDING, msg, versionHashId);
-        var hasContainerStopped = isPodDeleted(applicationName, versionName, versionHashId);
-        while (!hasContainerStopped) {
-            hasContainerStopped = isPodDeleted(applicationName, versionName, versionHashId);
-        }
+        waitForPodToGetDeleted(applicationName, versionName, versionHashId);
         msg = "Successfully completed stopping container";
         addEvent(STOP_CONTAINERS, EVENT_SUCCEEDED, msg, versionHashId);
         redeployApplication(applicationName, versionName, versionHashId, conSpecMemory, conSpecCpu);
@@ -1572,10 +1569,7 @@ var getRuntimePropertyMap = function (runtimePropertyArray) {
     return getRuntimeProperties(runtimePropertyList);
 };
 
-var isPodDeleted = function(applicationName, versionName, versionHashId){
-
-    var isPodDeleted = false;
-
+var waitForPodToGetDeleted = function(applicationName, versionName, versionHashId){
     try{
         var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(applicationName, versionName, null , modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
         var podList = KubernetesProvisioningUtils.getPods(applicationCtx);
@@ -1585,15 +1579,11 @@ var isPodDeleted = function(applicationName, versionName, versionHashId){
             podList = KubernetesProvisioningUtils.getPods(applicationCtx);
             itemsList = podList.getItems();
         }
-
-        isPodDeleted = true;
     } catch(e){
         log.error("Error while getting the pods list for application " + applicationName + " and version " + versionName);
         log.error(e);
         throw e;
     }
-
-    return isPodDeleted;
 };
 
 %>
