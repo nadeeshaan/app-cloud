@@ -40,7 +40,6 @@ import java.util.concurrent.CountDownLatch;
 public class DockerOpClient {
 
     private static Log log = LogFactory.getLog(DockerOpClient.class);
-    private final  static  String tokenizeStartLine = "FROM";
 
     DockerClient dockerClient;
     OutputHandle handle;
