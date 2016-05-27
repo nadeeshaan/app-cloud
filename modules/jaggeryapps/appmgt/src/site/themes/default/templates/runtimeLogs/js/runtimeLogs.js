@@ -22,6 +22,7 @@ var selectedRevisionLogMap = {};
 var selectedRevisionReplicaList = [];
 var selectedReplica;
 var editor;
+var isLogsAvailable = false;
 $(document).ready(function () {
     editor = CodeMirror.fromTextArea(document.getElementById("build-logs"), {
         styleActiveLine: true,
@@ -32,6 +33,7 @@ $(document).ready(function () {
         theme:'icecoder'
     });
     initData(selectedRevision, true);
+    setInterval(function(){ initData(selectedRevision, false); }, 3000);
 });
 
 function regerateReplicasList(selectedRevisionReplicaList) {
@@ -47,6 +49,8 @@ function regerateReplicasList(selectedRevisionReplicaList) {
 }
 
 function setLogArea(logVal, isFirstRequest){
+    $('#build-logs').empty();
+    editor.setValue("");
     if(!isFirstRequest) {
         var currentLog = $('#build-logs').val();
         logVal = currentLog + logVal;
@@ -59,8 +63,8 @@ function setLogArea(logVal, isFirstRequest){
 }
 
 function initData(selectedRevision, isFirstRequest){
-    $('#replicas').empty();
-    if(isFirstRequest) {
+    if(isFirstRequest){
+        $('#replicas').empty();
         setLogArea("Loading...", true);
     }
     jagg.post("../blocks/runtimeLogs/ajax/runtimeLogs.jag", {
@@ -75,9 +79,10 @@ function initData(selectedRevision, isFirstRequest){
         if(!jQuery.isEmptyObject(selectedRevisionLogMap)){
             $("#log-reload").removeClass("btn-action btn disabled").addClass("btn-action");
             selectedRevisionReplicaList = Object.keys(selectedRevisionLogMap);
-            regerateReplicasList(selectedRevisionReplicaList);
+            if(isFirstRequest){
+                regerateReplicasList(selectedRevisionReplicaList);
+            }
             setLogArea(selectedRevisionLogMap[selectedRevisionReplicaList[0]], isFirstRequest);
-            setInterval(function(){ initData(selectedRevision, false); }, 3000);
         } else {
             //Check for application revision status and display correct message
             jagg.post("../blocks/runtimeLogs/ajax/runtimeLogs.jag", {
@@ -103,10 +108,6 @@ function initData(selectedRevision, isFirstRequest){
                         timeout: '5000'
                     });
                 }
-                setTimeout(function() {
-                    $.noty.closeAll();
-                    initData(selectedRevision, true);
-                }, 5000);
             }, function(jqXHR, textStatus, errorThrown) {
                 jagg.message({
                     content: "Error occured while getting application revision status.",
