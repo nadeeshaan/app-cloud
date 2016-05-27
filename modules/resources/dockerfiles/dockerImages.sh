@@ -37,3 +37,6 @@ docker build --no-cache -t wso2-appcloud/wso2as:6.0.0-m2-base -f $CURRENT_DIR/ws
 
 #jaggery base image
 docker build --no-cache -t wso2-appcloud/jaggery:0.11.0-base -f $CURRENT_DIR/jaggery/base/0.11.0/Dockerfile.wso2-appcloud-jaggery-0.11.0.base $CURRENT_DIR/jaggery/base/0.11.0
+
+#wso2dataservice base image
+docker build --no-cache -t wso2-appcloud/wso2dataservice:3.5.0-base -f $CURRENT_DIR/wso2dataservice/base/3.5.0/Dockerfile.wso2-appcloud-wso2dataservice-3.5.0.base $CURRENT_DIR/wso2dataservice/base/3.5.0

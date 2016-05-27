@@ -51,7 +51,7 @@ var Arrays = Packages.java.util.Arrays;
  * @param runtimeId runtime id of the application
  */
 var addApplication = function (applicationName, versionName, applicationDescription, replicas,
-                               runtimeId, appTypeName, runtimePropertiesArray, tagArray, appIcon, uploadedFileName, isNewVersion, conSpecMemory, conSpecCpu, artifactUrl) {
+                               runtimeId, appTypeName, runtimePropertiesArray, tagArray, appIcon, uploadedFileName, isNewVersion, conSpecMemory, conSpecCpu, artifactUrl, appCreationMethod) {
 
     log.info("Started creating App => name : " + applicationName + " Version : " + versionName + " Description " +
              ": " + applicationDescription + " runtimeId : " + runtimeId + " apptype : " + appTypeName );
@@ -78,7 +78,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
     var hostName = constructAppLaunchURL(applicationName, versionName);
 
 
-    var absFileUploadedPath =  createDockerFile(applicationName, versionName, runtimeId, uploadedFileName, versionHashId, dockerOpClient, artifactUrl, hostName);
+    var absFileUploadedPath =  createDockerFile(applicationName, versionName, runtimeId, uploadedFileName, versionHashId, dockerOpClient, artifactUrl, hostName, appCreationMethod, runtimeProperties);
     buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerOpClient);
     pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerOpClient);
 
@@ -323,7 +323,8 @@ var createAppVersionInDataBase = function( versionName,   runtimeId, runtimeProp
 }
 
 
-var createDockerFile =  function(applicationName, versionName, runtimeId, uploadedFileName, versionHashId, dockerOpClient, artifactUrl, hostName){
+var createDockerFile = function (applicationName, versionName, runtimeId, uploadedFileName, versionHashId, dockerOpClient,
+                                 artifactUrl, hostName, appCreationMethod, runtimeProperties) {
     var msg = "Docker file creation successfully triggered in appcloud";
     addEvent(DOCKER_FILE_CREATE, EVENT_PENDING, msg, versionHashId);
     var absFileUploadedPath;
@@ -343,7 +344,17 @@ var createDockerFile =  function(applicationName, versionName, runtimeId, upload
         } else {
             uploadArtifactTmpName = uploadedFileName;
         }
-        dockerOpClient.createDockerFile(runtimeId, uploadArtifactTmpName, dockerFilePath,dockerTemplateFilePath, artifactUrl, hostName);
+
+        var dockerFilePropertyMap = new java.util.HashMap();
+        var artifactNameWithoutExtension = uploadArtifactTmpName.substring(0, uploadArtifactTmpName.lastIndexOf("."));
+
+        dockerFilePropertyMap.put("ARTIFACT_NAME", uploadArtifactTmpName);
+        dockerFilePropertyMap.put("ARTIFACT_DIR", artifactNameWithoutExtension);
+        dockerFilePropertyMap.put("HOST_NAME", hostName);
+        dockerFilePropertyMap.put("ARTIFACT_URL", artifactUrl);
+        var appRuntimeProperties = getRuntimeProperties(runtimeProperties);
+
+        dockerOpClient.createDockerFile(dockerFilePath, runtimeId, dockerTemplateFilePath, appCreationMethod, dockerFilePropertyMap, appRuntimeProperties);
 
     } catch(e){
         var msg = "Error while creating docker file";
@@ -1524,6 +1535,11 @@ var getVersionsOfApplication = function(applicationKey) {
     }
 
     return applicationVersions;
+};
+
+var getRuntimePropertyMap = function (runtimePropertyArray) {
+    var runtimePropertyList = generateRuntimePropsList(runtimePropertyArray);
+    return getRuntimeProperties(runtimePropertyList);
 };
 
 %>

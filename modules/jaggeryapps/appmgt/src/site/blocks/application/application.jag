@@ -69,6 +69,7 @@ var log = new Log();
         var conSpecMemory = request.getParameter("conSpecMemory");
         var conSpecCpu = request.getParameter("conSpecCpu");
         var artifactUrl = request.getParameter("artifactUrl");
+        var appCreationMethod = request.getParameter("appCreationMethod");
 
         // checking whether an application with same name and same version, already exists or not
         var versionHashId = applicationModule.getVersionHashId(applicationName, applicationRevision);
@@ -116,7 +117,7 @@ var log = new Log();
                     if (uploadedFileName) {
                         applicationModule.addApplication(applicationName, applicationRevision, applicationDescription, replicas,
                                 runtimeId, appTypeName, runtimeProperties, tags, appIcon,
-                                uploadedFileName, isNewVersion, conSpecMemory, conSpecCpu, artifactUrl);
+                                uploadedFileName, isNewVersion, conSpecMemory, conSpecCpu, artifactUrl, appCreationMethod);
                     } else {
                         var gitRepoUrl = request.getParameter("gitRepoUrl");
                         var gitRepoBranch = request.getParameter("gitRepoBranch");
@@ -125,7 +126,7 @@ var log = new Log();
                         gitHubAppModule.addApplicationViaGitHub(applicationName, applicationRevision, applicationDescription,
                                 replicas, runtimeId, appTypeName, runtimeProperties, tags,
                                 appIcon, gitRepoUrl, gitRepoBranch, projectRoot, token,
-                                isNewVersion, conSpecMemory, conSpecCpu);
+                                isNewVersion, conSpecMemory, conSpecCpu, appCreationMethod);
                     }
                     response.status = 200;
                     response.message = "Application creation is successfully submitted";
