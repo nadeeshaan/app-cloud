@@ -473,8 +473,6 @@ var getRestartCounts = function (applicationName, versionName){
             applicationName, versionName, null , modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
     var kubService = new KubernetesRuntime(applicationCtx);
     var restartCounts = kubService.getPodRestartCounts();
-    log.info("restart count : " + restartCounts.get('0'));
-    log.info("restart count : " + restartCounts);
     return restartCounts;
 }
 
