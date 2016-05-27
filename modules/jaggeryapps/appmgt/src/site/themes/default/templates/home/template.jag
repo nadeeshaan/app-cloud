@@ -23,6 +23,7 @@ include("/jagg/constants.jag");
 jagg.template("home", function(inputs, outputs, jagg) {
     var application = outputs.application;
     var selectedRevision = outputs.selectedRevision;
+    var restartCounts = outputs.restartCounts;
     var conSpecCpu = outputs.conSpecCpu;
     var conSpecMemory = outputs.conSpecMemory;
     var versions = application.versions;
@@ -55,7 +56,6 @@ jagg.template("home", function(inputs, outputs, jagg) {
     var dashboardBaseUrl = "<%=dashboardBaseUrl%>";
     var encodedLabels = "<%=encodedLabels%>";
     var encodedEnvs = "<%=encodedEnvs%>";
-
 
 
 </script>
@@ -220,10 +220,14 @@ jagg.template("home", function(inputs, outputs, jagg) {
                                 <div class="block-replicas">
                                     <figure class="node-cicle" data-percent="100">
                                         <figcaption>01</figcaption>
+                                        <%if(parseInt(restartCounts.get('0')) > 0){%>
+                                            <a href="#" onclick="displayRestartCountMessage();"><span class="view-log">Restart Count : <%=restartCounts.get('0')%></span></a>
+                                        <%}%>
+
                                         <%  if(selectedApplicationRevision.status=='running'){ %>
 
                                                 <svg width="200" height="200">
-                                                   <circle class="outer" cx="95" cy="95" r="85" transform="rotate(-90, 95, 95)"/>
+                                                   <circle class="outer" cx="95" cy="95" r="85" transform="rotate(-90, 95, 95)"></circle>
                                                 </svg>
                                                 <a href="/appmgt/site/pages/runtimeLogs.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>"><span class="view-log">View Logs</span></a>
                                         <%  } else { %>

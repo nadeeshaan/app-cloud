@@ -18,6 +18,7 @@ package org.wso2.appcloud.provisioning.runtime;
 import org.wso2.appcloud.provisioning.runtime.beans.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface RuntimeProvisioningService {
@@ -183,4 +184,11 @@ public interface RuntimeProvisioningService {
      * @throws RuntimeProvisioningException
      */
     public void createService(ServiceProxy serviceProxy) throws RuntimeProvisioningException;
+
+	/**
+	 * Get restart count for each pod of the application
+	 * @return
+	 * @throws RuntimeProvisioningException
+	 */
+	Map<String, String> getPodRestartCounts() throws RuntimeProvisioningException;
 }

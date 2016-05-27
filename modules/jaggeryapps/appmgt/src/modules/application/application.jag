@@ -466,6 +466,18 @@ var deployApplication = function(applicationName, versionName, deploymentConfig,
     return;
 };
 
+var getRestartCounts = function (applicationName, versionName){
+    var versionHashId = getVersionHashId(applicationName, versionName);
+    var KubernetesRuntime = Packages.org.wso2.appcloud.provisioning.runtime.KubernetesRuntimeProvisioningService;
+    var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(
+            applicationName, versionName, null , modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
+    var kubService = new KubernetesRuntime(applicationCtx);
+    var restartCounts = kubService.getPodRestartCounts();
+    log.info("restart count : " + restartCounts.get('0'));
+    log.info("restart count : " + restartCounts);
+    return restartCounts;
+}
+
 
 var constructAppLaunchURL = function(applicationName, versionName){
 
