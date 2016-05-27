@@ -77,7 +77,7 @@ function initData(selectedRevision, isFirstRequest){
         result = result.replace(/\t+/g, "    ");
         selectedRevisionLogMap = jQuery.parseJSON(result);
         if(!jQuery.isEmptyObject(selectedRevisionLogMap)){
-            $("#log-reload").removeClass("btn-action btn disabled").addClass("btn-action");
+            $("#log-download").removeClass("btn-action btn disabled").addClass("btn-action");
             selectedRevisionReplicaList = Object.keys(selectedRevisionLogMap);
             if(isFirstRequest){
                 regerateReplicasList(selectedRevisionReplicaList);
@@ -118,7 +118,6 @@ function initData(selectedRevision, isFirstRequest){
         }
     },function (jqXHR, textStatus, errorThrown) {
         $('#revision').prop("disabled", false);
-        $("#log-reload").removeClass("btn-action btn disabled").addClass("btn-action");
         jagg.message({content: "Error occurred while loading the logs.", type: 'error', id:'view_log'});
     });
 }
@@ -148,10 +147,40 @@ function initelements(){
         setLogArea(selectedRevisionLogMap[selectedReplica],true);
     });
 
-    $('#log-reload').on('click', function (e) {
-        $("#log-reload").removeClass("btn-action").addClass("btn-action btn disabled");
-        selectedReplica = $('#replicas').val();
-        setLogArea("Loading...", true);
-        setTimeout(function(){initData(selectedRevision, true);setLogArea(selectedRevisionLogMap[selectedReplica], true);}, 1000);
+    $('#log-download').off('click').on('click', downloadLogs);
+}
+
+function downloadLogs(e) {
+    $('#log-download').off('click');
+    $("#log-download").removeClass("btn-action").addClass("btn-action btn disabled");
+    jagg.post("../blocks/runtimeLogs/ajax/runtimeLogs.jag", {
+        action:"downloadLogs",
+        applicationKey:applicationKey,
+        selectedRevision:selectedRevision
+    },function (result) {
+        result = result.replace(/\t+/g, "    ");
+        selectedRevisionLogMap = jQuery.parseJSON(result);
+        if(!jQuery.isEmptyObject(selectedRevisionLogMap)){
+            selectedRevisionReplicaList = Object.keys(selectedRevisionLogMap);
+            saveTextAsFile(selectedRevisionLogMap[selectedRevisionReplicaList[0]]);
+        }
+    },function (jqXHR, textStatus, errorThrown) {
+        $('#revision').prop("disabled", false);
+        jagg.message({content: "Error occurred while downloading the logs.", type: 'error', id:'view_log'});
     });
+}
+
+function saveTextAsFile(textToWrite) {
+    var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+    var fileNameToSaveAs = applicationKey + "-" + selectedRevision + ".log";
+
+    var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "Download File";
+    downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+    downloadLink.onclick = function (e){downloadLink.remove();};
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+
+    downloadLink.click();
 }

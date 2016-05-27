@@ -47,6 +47,21 @@ include("/jagg/constants.jag");
             response.status = 400;
             response.content = msg;
         }
+    } else if (action == "downloadLogs") {
+
+        var applicationKey = request.getParameter("applicationKey");
+        var selectedRevision = request.getParameter("selectedRevision");
+        var mod = jagg.module("runtimeLogs");
+        try {
+            var logMap = mod.getDownloadableRuntimeLogs(applicationKey, selectedRevision, "");
+            print(logMap);
+        } catch(e) {
+            var msg = "Error while getting deployment logs";
+            log.error(e);
+            log.error(msg+" for application: "+applicationKey+ " and revision: "+ selectedRevision);
+            response.status = 400;
+            response.content = msg;
+        }
     } else if (action == "getApplicationRevisionStatus") {
         var applicationKey = request.getParameter("applicationKey");
         var selectedRevision = request.getParameter("selectedRevision");

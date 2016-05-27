@@ -41,7 +41,11 @@ var getRuntimeLogs = function (applicationKey, selectedRevision, applicationType
                                                                                modManager.getTenantId(),
                                                                                modManager.getTenantDomain(), versionHashId);
         var kubService = new KubernetesRuntime(applicationCtx);
-        return kubService.streamRuntimeLogs();
+        if (isStream){
+            return kubService.streamRuntimeLogs();
+        } else {
+            return kubService.getRuntimeLogs(null);
+        }
     } catch(e){
         log.error("Error while getting runtime logs for application : " + applicationName + " revision : " + selectedRevision);
         log.error(e);
@@ -62,7 +66,7 @@ var getFormattedRuntimeLogs = function (applicationKey, selectedRevision, applic
     }
     if (result == null || isFirstRequest === 'true'){
         log.info("Acquiring streams of logs for applicationKey : " + applicationKey + ", selectedRevision : " + selectedRevision);
-        result = getRuntimeLogs(applicationKey, selectedRevision, applicationType);
+        result = getRuntimeLogs(applicationKey, selectedRevision, applicationType, true);
         session.put(sessionKey, result);
     }
     var logMap = {};
@@ -85,6 +89,24 @@ var getFormattedRuntimeLogs = function (applicationKey, selectedRevision, applic
                         log.warn("Stream already closed.");
                     }
                 }, 900000);
+        }
+        return logMap;
+    } else {
+        throw "Error while calling mod.getRuntimeLogs. Results are not instances of DeploymentLogs";
+    }
+}
+
+var getDownloadableRuntimeLogs = function (applicationKey, selectedRevision, applicationType) {
+    var result = getRuntimeLogs(applicationKey, selectedRevision, applicationType, false);
+    var logMap = {};
+    if (result instanceof DeploymentLogs){
+        var map = result.getDeploymentLogs();
+        if(map && map.entrySet()) {
+            var iterator = map.entrySet().iterator();
+            while (iterator.hasNext()) {
+                var entry = iterator.next();
+                logMap[entry.getKey()] = entry.getValue().toString();
+            }
         }
         return logMap;
     } else {
