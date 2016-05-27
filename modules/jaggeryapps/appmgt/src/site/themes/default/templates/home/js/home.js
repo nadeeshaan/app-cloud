@@ -73,7 +73,7 @@ function displayRestartCountMessage() {
         type: 'warning',
         timeout: 20000,
         content: "One or more of your replicas have a higher restart count than expected. Possible reasons are high usage of memory and / or cpu. " +
-        "Please try using bigger containers if the problem proceeds."
+        "Please try using bigger containers if the problem persists."
     });
 }
 
