@@ -154,18 +154,21 @@ var log = new Log();
 
         // delete application from kubernetes
         applicationModule.deleteApplicationFromKubernetes(versionKey);
-        // update application status to stopped
-        applicationModule.updateApplicationStatus(versionKey, APPLICATION_STOPPED);
-        applicationModule.deleteEventsOfAppVersions(versionKey);
-
         //Wait for the pod to get completely deleted
         try {
-            applicationModule.waitForPodToGetDeleted(applicationName, applicationRevision, versionKey);
-            response.status = 200;
-            response.message = "Application is successfully stopped.";
+            if (applicationModule.waitForPodToGetDeleted(applicationName, applicationRevision, versionKey)) {
+                // update application status to stopped
+                applicationModule.updateApplicationStatus(versionKey, APPLICATION_STOPPED);
+                applicationModule.deleteEventsOfAppVersions(versionKey);
+                response.status = 200;
+                response.message = "Application is successfully stopped.";
+            } else {
+                response.status = 504;
+                response.message = "Timeout from kubernetes cluster";
+            }
         } catch (e) {
-            var msg = "Error while waiting for the pod to get deleted for application " + applicationName +
-                        " and version " + applicationRevision ;
+            var msg = "Error while waiting for the pod to get deleted for application: " + applicationName +
+                    " and version: " + applicationRevision;
             log.error(msg);
             log.error(e);
             response.status = 500;
@@ -179,11 +182,23 @@ var log = new Log();
         var conSpecCpu = request.getParameter("conSpecCpu");
 
         // redeploy application from kubernetes
-        applicationModule.redeployVersion(applicationName, applicationRevision, versionKey, conSpecMemory, conSpecCpu);
-
-        response.status = 200;
-        response.message = "Application is successfully redeployed.";
-
+        try {
+            if (applicationModule.redeployVersion(applicationName, applicationRevision, versionKey, conSpecMemory,
+                            conSpecCpu)) {
+                response.status = 200;
+                response.message = "Application is successfully redeployed.";
+            } else {
+                response.status = 504;
+                response.message = "Timeout from kubernetes cluster";
+            }
+        } catch (e) {
+            var msg = "Error while waiting for the pod to get deleted for application: " + applicationName +
+                    " and version: " + applicationRevision;
+            log.error(msg);
+            log.error(e);
+            response.status = 500;
+            response.content = msg;
+        }
     }else if(action == "startApplication"){
         var applicationName = request.getParameter("applicationName");
         var applicationRevision = request.getParameter("applicationRevision");
