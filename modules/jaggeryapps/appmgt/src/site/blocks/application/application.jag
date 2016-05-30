@@ -36,7 +36,7 @@ var log = new Log();
         var applicationRevision = request.getParameter("applicationRevision");
         applicationModule.uploadExistingArchive(uploadedArtifact, appTypeName, applicationName, applicationRevision);
         response.status = 200;
-        response.message = "Artifact is successfully uploaded!";
+        response.content = "Artifact is successfully uploaded!";
 
     } else if (action == "createApplication") {
         var applicationDescription = request.getParameter("applicationDescription");
@@ -75,7 +75,7 @@ var log = new Log();
         var versionHashId = applicationModule.getVersionHashId(applicationName, applicationRevision);
         if (applicationModule.isAplicationVersionExist(versionHashId)) {
             response.status = 400; // bad request
-            response.message = "Application with same name and version already exists!";
+            response.content = "Application with same name and version already exists!";
         } else {
             var isAppCountLowerThanMax = false;
 
@@ -129,7 +129,7 @@ var log = new Log();
                                 isNewVersion, conSpecMemory, conSpecCpu, appCreationMethod);
                     }
                     response.status = 200;
-                    response.message = "Application creation is successfully submitted";
+                    response.content = "Application creation is successfully submitted";
                 } else {
                     if (conSpecMemory > 512) {
                         log.warn("Application creation request not accepted because the maximum memory limit of " +
@@ -140,11 +140,11 @@ var log = new Log();
                                 + "specification is 300.");
                     }
                     response.status = 400; //bad request
-                    response.message = "Maximum limit of conSpecMemory is 512 and conSpecCpu 300";
+                    response.content = "Maximum limit of conSpecMemory is 512 and conSpecCpu 300";
                 }
             } else {
                 response.status = 400; //bad request
-                response.message = "Maximum number of applications that you can create is " + maxAppCount;
+                response.content = "Maximum number of applications that you can create is " + maxAppCount;
             }
         }
     }else if(action == "stopApplication"){
@@ -159,7 +159,7 @@ var log = new Log();
         applicationModule.deleteEventsOfAppVersions(versionKey);
 
         response.status = 200;
-        response.message = "Application is successfully stopped.";
+        response.content = "Application is successfully stopped.";
 
     } else if(action == "redeployApplication"){
         var applicationName = request.getParameter("applicationName");
@@ -172,7 +172,7 @@ var log = new Log();
         applicationModule.redeployVersion(applicationName, applicationRevision, versionKey, conSpecMemory, conSpecCpu);
 
         response.status = 200;
-        response.message = "Application is successfully redeployed.";
+        response.content = "Application is successfully redeployed.";
 
     }else if(action == "startApplication"){
         var applicationName = request.getParameter("applicationName");
@@ -191,7 +191,7 @@ var log = new Log();
         }
 
         response.status = 200;
-        response.message = "Application starting requested is completed successfully.";
+        response.content = "Application starting requested is completed successfully.";
         print(stringify(versions));
     } else if (action == "getApplicationCreationEvents") {
         var applicationName = request.getParameter("applicationName");
