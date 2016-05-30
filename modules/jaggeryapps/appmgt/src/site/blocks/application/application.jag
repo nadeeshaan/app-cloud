@@ -70,7 +70,7 @@ var log = new Log();
         var conSpecCpu = request.getParameter("conSpecCpu");
         var artifactUrl = request.getParameter("artifactUrl");
         var appCreationMethod = request.getParameter("appCreationMethod");
-
+        var oldHashId = request.getParameter("oldHashId");
         // checking whether an application with same name and same version, already exists or not
         var versionHashId = applicationModule.getVersionHashId(applicationName, applicationRevision);
         if (applicationModule.isAplicationVersionExist(versionHashId)) {
@@ -117,7 +117,7 @@ var log = new Log();
                     if (uploadedFileName) {
                         applicationModule.addApplication(applicationName, applicationRevision, applicationDescription, replicas,
                                 runtimeId, appTypeName, runtimeProperties, tags, appIcon,
-                                uploadedFileName, isNewVersion, conSpecMemory, conSpecCpu, artifactUrl, appCreationMethod);
+                                uploadedFileName, isNewVersion, conSpecMemory, conSpecCpu, artifactUrl, appCreationMethod, oldHashId);
                     } else {
                         var gitRepoUrl = request.getParameter("gitRepoUrl");
                         var gitRepoBranch = request.getParameter("gitRepoBranch");

@@ -50,8 +50,9 @@ var Arrays = Packages.java.util.Arrays;
  * @param uploadedArtifact the uploaded artifact file
  * @param runtimeId runtime id of the application
  */
-var addApplication = function (applicationName, versionName, applicationDescription, replicas,
-                               runtimeId, appTypeName, runtimePropertiesArray, tagArray, appIcon, uploadedFileName, isNewVersion, conSpecMemory, conSpecCpu, artifactUrl, appCreationMethod) {
+var addApplication = function (applicationName, versionName, applicationDescription, replicas,runtimeId, appTypeName,
+                               runtimePropertiesArray, tagArray, appIcon, uploadedFileName, isNewVersion, conSpecMemory,
+                               conSpecCpu, artifactUrl, appCreationMethod, oldHashId) {
 
     log.info("Started creating App => name : " + applicationName + " Version : " + versionName + " Description " +
              ": " + applicationDescription + " runtimeId : " + runtimeId + " apptype : " + appTypeName );
@@ -78,6 +79,9 @@ var addApplication = function (applicationName, versionName, applicationDescript
     var hostName = constructAppLaunchURL(applicationName, versionName);
 
 
+    if(oldHashId){
+        renameDirectory(oldHashId, versionHashId, uploadedFileName);
+    }
     var absFileUploadedPath =  createDockerFile(applicationName, versionName, runtimeId, uploadedFileName, versionHashId, dockerOpClient, artifactUrl, hostName, appCreationMethod, runtimeProperties);
     buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerOpClient);
     pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerOpClient);
@@ -1172,6 +1176,20 @@ var uploadExistingArchive = function (uploadedArtifact, appTypeName, application
     }
 
     uploadedArtifact.move(uploadApplicationTmpPath);
+};
+
+var renameDirectory = function (oldHashId, newHashId) {
+    try {
+        var fileUtils = Packages.org.apache.commons.io.FileUtils;
+        var oldDirPath = modManager.getPropertyValue(PROPERTY_APPMGT_DEPLOYMENT_DIR_PATH) + constructFileUploadPath(oldHashId);
+        var oldDir = new Packages.java.io.File(oldDirPath);
+        var newDirPath = modManager.getPropertyValue(PROPERTY_APPMGT_DEPLOYMENT_DIR_PATH) + constructFileUploadPath(newHashId);
+        var newDir = new Packages.java.io.File(newDirPath);
+        fileUtils.moveDirectory(oldDir,newDir);
+    } catch (e) {
+        log.error("Error while moving directories from : " + oldHashId  + " to : " + newHashId);
+        log.error(e);
+    }
 };
 
 var isFileExtZIP = function (uploadedFileName) {
