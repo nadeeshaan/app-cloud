@@ -86,6 +86,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var isNewVersion = false;
     var allowedRuntimeContainerSpecJson = jQuery.parseJSON('<%=allowedRuntimeContainerSpecJson%>');
     var containerSpecNamesJson = [];
+    var versionHashIdAtFileUpload;
 
     $(document).ready(function(){
 
@@ -218,28 +219,38 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 var runtimeProperties = getProperties("env-pane");
                 var tags = getProperties("tags-pane");
                 var formData = new FormData($(this)[0]);
-                formData.append('runtimeProperties', JSON.stringify(runtimeProperties));
-                formData.append('action', 'createApplication');
-                formData.append('isNewVersion', isNewVersion);
-                formData.append('appTypeName', appTypeName);
-                formData.append('applicationName', $("#applicationName").val());
-                var optionRuntime = $("#runtime option:selected").val();
-                var optionSpec = $("#container option:selected").index();
-                var optionConSpecCpu = specCpu[optionSpec];
-                var optionConSpecMemory = specMemory[optionSpec];
-                var optionConSpecCost = specCost[optionSpec];
+                var url = $(this).attr("action");
 
-                formData.append('runtime', optionRuntime);
-                formData.append('conSpecMemory', optionConSpecMemory);
-                formData.append('conSpecCost', optionConSpecCost);
-                formData.append('conSpecCpu', optionConSpecCpu);
-
-                if(uploadMethod === "file"){
-                    formData.append('uploadedFileName', $("#uploadedFileName").val());
-                    formData.append('appCreationMethod', 'default');
-                } else if (uploadMethod === "url" ) {
-                    formData.append('appCreationMethod', 'url');
-                    formData.append('artifactUrl', $("#artifactUrl").val());
+                jagg.post("../blocks/application/application.jag", {
+                    action:"getVersionHashId",
+                    applicationName:$("#applicationName").val(),
+                    applicationRevision:$("#applicationRevision").val()
+                },function (result) {
+                    result = result.replace(/\r?\n|\r/g, " ").trim();
+                    if(uploadMethod === "file" && versionHashIdAtFileUpload != result){
+                        // application name has  been changed after file upload
+                        formData.append('oldHashId', versionHashIdAtFileUpload);
+                    }
+                    formData.append('runtimeProperties', JSON.stringify(runtimeProperties));
+                    formData.append('action', 'createApplication');
+                    formData.append('isNewVersion', isNewVersion);
+                    formData.append('appTypeName', appTypeName);
+                    formData.append('applicationName', $("#applicationName").val());
+                    var optionRuntime = $("#runtime option:selected").val();
+                    var optionSpec = $("#container option:selected").index();
+                    var optionConSpecCpu = specCpu[optionSpec];
+                    var optionConSpecMemory = specMemory[optionSpec];
+                    var optionConSpecCost = specCost[optionSpec];
+                    formData.append('runtime', optionRuntime);
+                    formData.append('conSpecMemory', optionConSpecMemory);
+                    formData.append('conSpecCost', optionConSpecCost);
+                    formData.append('conSpecCpu', optionConSpecCpu);
+                    if(uploadMethod === "file"){
+                        formData.append('uploadedFileName', $("#uploadedFileName").val());
+                        formData.append('appCreationMethod', 'default');
+                    } else if (uploadMethod === "url" ) {
+                        formData.append('appCreationMethod', 'url');
+                        formData.append('artifactUrl', $("#artifactUrl").val());
                     if (appTypeName == "war") {
                         formData.append('uploadedFileName', "VERSION_HASH_ID.war");
                     } else if (appTypeName == "mss") {
@@ -247,31 +258,29 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     } else if (appTypeName == "php" || appTypeName == "jaggery") {
                         formData.append('uploadedFileName', "VERSION_HASH_ID.zip");
                     }
-                } else if (uploadMethod === "github" ) {
-                    formData.append('appCreationMethod', 'github');
-                    formData.append('gitRepoUrl', $("#gitRepoUrl").val());
-                    formData.append('gitRepoBranch', $("#gitRepoBranch").val());
-                    if($("#projectRoot").val()){
-                        formData.append('projectRoot', $("#projectRoot").val());
-                    }else{
-                        formData.append('projectRoot', "/");
+                    } else if (uploadMethod === "github" ) {
+                        formData.append('appCreationMethod', 'github');
+                        formData.append('gitRepoUrl', $("#gitRepoUrl").val());
+                        formData.append('gitRepoBranch', $("#gitRepoBranch").val());
+                        if($("#projectRoot").val()){
+                            formData.append('projectRoot', $("#projectRoot").val());
+                        } else {
+                            formData.append('projectRoot', "/");
+                        }
+                        formData.append('token', $("#token").val());
+                        // Add github url as a tag
+                        if ('<%=newVersion%>' == 'null') {
+                            var property = {};
+                            property["key"] = "gitRepoUrl";
+                            property["value"] = $("#gitRepoUrl").val();
+                            tags.push(property);
+                        }
                     }
-                    formData.append('token', $("#token").val());
-
-                    // Add github url as a tag
-                    if ('<%=newVersion%>' == 'null') {
-                        var property = {};
-                        property["key"] = "gitRepoUrl";
-                        property["value"] = $("#gitRepoUrl").val();
-                        tags.push(property);
-                    }
-                }
-                formData.append('tags', JSON.stringify(tags));
-                $.ajax({
-                        url: $(this).attr("action"),
+                    formData.append('tags', JSON.stringify(tags));
+                    $.ajax({
+                        url: url,
                         type: 'POST',
                         data: formData,
-                        async: true,
                         success: function(data) {
                             if (isNewVersion) {
                                 jagg.message({
@@ -288,6 +297,10 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     });
 
                 return false;
+
+                },function (jqXHR, textStatus, errorThrown) {
+                    jagg.message({content: "Error occurred getting version hash.", type: 'error', id:'view_log'});
+                });
             });
 
             $('#fileupload').fileupload({
@@ -310,7 +323,17 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         progress + '%'
                     );
                     if (progress == 100) {
-                        activateCreateApplication();
+                        jagg.post("../blocks/application/application.jag", {
+                            action:"getVersionHashId",
+                            applicationName:$("#applicationName").val(),
+                            applicationRevision:$("#applicationRevision").val()
+                        },function (result) {
+                            result = result.replace(/\r?\n|\r/g, " ").trim();
+                            versionHashIdAtFileUpload = result;
+                            activateCreateApplication();
+                        },function (jqXHR, textStatus, errorThrown) {
+                            jagg.message({content: "Error occurred while getting version hash.", type: 'error', id:'view_log'});
+                        });
                     }
                 },
                 change: function(e, data) {
@@ -336,7 +359,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
             jagg.post("../blocks/application/application.jag", {
                 action:"getApplicationCreationEvents",
                 applicationName:$("#applicationName").val(),
-                applicationRevision:$("#applicationRevision").val(),
+                applicationRevision:$("#applicationRevision").val()
 
             },function (result) {
                 $("#progress_table").html("");
@@ -635,9 +658,13 @@ jagg.template("application", function (inputs, outputs, jagg) {
             });
         }
 
+        // radio buttons are disabled untill application name is set
+        $('input[name=fileUploadRadioOptions]').prop("disabled",true);
+        $('input[name=fileUploadRadioOptions]').prop("title","This option is disabled, Please enter a application name first");
         var createNewAppForm = $("#applicationName");
-        createNewAppForm.on('focusout ', function () {
+        createNewAppForm.on('focusout keyup blur click', function () {
             checkApplicationExistence();
+            enableRadioButtons();
         });
 
         var appNameField = $("#application-details");
@@ -684,6 +711,17 @@ jagg.template("application", function (inputs, outputs, jagg) {
         validateArtifactURL($('#artifactUrl').val());
     }
 
+    function enableRadioButtons(){
+    if ($('#applicationName').val() && $('#applicationRevision').val()) {
+        $('input[name=fileUploadRadioOptions]').prop("disabled",false);
+        $('input[name=fileUploadRadioOptions]').removeProp("title");
+
+    } else {
+        $('input[name=fileUploadRadioOptions]').prop("disabled",true);
+        $('input[name=fileUploadRadioOptions]').prop("title","This option is disabled, Please enter a application name first");
+
+        }
+    }
     function checkApplicationExistence(){
         jagg.post("../blocks/application/application.jag", {
             action:"getApplicationHashIdByName",
@@ -845,7 +883,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
         <div class="action-bar">
 
         <%
-        if(newVersion){
+    if(newVersion){
         %>
             <a onclick="goBack();" class="btn-action">
                 <span class="fw-stack fw-lg btn-action-ico">
@@ -854,7 +892,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 </span> Back to App Home
             </a>
         <%
-        } else {
+    } else {
         %>
             <a href="<%=jagg.getAbsoluteUrl("/site/pages/select-apptype.jag")%>" class="btn-action">
                 <span class="fw-stack fw-lg btn-action-ico">
@@ -869,9 +907,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 </span> Cancel
             </a>
         <%
-        }
-        %>
-    </div>
+    }
+    %>
+</div>
 <!-- EOF App Cloud menu actionbar-->
 
 <div class="container-fluid cloud-container" id="outerContainer">
@@ -928,11 +966,11 @@ jagg.template("application", function (inputs, outputs, jagg) {
 
             <div class="form-group col-md-12">
                 <label class="radio-inline">
-                    <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="upload-from-file"
+                    <input type="radio" name="fileUploadRadioOptions" id="inlineRadio1" value="upload-from-file"
                            checked="checked" class="custom-radio"> Upload from file system
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="upload-from-url"
+                    <input type="radio" name="fileUploadRadioOptions" id="inlineRadio2" value="upload-from-url"
                            class="custom-radio"> Upload from URL
                 </label>
 		<label class="radio-inline">
@@ -941,7 +979,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 </label>
                 <%  if(isAppTypeBuildable == 'false'){ %>
                     <label class="radio-inline">
-                        <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="github-repo-url"
+                        <input type="radio" name="fileUploadRadioOptions" id="inlineRadio3" value="github-repo-url"
                                class="custom-radio"> Connect to GitHub repo
                     </label>
                 <% } %>
