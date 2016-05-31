@@ -37,6 +37,7 @@ var KUB_SERVICE_PROTOCOL = "TCP";
 var DASHBOARD_BASE_URL="https://analytics.cloud.wso2.com/monitoring/webapps/";
 var NOT_ALLOWED_ENV_VARIABLES = "EnvironmentVariables.NotAllowedVariables";
 var POD_DELETE_TIMEOUT = "Pod.Delete.Timeout";
+var POD_DELETE_WAIT = "Pod.Delete.Wait";
 
 //events related constants
 var DATABASE_ADD = "Adding application to database";

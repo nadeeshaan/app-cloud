@@ -23,6 +23,7 @@ include('/jagg/constants.jag');
 var action = request.getParameter("action");
 var applicationModule = jagg.module("application");
 var gitHubAppModule = jagg.module("application/git");
+var modManager = jagg.module("manager");
 var log = new Log();
 (function(){
     if (!jagg.getUser()) {
@@ -151,6 +152,7 @@ var log = new Log();
         var applicationName = request.getParameter("applicationName");
         var applicationRevision = request.getParameter("applicationRevision");
         var versionKey = request.getParameter("versionKey");
+        var podDeleteTimeOut = modManager.getPropertyValue(POD_DELETE_TIMEOUT);
 
         // delete application from kubernetes
         applicationModule.deleteApplicationFromKubernetes(versionKey);
@@ -164,7 +166,8 @@ var log = new Log();
                 response.message = "Application is successfully stopped.";
             } else {
                 response.status = 504;
-                response.message = "Timeout from kubernetes cluster";
+                response.message = "Unable to stop application within the time period of " + podDeleteTimeOut + ". " +
+                        "Please submit request again.";
             }
         } catch (e) {
             var msg = "Error while waiting for the pod to get deleted for application: " + applicationName +
@@ -180,6 +183,7 @@ var log = new Log();
         var versionKey = request.getParameter("versionKey");
         var conSpecMemory = request.getParameter("conSpecMemory");
         var conSpecCpu = request.getParameter("conSpecCpu");
+        var podDeleteTimeOut = modManager.getPropertyValue(POD_DELETE_TIMEOUT);
 
         // redeploy application from kubernetes
         try {
@@ -189,7 +193,8 @@ var log = new Log();
                 response.message = "Application is successfully redeployed.";
             } else {
                 response.status = 504;
-                response.message = "Timeout from kubernetes cluster";
+                response.message = "Unable to stop application within the time period of " + podDeleteTimeOut + ". " +
+                        "Please submit request again.";
             }
         } catch (e) {
             var msg = "Error while waiting for the pod to get deleted for application: " + applicationName +

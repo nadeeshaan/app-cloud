@@ -1579,20 +1579,16 @@ var waitForPodToGetDeleted = function(applicationName, versionName, versionHashI
         var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(applicationName, versionName, null,
                 modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
         var podList = null;
-        var podDeleteWaitCounter = 0;
+        //Maximum waiting time to check if the pod gets completely deleted (in milliseconds)
         var timeOut = modManager.getPropertyValue(POD_DELETE_TIMEOUT);
+        //Waiting time between calls made to check if pod has been deleted (in milliseconds)
+        var waitTimePeriod = modManager.getPropertyValue(POD_DELETE_WAIT);
 
-        while (podDeleteWaitCounter < timeOut) {
-            java.lang.Thread.sleep(10000);
+        for(var podDeleteWaitCounter = 0; podDeleteWaitCounter < timeOut; podDeleteWaitCounter += waitTimePeriod){
+            java.lang.Thread.sleep(waitTimePeriod);
             podList = KubernetesProvisioningUtils.getPods(applicationCtx).getItems();
-            podDeleteWaitCounter = podDeleteWaitCounter + 10000;
-            if (podList != null) {
-                if (podList.size() == 0) {
-                    isPodDeleted = true;
-                    break;
-                }
-            }
-            if (podDeleteWaitCounter == timeOut) {
+            if ((podList != null) && (podList.size() == 0)) {
+                isPodDeleted = true;
                 break;
             }
         }
