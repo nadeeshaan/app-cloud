@@ -36,12 +36,10 @@ var log = new Log('site/blocks/admin/admin.jag');
             adminModule.stopIdleApplicationsByRunningTimePeriod(numberOfHours);
 
             response.status = 200;
-            response.message = "Idle applications are successfully stopped.";
-            print(response);
+            response.content = "Idle applications are successfully stopped.";
         } catch (e) {
             response.status = 400;
-            response.message = "Some of idle applications could not be stopped.";
-            print(response);
+            response.content = "Some of idle applications could not be stopped.";
         }
     } else if (action == "whiteListApplicationVersion") {
         var applicationName = request.getParameter("applicationName");
@@ -51,12 +49,10 @@ var log = new Log('site/blocks/admin/admin.jag');
             adminModule.whiteListApplicationVersion(applicationName, applicationRevision, tenantDomain);
 
             response.status = 200;
-            response.message = "White listed the given application version.";
-            print(response);
+            response.content = "White listed the given application version.";
         } catch (e) {
             response.status = 400;
-            response.message = "White listing application version failed.";
-            print(response);
+            response.content = "White listing application version failed.";
         }
     } else if (action == "whiteListTenant") {
         var tenantDomain = request.getParameter("tenantDomain");
@@ -65,12 +61,47 @@ var log = new Log('site/blocks/admin/admin.jag');
             adminModule.whiteListTenant(tenantDomain, maxAppCount);
 
             response.status = 200;
-            response.message = "White listed the given tenant.";
-            print(response);
+            response.content = "White listed the given tenant.";
         } catch (e) {
             response.status = 400;
-            response.message = "White listing tenant failed.";
-            print(response);
+            response.content = "White listing tenant failed.";
+        }
+    } else if (action == "getApplicationVersions") {
+        var tenantDomain = request.getParameter("tenantDomain");
+        var applicationName = request.getParameter("applicationName");
+
+        try {
+            var applicationVersionList = adminModule.getApplicationVersions(tenantDomain, applicationName);
+            print(applicationVersionList);
+        } catch (e) {
+            response.status = 400;
+            response.content = "Get list of application failed";
+        }
+    } else if (action == "getTenantMaxAppCount") {
+        var tenantDomain = request.getParameter("tenantDomain");
+
+        try {
+            var maxApplicationCount = adminModule.getTenantAppMaxCount(tenantDomain);
+            print(maxApplicationCount);
+        } catch (e) {
+            response.status = 400;
+            response.content = "Get list of max application count failed.";
+        }
+    } else if (action == "updateConSpec") {
+        var applicationName = request.getParameter("applicationName");
+        var applicationRevision = request.getParameter("applicationRevision");
+        var tenantDomain = request.getParameter("tenantDomain");
+        var memory = request.getParameter("memory");
+        var cpu = request.getParameter("cpu");
+
+        try {
+            adminModule.updateContainerSpecification(tenantDomain, applicationName, applicationRevision, memory, cpu);
+            
+            response.status = 200;
+            response.content = "Cpu and Memory increased for given application version";
+        } catch (e) {
+            response.status = 400;
+            response.content = "Cpu and Memory increased failed for given application version";
         }
     } else  {
         throw new Error("No action specified for: " + action);

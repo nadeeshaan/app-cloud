@@ -26,6 +26,15 @@ jagg.module("admin", {
     },
     whiteListTenant:function () {
         return jagg.require(jagg.getModulesDir() + "admin/admin.jag").whiteListTenant.apply(this, arguments);
+    },
+    getApplicationVersions: function () {
+        return jagg.require(jagg.getModulesDir() + "admin/admin.jag").getApplicationVersions.apply(this, arguments);
+    },
+    getTenantAppMaxCount: function () {
+        return jagg.require(jagg.getModulesDir() + "admin/admin.jag").getTenantAppMaxCount.apply(this, arguments);
+    },
+    updateContainerSpecification: function () {
+        return jagg.require(jagg.getModulesDir() + "admin/admin.jag").updateContainerSpecification.apply(this, arguments);
     }
 });
 %>

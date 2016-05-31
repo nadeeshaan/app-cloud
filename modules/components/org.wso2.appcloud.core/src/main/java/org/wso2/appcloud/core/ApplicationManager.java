@@ -701,4 +701,23 @@ public class ApplicationManager {
 			DBUtil.closeConnection(dbConnection);
 		}
 	}
+
+    public static boolean updateContainerSpecification(String versionHashId, int memory, int cpu)
+            throws AppCloudException {
+        ApplicationDAO applicationDAO = new ApplicationDAO();
+        Connection dbConnection = DBUtil.getDBConnection();
+        boolean isUpdatedSuccess = false;
+
+        try {
+            isUpdatedSuccess = applicationDAO.updateContainerSpecification(dbConnection, versionHashId, memory, cpu);
+            dbConnection.commit();
+        } catch (SQLException e) {
+            String message = "Error while updating container specification with application hash id : " + versionHashId;
+            throw new AppCloudException(message, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+
+        return isUpdatedSuccess;
+    }
 }
