@@ -109,7 +109,7 @@ var log = new Log();
 
             if (isAppCountLowerThanMax) {
                 //Check for the memory and cpu values of the application creation request
-                if ((conSpecMemory <= 512) && (conSpecCpu <= 300)) {
+                if ((conSpecMemory <= 1024) && (conSpecCpu <= 500)) {
                     if (isFileAttached) {
                         applicationModule.uploadExistingArchive(uploadedArtifact, appTypeName, applicationName,
                                 applicationRevision);
