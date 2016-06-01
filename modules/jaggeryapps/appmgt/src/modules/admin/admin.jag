@@ -85,7 +85,6 @@ var getApplicationVersions = function (tenantDomain, applicationName) {
 
     try {
         var versions = ApplicationManager.getAllVersionsOfApplication(applicationHashId);
-        log.info(versions);
         for (var i = 0; i < versions.size(); i++) {
             var versionObj = {};
             versionObj.versionName = versions.get(i).versionName;
