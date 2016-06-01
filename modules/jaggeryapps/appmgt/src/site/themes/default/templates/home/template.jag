@@ -346,7 +346,6 @@ jagg.template("home", function(inputs, outputs, jagg) {
   // stop application
     function redeployApplication(){
         $("#redeploy-in-progress").html("<i class=\"fa fa-circle-o-notch fa-spin\"></i>");
-        //executeAsync(waitAndReloadAfterStop());
         executeAsync(drawProgressWindow("Redeploying..."));
         jagg.post("../blocks/application/application.jag", {
             action: "redeployApplication",
@@ -355,28 +354,52 @@ jagg.template("home", function(inputs, outputs, jagg) {
             versionKey: selectedApplicationRevision.hashId,
             conSpecCpu: conSpecCpu,
             conSpecMemory: conSpecMemory
-        }, function (result) {
-            jagg.message({content: "Application redeployed successfully.", type: 'info'});
+        }, function(result) {
+            setTimeout(reloadAppHome, 2000);
+            jagg.message({
+                content: "Application redeployed successfully.",
+                type: 'info',
+                timeout: '5000'
+            });
+        }, function(jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status == 504) {
+                setTimeout(reloadAppHome, 2000);
+                jagg.message({
+                    content: "Unable to redeploy application. Please submit redeploy request again.",
+                    type: 'error',
+                    id: 'view_log',
+                    timeout: '5000'
+                });
+            }
         });
     }
 
     // stop application
     function stopApplication(){
         $("#stop-in-progress").html("<i class=\"fa fa-circle-o-notch fa-spin\"></i>");
-        executeAsync(waitAndReloadAfterStop());
         jagg.post("../blocks/application/application.jag", {
             action: "stopApplication",
             applicationName: applicationName,
             applicationRevision: selectedRevision,
             versionKey: selectedApplicationRevision.hashId
-
-        }, function (result) {
-            jagg.message({content: "Application stop request is submitted successfully.", type: 'info'});
+        }, function(result) {
+            setTimeout(reloadAppHome, 2000);
+            jagg.message({
+                content: "Application stopped successfully.",
+                type: 'info',
+                timeout: '5000'
+            });
+        }, function(jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status == 504) {
+                setTimeout(reloadAppHome, 2000);
+                jagg.message({
+                    content: "Unable to stop application. Please submit stop request again.",
+                    type: 'error',
+                    id: 'view_log',
+                    timeout: '5000'
+                });
+            }
         });
-    }
-
-    function waitAndReloadAfterStop(){
-        setTimeout(reloadAppHome, 5000);
     }
 
     function reloadAppHome(){
@@ -479,14 +502,20 @@ jagg.template("home", function(inputs, outputs, jagg) {
             for(var i = 0; i < result.length; i++){
                 var statusStyle;
                 var event = result[i];
-                if(event.name === "Status" && event.status === "success"){
+                if (event.name === "Status" && event.status === "success") {
                     setTimeout(redirectAppHome, 4250);
                     function redirectAppHome(){
                         window.location.replace("home.jag?applicationKey=<%=applicationKey%>");
-
                     }
-                } else if(event.status == "failed"){
-                    jagg.message({content: "Error occurred while creating application.", type: 'error'});
+                } else if(event.status == "failed") {
+                    //When redeploying an application the associated pod is deleted and an event with the name
+                    //"Stopping Containers" is persisted in the database. Due to the pod not getting deleted within the
+                    //specified time period the "Stopping Containers" event gets a status of "failed". Since only
+                    //application deletion is involved with the "Stopping Containers" event if the event name is
+                    //"Stopping Containers" the following message is not displayed
+                    if (event.name !== "Stopping Containers") {
+                        jagg.message({content: "Error occurred while creating application.", type: 'error'});
+                    }
                     setTimeout(redirectAppListing, 5000);
                     function redirectAppListing(){
                         window.location.replace("index.jag");

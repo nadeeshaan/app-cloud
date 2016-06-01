@@ -23,6 +23,7 @@ include('/jagg/constants.jag');
 var action = request.getParameter("action");
 var applicationModule = jagg.module("application");
 var gitHubAppModule = jagg.module("application/git");
+var modManager = jagg.module("manager");
 var log = new Log();
 (function(){
     if (!jagg.getUser()) {
@@ -151,29 +152,59 @@ var log = new Log();
         var applicationName = request.getParameter("applicationName");
         var applicationRevision = request.getParameter("applicationRevision");
         var versionKey = request.getParameter("versionKey");
+        var podDeleteTimeOut = modManager.getPropertyValue(POD_DELETE_TIMEOUT);
 
         // delete application from kubernetes
         applicationModule.deleteApplicationFromKubernetes(versionKey);
-        // update application status to stopped
-        applicationModule.updateApplicationStatus(versionKey, APPLICATION_STOPPED);
-        applicationModule.deleteEventsOfAppVersions(versionKey);
 
-        response.status = 200;
-        response.content = "Application is successfully stopped.";
-
+        //Wait for the pod to get completely deleted
+        try {
+            if (applicationModule.waitForPodToGetDeleted(applicationName, applicationRevision, versionKey)) {
+                // update application status to stopped
+                applicationModule.updateApplicationStatus(versionKey, APPLICATION_STOPPED);
+                applicationModule.deleteEventsOfAppVersions(versionKey);
+                response.status = 200;
+                response.message = "Application is successfully stopped.";
+            } else {
+                response.status = 504;
+                response.message = "Unable to stop application within the time period of " + podDeleteTimeOut + ". " +
+                        "Please submit request again.";
+            }
+        } catch (e) {
+            var msg = "Error while waiting for the pod to get deleted for application: " + applicationName +
+                    " and version: " + applicationRevision;
+            log.error(msg);
+            log.error(e);
+            response.status = 500;
+            response.content = msg;
+        }
     } else if(action == "redeployApplication"){
         var applicationName = request.getParameter("applicationName");
         var applicationRevision = request.getParameter("applicationRevision");
         var versionKey = request.getParameter("versionKey");
         var conSpecMemory = request.getParameter("conSpecMemory");
         var conSpecCpu = request.getParameter("conSpecCpu");
+        var podDeleteTimeOut = modManager.getPropertyValue(POD_DELETE_TIMEOUT);
 
         // redeploy application from kubernetes
-        applicationModule.redeployVersion(applicationName, applicationRevision, versionKey, conSpecMemory, conSpecCpu);
-
-        response.status = 200;
-        response.content = "Application is successfully redeployed.";
-
+        try {
+            if (applicationModule.redeployVersion(applicationName, applicationRevision, versionKey, conSpecMemory,
+                            conSpecCpu)) {
+                response.status = 200;
+                response.message = "Application is successfully redeployed.";
+            } else {
+                response.status = 504;
+                response.message = "Unable to stop application within the time period of " + podDeleteTimeOut + ". " +
+                        "Please submit request again.";
+            }
+        } catch (e) {
+            var msg = "Error while waiting for the pod to get deleted for application: " + applicationName +
+                    " and version: " + applicationRevision;
+            log.error(msg);
+            log.error(e);
+            response.status = 500;
+            response.content = msg;
+        }
     }else if(action == "startApplication"){
         var applicationName = request.getParameter("applicationName");
         var applicationRevision = request.getParameter("applicationRevision");
@@ -190,8 +221,6 @@ var log = new Log();
             applicationModule.stopOtherVersions(applicationHashId, applicationRevision);
         }
 
-        response.status = 200;
-        response.content = "Application starting requested is completed successfully.";
         print(stringify(versions));
     } else if (action == "getApplicationCreationEvents") {
         var applicationName = request.getParameter("applicationName");
