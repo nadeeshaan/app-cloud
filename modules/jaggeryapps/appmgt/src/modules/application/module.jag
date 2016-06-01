@@ -229,6 +229,9 @@ jagg.module("application", {
     },
     getVersionsOfApplication: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").getVersionsOfApplication.apply(this, arguments);
+    },
+    waitForPodToGetDeleted: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").waitForPodToGetDeleted.apply(this, arguments);
     }
 });
 %>

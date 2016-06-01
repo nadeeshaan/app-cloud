@@ -446,7 +446,7 @@ var deployApplication = function(applicationName, versionName, deploymentConfig,
     }
 
     counter = 0;
-    var timeOut = modManager.getPropertyValue(POD_TIMEOUT);;
+    var timeOut = modManager.getPropertyValue(POD_TIMEOUT);
     while(counter < timeOut){ // Waiting 1 minutes to gets pods up and running
         java.lang.Thread.sleep(1000);
         podStatus = KubernetesProvisioningUtils.getPodStatus(applicationCtx);
@@ -505,11 +505,25 @@ var updateApplicationStatus = function(versionHashId, status){
 };
 
 var redeployVersion = function(applicationName, versionName, versionHashId, conSpecMemory, conSpecCpu){
-    deleteApplicationFromKubernetes(versionHashId);
-    updateApplicationStatus(versionHashId, APPLICATION_STOPPED);
-    deleteEventsOfAppVersions(versionHashId);
-    redeployApplication(applicationName, versionName, versionHashId, conSpecMemory, conSpecCpu);
-    return true;
+    try {
+        deleteApplicationFromKubernetes(versionHashId);
+        deleteEventsOfAppVersions(versionHashId);
+        var msg = "Successfully triggered stopping container";
+        addEvent(STOP_CONTAINERS, EVENT_PENDING, msg, versionHashId);
+        if (waitForPodToGetDeleted(applicationName, versionName, versionHashId)) {
+            updateApplicationStatus(versionHashId, APPLICATION_STOPPED);
+            msg = "Successfully completed stopping container";
+            addEvent(STOP_CONTAINERS, EVENT_SUCCEEDED, msg, versionHashId);
+            redeployApplication(applicationName, versionName, versionHashId, conSpecMemory, conSpecCpu);
+            return true;
+        } else {
+            msg = "Stopping container failed ";
+            addEvent(STOP_CONTAINERS, EVENT_FAILED, msg, versionHashId);
+            return false;
+        }
+    } catch (e) {
+        throw e;
+    }
 };
 
 var deleteEventsOfAppVersions = function(versionHashId){
@@ -1556,6 +1570,35 @@ var getVersionsOfApplication = function(applicationKey) {
 var getRuntimePropertyMap = function (runtimePropertyArray) {
     var runtimePropertyList = generateRuntimePropsList(runtimePropertyArray);
     return getRuntimeProperties(runtimePropertyList);
+};
+
+var waitForPodToGetDeleted = function(applicationName, versionName, versionHashId){
+    var isPodDeleted = false;
+
+    try {
+        var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(applicationName, versionName, null,
+                modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
+        var podList = null;
+        //Maximum waiting time to check if the pod gets completely deleted (in milliseconds)
+        var timeOut = modManager.getPropertyValue(POD_DELETE_TIMEOUT);
+        //Waiting time between calls made to check if pod has been deleted (in milliseconds)
+        var waitTimePeriod = modManager.getPropertyValue(POD_DELETE_WAIT);
+
+        for(var podDeleteWaitCounter = 0; podDeleteWaitCounter < timeOut; podDeleteWaitCounter += waitTimePeriod){
+            java.lang.Thread.sleep(waitTimePeriod);
+            podList = KubernetesProvisioningUtils.getPods(applicationCtx).getItems();
+            if ((podList != null) && (podList.size() == 0)) {
+                isPodDeleted = true;
+                break;
+            }
+        }
+    } catch (e) {
+        log.error("Error while getting pods list for application: " + applicationName + " and version: " + versionName);
+        log.error(e);
+        throw e;
+    }
+
+    return isPodDeleted;
 };
 
 %>
