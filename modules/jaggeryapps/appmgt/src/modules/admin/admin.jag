@@ -96,6 +96,9 @@ var getApplicationVersions = function (tenantDomain, applicationName) {
             applicationVersions.push(versionObj);
         }
     } catch (e) {
+        log.error("Error while getting version list of the application : " + applicationName + " for tenant : " +
+                tenantDomain);
+        log.error(e);
         throw e;
     }
 
@@ -108,6 +111,8 @@ var getTenantAppMaxCount = function (tenantDomain) {
     try {
         appCountObj.maxAppCount = ApplicationManager.getMaxAppCountForWhiteListedTenants(tenantId);
     } catch (e) {
+        log.error("Error while getting maximum application count for tenant : " + tenantDomain);
+        log.error(e);
         throw e;
     }
     return appCountObj;
@@ -118,6 +123,9 @@ var updateContainerSpecification = function (tenantDomain, applicationName, appl
         var versionHashId = getVersionHashId(applicationName, applicationRevision, tenantDomain);
         ApplicationManager.updateContainerSpecification(versionHashId, parseInt(memory), parseInt(cpu));
     } catch (e) {
+        log.error("Error while updating application container specification of the application : " + applicationName +
+                " for tenant : " + tenantDomain);
+        log.error(e);
         throw e;
     }
 };
