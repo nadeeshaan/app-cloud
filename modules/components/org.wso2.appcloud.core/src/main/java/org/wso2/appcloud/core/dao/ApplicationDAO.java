@@ -778,6 +778,7 @@ public class ApplicationDAO {
                 version.setStatus(resultSet.getString(SQLQueryConstants.STATUS));
                 version.setConSpecCpu(resultSet.getString(SQLQueryConstants.CON_SPEC_CPU));
                 version.setConSpecMemory(resultSet.getString((SQLQueryConstants.CON_SPEC_MEMORY)));
+                version.setIsWhiteListed(resultSet.getInt(SQLQueryConstants.IS_WHITE_LISTED));
                 version.setTags(getAllTagsOfVersion(dbConnection, version.getHashId()));
                 version.setRuntimeProperties(getAllRuntimePropertiesOfVersion(dbConnection, version.getHashId()));
 
@@ -1578,6 +1579,7 @@ public class ApplicationDAO {
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_WHITE_LISTED_TENANT);
 			preparedStatement.setInt(1, tenantId);
 			preparedStatement.setInt(2, maxAppCount);
+            preparedStatement.setInt(3, maxAppCount);
 			preparedStatement.execute();
 		} catch (SQLException e) {
 			String msg = "White listing failed for tenant id : " + tenantId;
@@ -1585,5 +1587,37 @@ public class ApplicationDAO {
 			throw new AppCloudException(msg, e);
 		}
 	}
+
+    /**
+     * Update applications' version container specification.
+     *
+     * @param dbConnection
+     * @param versionHashId
+     * @param memory        container memory
+     * @param cpu           container cpu
+     * @return
+     * @throws AppCloudException
+     */
+    public boolean updateContainerSpecification(Connection dbConnection, String versionHashId, int memory, int cpu)
+            throws AppCloudException {
+        PreparedStatement preparedStatement = null;
+        boolean updated = false;
+
+        try {
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_APP_VERSION_CON_SPEC);
+            preparedStatement.setInt(1, memory);
+            preparedStatement.setInt(2, cpu);
+            preparedStatement.setString(3, versionHashId);
+            updated = preparedStatement.execute();
+        } catch (SQLException e) {
+            String message = "Error while updating container specification with version hash id : " + versionHashId;
+            log.error(message, e);
+            throw new AppCloudException(message, e);
+        } finally {
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
+
+        return updated;
+    }
 
 }

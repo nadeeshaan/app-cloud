@@ -32,6 +32,7 @@ public class Version {
     private Timestamp createdTimestamp;
     private String conSpecCpu;
     private String conSpecMemory;
+    private int isWhiteListed;
 
     public String getVersionName() {
         return versionName;
@@ -119,5 +120,13 @@ public class Version {
 
     public String getConSpecMemory() {
         return conSpecMemory;
+    }
+
+    public int getIsWhiteListed() {
+        return isWhiteListed;
+    }
+
+    public void setIsWhiteListed(int isWhiteListed) {
+        this.isWhiteListed = isWhiteListed;
     }
 }

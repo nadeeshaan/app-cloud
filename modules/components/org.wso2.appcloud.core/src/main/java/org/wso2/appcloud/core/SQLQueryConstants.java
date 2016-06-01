@@ -52,6 +52,7 @@ public class SQLQueryConstants {
     public static final String MAX_APP_COUNT = "max_app_count";
     public static final String CON_SPEC_CPU = "con_spec_cpu";
     public static final String CON_SPEC_MEMORY = "con_spec_memory";
+    public static final String IS_WHITE_LISTED = "is_white_listed";
 
 
 
@@ -92,7 +93,8 @@ public class SQLQueryConstants {
                     "values (?, ?, ?, ?, ?, ?, ?)";
 
 	public static final String ADD_WHITE_LISTED_TENANT =
-			"INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count) values (?, ?)";
+			"INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count) values (?, ?) ON DUPLICATE KEY UPDATE "
+                    + "max_app_count=?";
 
 
 
@@ -216,6 +218,9 @@ public class SQLQueryConstants {
 
 	public static final String  UPDATE_WHITE_LIST_APPLICATION_VERSION = "UPDATE AC_VERSION " +
 	                                                                    "SET is_white_listed=? WHERE hash_id=?";
+
+    public static final String UPDATE_APP_VERSION_CON_SPEC = "UPDATE AC_VERSION SET con_spec_cpu = ?, " +
+            "con_spec_memory = ? WHERE hash_id = ?";
 
 
 

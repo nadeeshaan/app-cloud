@@ -226,6 +226,9 @@ jagg.module("application", {
     },
     getRuntimePropertyMap: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").getRuntimePropertyMap.apply(this, arguments);
+    },
+    getVersionsOfApplication: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").getVersionsOfApplication.apply(this, arguments);
     }
 });
 %>

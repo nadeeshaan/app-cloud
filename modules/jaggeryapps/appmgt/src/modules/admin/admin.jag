@@ -76,6 +76,58 @@ var getVersionHashId = function(applicationName, versionName, tenantDomain){
     var tenantId = modManager.getTenantIdForGivenTenantDomain(tenantDomain);
     var versionHashId = Util.getVersionHashId(applicationName, versionName, tenantId)
     return versionHashId;
-}
+};
+
+var getApplicationVersions = function (tenantDomain, applicationName) {
+    var tenantId = modManager.getTenantIdForGivenTenantDomain(tenantDomain);
+    var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
+    var applicationVersions = [];
+
+    try {
+        var versions = ApplicationManager.getAllVersionsOfApplication(applicationHashId);
+        for (var i = 0; i < versions.size(); i++) {
+            var versionObj = {};
+            versionObj.versionName = versions.get(i).versionName;
+            versionObj.status = versions.get(i).status;
+            versionObj.conSpecCpu = versions.get(i).conSpecCpu;
+            versionObj.conSpecMemory = versions.get(i).conSpecMemory;
+            versionObj.isWhiteListed = versions.get(i).isWhiteListed;
+
+            applicationVersions.push(versionObj);
+        }
+    } catch (e) {
+        log.error("Error while getting version list of the application : " + applicationName + " for tenant : " +
+                tenantDomain);
+        log.error(e);
+        throw e;
+    }
+
+    return applicationVersions;
+};
+
+var getTenantAppMaxCount = function (tenantDomain) {
+    var tenantId = modManager.getTenantIdForGivenTenantDomain(tenantDomain);
+    var appCountObj = {};
+    try {
+        appCountObj.maxAppCount = ApplicationManager.getMaxAppCountForWhiteListedTenants(tenantId);
+    } catch (e) {
+        log.error("Error while getting maximum application count for tenant : " + tenantDomain);
+        log.error(e);
+        throw e;
+    }
+    return appCountObj;
+};
+
+var updateContainerSpecification = function (tenantDomain, applicationName, applicationRevision, memory, cpu) {
+    try {
+        var versionHashId = getVersionHashId(applicationName, applicationRevision, tenantDomain);
+        ApplicationManager.updateContainerSpecification(versionHashId, parseInt(memory), parseInt(cpu));
+    } catch (e) {
+        log.error("Error while updating application container specification of the application : " + applicationName +
+                " for tenant : " + tenantDomain);
+        log.error(e);
+        throw e;
+    }
+};
 
 %>
