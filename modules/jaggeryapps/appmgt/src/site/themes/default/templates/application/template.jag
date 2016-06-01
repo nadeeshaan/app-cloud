@@ -629,7 +629,6 @@ jagg.template("application", function (inputs, outputs, jagg) {
         console.log("inside url upload click");
             $("#url-upload-progress").html("<i class=\"fa fa-circle-o-notch fa-spin\"></i>");
             isUploadUrlValid()
-            activateCreateApplication();
         });
 
 
@@ -653,6 +652,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     $("#url-upload").prop("disabled", false);
                     $("#artifactUrl").prop("disabled", false);
                 }
+                activateCreateApplication();
             },function (jqXHR, textStatus, errorThrown) {
                 jagg.message({content: "Error occurred while checking validity of url.", type: 'error', id:'url'});
             });

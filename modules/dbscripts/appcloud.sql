@@ -64,7 +64,8 @@ INSERT INTO `AC_RUNTIME` (`id`, `name`, `repo_url`, `image_name`, `tag`, `descri
 (3, 'Apache 2.4.10', 'registry.docker.appfactory.private.wso2.com:5000','php','5.6', 'OS:Debian, PHP Version:5.6.20'),
 (4, 'Carbon 4.2.0', 'registry.docker.appfactory.private.wso2.com:5000','carbon','4.2.0', 'OS:Debian, Java Version:7u101'),
 (5, 'Jaggery 0.11.0 ', 'registry.docker.appfactory.private.wso2.com:5000', 'jaggery', '0.11.0', 'OS:Debian, Java Version:7u101'),
-(6, 'WSO2 Data Services Server - 3.5.0','registry.docker.appfactory.private.wso2.com:5000', 'wso2dataservice', '3.5.0', ' OS:Debian, Java Version:7u101');
+(6, 'WSO2 Data Services Server - 3.5.0','registry.docker.appfactory.private.wso2.com:5000', 'wso2dataservice', '3.5.0', ' OS:Debian, Java Version:7u101'),
+(7, 'Apache Tomcat 8.0.28 / WSO2 Application Server 6.0.0-M2', 'registry.docker.appfactory.private.wso2.com:5000', 'wso2as', '6.0.0-m2', 'OS:Debian, JAVA Version:8u72');
 
 
 
@@ -223,7 +224,8 @@ INSERT INTO `AC_APP_TYPE_RUNTIME` (`app_type_id`, `runtime_id`) VALUES
 (2, 2),
 (3, 3),
 (4, 5),
-(5, 6);
+(5, 6),
+(1, 7);
 
 
 -- -----------------------------------------------------
@@ -400,7 +402,9 @@ INSERT INTO `AC_RUNTIME_TRANSPORT` (`transport_id`, `runtime_id`) VALUES
 (6, 5),
 (5, 5),
 (5, 6),
-(6, 6);
+(6, 6),
+(3, 7),
+(4, 7);
 
 INSERT INTO `AC_CONTAINER_SPECIFICATIONS` (`CON_SPEC_NAME`, `CPU`, `MEMORY`, `COST_PER_HOUR`) VALUES
 ('SMALL(128MB RAM and 0.1x vCPU)', 100, 128, 1),
@@ -420,7 +424,8 @@ INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
 (3, 2),
 (3, 3),
 (5, 3),
-(6, 3);
+(6, 3),
+(7, 3);
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
