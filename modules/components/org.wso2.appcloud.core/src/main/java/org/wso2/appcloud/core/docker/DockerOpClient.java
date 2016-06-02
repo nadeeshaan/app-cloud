@@ -87,8 +87,11 @@ public class DockerOpClient {
             //Search if line contains keyword to replace with the value
             while (stringTokenizer.hasMoreElements()) {
                 String element = stringTokenizer.nextElement().toString().trim();
-                String value;
+                String value = null;
                 if (dockerFilePropertyMap.containsKey(element)) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Dockerfile placeholder : " + element + " and the value : " + value);
+                    }
                     value = dockerFilePropertyMap.get(element);
                     line = line.replace(element, value);
                 }
