@@ -167,8 +167,8 @@ var log = new Log();
                 response.message = "Application is successfully stopped.";
             } else {
                 response.status = 504;
-                response.message = "Unable to stop application within the time period of " + podDeleteTimeOut + ". " +
-                        "Please submit request again.";
+                response.content = "Unable to stop application within a time period of " + (podDeleteTimeOut/1000) +
+                        "s. Please submit request again.";
             }
         } catch (e) {
             var msg = "Error while waiting for the pod to get deleted for application: " + applicationName +
@@ -194,8 +194,8 @@ var log = new Log();
                 response.message = "Application is successfully redeployed.";
             } else {
                 response.status = 504;
-                response.message = "Unable to stop application within the time period of " + podDeleteTimeOut + ". " +
-                        "Please submit request again.";
+                response.content = "Unable to stop application within a time period of " + (podDeleteTimeOut/1000) +
+                        "s. Please submit request again.";
             }
         } catch (e) {
             var msg = "Error while waiting for the pod to get deleted for application: " + applicationName +

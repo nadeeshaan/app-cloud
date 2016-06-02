@@ -362,15 +362,13 @@ jagg.template("home", function(inputs, outputs, jagg) {
                 timeout: '5000'
             });
         }, function(jqXHR, textStatus, errorThrown) {
-            if (jqXHR.status == 504) {
-                setTimeout(reloadAppHome, 2000);
-                jagg.message({
-                    content: "Unable to redeploy application. Please submit redeploy request again.",
-                    type: 'error',
-                    id: 'view_log',
-                    timeout: '5000'
-                });
-            }
+            setTimeout(reloadAppHome, 2000);
+            jagg.message({
+                content: jqXHR.responseText,
+                type: 'error',
+                id: 'view_log',
+                timeout: '5000'
+            });
         });
     }
 
@@ -389,16 +387,14 @@ jagg.template("home", function(inputs, outputs, jagg) {
                 type: 'info',
                 timeout: '5000'
             });
-        }, function(jqXHR, textStatus, errorThrown) {
-            if (jqXHR.status == 504) {
-                setTimeout(reloadAppHome, 2000);
-                jagg.message({
-                    content: "Unable to stop application. Please submit stop request again.",
-                    type: 'error',
-                    id: 'view_log',
-                    timeout: '5000'
-                });
-            }
+        }, function(jqXHR, data, errorThrown) {
+            setTimeout(reloadAppHome, 2000);
+            jagg.message({
+                content: jqXHR.responseText,
+                type: 'error',
+                id: 'view_log',
+                timeout: '5000'
+            });
         });
     }
 
