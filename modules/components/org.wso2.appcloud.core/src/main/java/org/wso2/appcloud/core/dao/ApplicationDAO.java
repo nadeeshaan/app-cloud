@@ -1601,14 +1601,13 @@ public class ApplicationDAO {
     public boolean updateContainerSpecification(Connection dbConnection, String versionHashId, int memory, int cpu)
             throws AppCloudException {
         PreparedStatement preparedStatement = null;
-        boolean updated = false;
 
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_APP_VERSION_CON_SPEC);
             preparedStatement.setInt(1, memory);
             preparedStatement.setInt(2, cpu);
             preparedStatement.setString(3, versionHashId);
-            updated = preparedStatement.execute();
+            return preparedStatement.execute();
         } catch (SQLException e) {
             String message = "Error while updating container specification with version hash id : " + versionHashId;
             log.error(message, e);
@@ -1616,8 +1615,6 @@ public class ApplicationDAO {
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
         }
-
-        return updated;
     }
 
 }
