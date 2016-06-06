@@ -658,9 +658,11 @@ jagg.template("application", function (inputs, outputs, jagg) {
             });
         }
 
-        // radio buttons are disabled untill application name is set
-        $('input[name=fileUploadRadioOptions]').prop("disabled",true);
-        $('input[name=fileUploadRadioOptions]').prop("title","This option is disabled, Please enter a application name first");
+        // radio buttons are disabled untill application name is set when creating new applications
+        if (!isNewVersion) {
+            $('input[name=fileUploadRadioOptions]').prop("disabled",true);
+            $('input[name=fileUploadRadioOptions]').prop("title","This option is disabled, Please enter a application name first");
+        }
         var createNewAppForm = $("#applicationName");
         createNewAppForm.on('focusout keyup blur click', function () {
             checkApplicationExistence();
@@ -1004,7 +1006,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     <input id="artifactUrl" name="artifactUrl" type="text" class="form-control" placeholder="Enter artifact URL" />
                     <span class="input-group-btn">
                         <a class="btn btn-primary" id="url-upload" type="button" disabled>Upload from URL
-                        <span id="url-upload-progress"><span></a>
+                        <span id="url-upload-progress"></span></a>
                     </span>
                 </div>
             </div>
