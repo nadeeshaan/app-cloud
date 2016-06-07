@@ -251,13 +251,15 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     } else if (uploadMethod === "url" ) {
                         formData.append('appCreationMethod', 'url');
                         formData.append('artifactUrl', $("#artifactUrl").val());
-                    if (appTypeName == "war") {
-                        formData.append('uploadedFileName', "VERSION_HASH_ID.war");
-                    } else if (appTypeName == "mss") {
-                        formData.append('uploadedFileName', "VERSION_HASH_ID.jar");
-                    } else if (appTypeName == "php" || appTypeName == "jaggery") {
-                        formData.append('uploadedFileName', "VERSION_HASH_ID.zip");
-                    }
+                        if (appTypeName == "war") {
+                            formData.append('uploadedFileName', "VERSION_HASH_ID.war");
+                        } else if (appTypeName == "mss") {
+                            formData.append('uploadedFileName', "VERSION_HASH_ID.jar");
+                        } else if (appTypeName == "php" || appTypeName == "jaggery") {
+                            formData.append('uploadedFileName', "VERSION_HASH_ID.zip");
+                        } else if (appTypeName == "wso2dataservice") {
+                            formData.append('uploadedFileName', "VERSION_HASH_ID.dbs");
+                        }
                     } else if (uploadMethod === "github" ) {
                         formData.append('appCreationMethod', 'github');
                         formData.append('gitRepoUrl', $("#gitRepoUrl").val());
