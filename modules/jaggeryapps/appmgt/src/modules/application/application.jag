@@ -127,11 +127,8 @@ var pushDockerImage = function (applicationName, versionName, applicationRuntime
     addEvent(DOCKER_REGISTRY_PUSH, EVENT_PENDING, msg, versionHashId);
 
     try {
-
         dockerOpClient.pushDockerImage(modManager.getPropertyValue(PROPERTY_DOCKER_REGISTRY_URL),applicationRuntime.getImageName(), tagName);
-
     } catch (e) {
-
         var msg = "Error uploading docker image to remote registry";
         addEvent(DOCKER_REGISTRY_PUSH, EVENT_FAILED, msg, versionHashId);
 

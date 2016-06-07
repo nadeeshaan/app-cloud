@@ -132,13 +132,13 @@ var log = new Log();
                     response.status = 200;
                     response.content = "Application creation is successfully submitted";
                 } else {
-                    if (conSpecMemory > 512) {
+                    if (conSpecMemory > 1024) {
                         log.warn("Application creation request not accepted because the maximum memory limit of " +
-                                "container specification is 512.");
+                                "container specification is 1024.");
                     }
-                    if (conSpecCpu > 300) {
+                    if (conSpecCpu > 500) {
                         log.warn("Application creation request not accepted because the maximum cpu limit of container "
-                                + "specification is 300.");
+                                + "specification is 500.");
                     }
                     response.status = 400; //bad request
                     response.content = "Maximum limit of conSpecMemory is 512 and conSpecCpu 300";
