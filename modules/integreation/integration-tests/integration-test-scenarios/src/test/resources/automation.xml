@@ -286,16 +286,17 @@
 
     <appCloudProperties>
         <urls>
-            <appCloud>https://cloudmgt.cloudstaging.wso2.com:60000/</appCloud>
+            <!--<appCloud>https://52.91.111.226:60000/</appCloud>-->
+            <appCloud>https://apps.cloudstaging.wso2.com/</appCloud>
         </urls>
 
         <defaultTenant>
             <firstName>Danushka</firstName>
             <lastName>Fernando</lastName>
             <email>firstName@example.com</email>
-            <admin>amanisoysa.gmail.com</admin>
-            <adminPassword>Admin@123</adminPassword>
-            <tenantDomain>pingpong</tenantDomain>
+            <admin>appcloudtestcases.gmail.com</admin>
+            <adminPassword>xxxxx</adminPassword>
+            <tenantDomain>appcloudtestcas</tenantDomain>
             <usagePlan>Demo</usagePlan>
         </defaultTenant>
 
@@ -343,7 +344,7 @@
         </domainMapping>
 
         <timeOutSetting>
-              <period>60000</period>
+              <period>120000</period>
               <retryCount>15</retryCount>
         </timeOutSetting>
 

@@ -37,6 +37,7 @@ public class MSF4JApplicationTestCase extends AppCloudIntegrationBaseTestCase {
 
 	@Override
 	protected void assertLogContent(String logContent) {
-		Assert.assertTrue("Container haven't started up", logContent.contains(MSS_SERVER_STARTED_MESSAGE));
+        Assert.assertTrue("Received log:" + logContent + " but expected line: " + MSS_SERVER_STARTED_MESSAGE,
+                logContent.contains(MSS_SERVER_STARTED_MESSAGE));
 	}
 }

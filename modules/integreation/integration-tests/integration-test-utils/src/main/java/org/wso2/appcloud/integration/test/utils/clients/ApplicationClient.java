@@ -23,7 +23,9 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -31,20 +33,21 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestConstants;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestException;
+import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestUtils;
 import org.wso2.carbon.automation.test.utils.http.client.HttpRequestUtil;
 import org.wso2.carbon.automation.test.utils.http.client.HttpResponse;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.URL;
 
 public class ApplicationClient extends BaseClient{
-	private static final Log log = LogFactory.getLog(ApplicationClient.class);
+    private static final Log log = LogFactory.getLog(ApplicationClient.class);
 	protected static final String CREATE_APPLICATION_ACTION = "createApplication";
 	protected static final String DELETE_APPLICATION_ACTION = "deleteApplication";
 	protected static final String STOP_APPLICATION_ACTION = "stopApplication";
@@ -84,6 +87,8 @@ public class ApplicationClient extends BaseClient{
 	protected static final String PARAM_NAME_IS_NEW_VERSION = "isNewVersion";
 	protected static final String PARAM_NAME_CONTAINER_SPEC_MEMORY = "conSpecMemory";
 	protected static final String PARAM_NAME_CONTAINER_SPEC_CPU = "conSpecCpu";
+    public static final String PARAM_NAME_APP_CREATION_METHOD = "appCreationMethod";
+    public static final String DEFAULT = "default";
 
 	private String endpoint;
 
@@ -102,45 +107,59 @@ public class ApplicationClient extends BaseClient{
 	                    + AppCloudIntegrationTestConstants.REST_APPLICATION_ENDPOINT;
     }
 
-	public void createNewApplication(String applicationName, String runtime, String appTypeName,
-	                                 String applicationRevision, String applicationDescription, String uploadedFileName,
-	                                 String runtimeProperties, String tags, File uploadArtifact, boolean isNewVersion,
-	                                 String containerSpecMemory, String containerSpecCpu) throws Exception {
+    public void createNewApplication(String applicationName, String runtime, String appTypeName,
+            String applicationRevision, String applicationDescription, String uploadedFileName,
+            String runtimeProperties, String tags, File uploadArtifact, boolean isNewVersion,
+            String containerSpecMemory, String containerSpecCpu) throws AppCloudIntegrationTestException {
 
-	    HttpClient httpclient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
-	    HttpPost httppost = new HttpPost(this.endpoint);
+        HttpClient httpclient = null;
+        org.apache.http.HttpResponse response = null;
+        int timeout = (int) AppCloudIntegrationTestUtils.getTimeOutPeriod();
+        try {
+            httpclient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout)
+                    .build();
+            HttpPost httppost = new HttpPost(this.endpoint);
+            httppost.setConfig(requestConfig);
 
-	    MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-	    builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-	    builder.addPart(PARAM_NAME_FILE_UPLOAD, new FileBody(uploadArtifact));
-	    builder.addPart(PARAM_NAME_ACTION, new StringBody(CREATE_APPLICATION_ACTION, ContentType.TEXT_PLAIN));
-	    builder.addPart(PARAM_NAME_CONTAINER_SPEC_MEMORY, new StringBody(containerSpecMemory, ContentType.TEXT_PLAIN));
-	    builder.addPart(PARAM_NAME_CONTAINER_SPEC_CPU, new StringBody(containerSpecCpu, ContentType.TEXT_PLAIN));
-	    builder.addPart(PARAM_NAME_APPLICATION_NAME, new StringBody(applicationName, ContentType.TEXT_PLAIN));
-	    builder.addPart(PARAM_NAME_APPLICATION_DESCRIPTION, new StringBody(applicationDescription, ContentType.TEXT_PLAIN));
-	    builder.addPart(PARAM_NAME_RUNTIME, new StringBody(runtime, ContentType.TEXT_PLAIN));
-	    builder.addPart(PARAM_NAME_APP_TYPE_NAME, new StringBody(appTypeName, ContentType.TEXT_PLAIN));
-	    builder.addPart(PARAM_NAME_APPLICATION_REVISION, new StringBody(applicationRevision, ContentType.TEXT_PLAIN));
-	    builder.addPart(PARAM_NAME_UPLOADED_FILE_NAME, new StringBody(uploadedFileName, ContentType.TEXT_PLAIN));
-	    builder.addPart(PARAM_NAME_PROPERTIES, new StringBody(runtimeProperties, ContentType.TEXT_PLAIN));
-	    builder.addPart(PARAM_NAME_TAGS, new StringBody(tags, ContentType.TEXT_PLAIN));
-	    builder.addPart(PARAM_NAME_IS_FILE_ATTACHED, new StringBody(Boolean.TRUE.toString(), ContentType.TEXT_PLAIN));//Setting true to send the file in request
-	    builder.addPart(PARAM_NAME_IS_NEW_VERSION, new StringBody(Boolean.toString(isNewVersion), ContentType.TEXT_PLAIN));
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            builder.addPart(PARAM_NAME_FILE_UPLOAD, new FileBody(uploadArtifact));
+            builder.addPart(PARAM_NAME_ACTION, new StringBody(CREATE_APPLICATION_ACTION, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_APP_CREATION_METHOD, new StringBody(DEFAULT, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_CONTAINER_SPEC_MEMORY,
+                    new StringBody(containerSpecMemory, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_CONTAINER_SPEC_CPU, new StringBody(containerSpecCpu, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_APPLICATION_NAME, new StringBody(applicationName, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_APPLICATION_DESCRIPTION,
+                    new StringBody(applicationDescription, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_RUNTIME, new StringBody(runtime, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_APP_TYPE_NAME, new StringBody(appTypeName, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_APPLICATION_REVISION,
+                    new StringBody(applicationRevision, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_UPLOADED_FILE_NAME, new StringBody(uploadedFileName, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_PROPERTIES, new StringBody(runtimeProperties, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_TAGS, new StringBody(tags, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_IS_FILE_ATTACHED, new StringBody(Boolean.TRUE.toString(),
+                    ContentType.TEXT_PLAIN));//Setting true to send the file in request
+            builder.addPart(PARAM_NAME_IS_NEW_VERSION,
+                    new StringBody(Boolean.toString(isNewVersion), ContentType.TEXT_PLAIN));
 
-	    httppost.setEntity(builder.build());
-	    httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
-	    org.apache.http.HttpResponse response = httpclient.execute(httppost);
+            httppost.setEntity(builder.build());
+            httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
+            response = httpclient.execute(httppost);
 
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-	        return;
-        } else {
-	        BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-	        String result = "";
-	        while(in.readLine() != null) {
-		        result += in.readLine();
-	        }
-	        throw new AppCloudIntegrationTestException("CreateNewApplication failed " + result);
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                String result = EntityUtils.toString(response.getEntity());
+                throw new AppCloudIntegrationTestException("CreateNewApplication failed " + result);
+            }
 
+        } catch (IOException e) {
+            log.error("Failed to invoke application creation API.", e);
+            throw new AppCloudIntegrationTestException("Failed to invoke application creation API.", e);
+        } finally {
+            HttpClientUtils.closeQuietly(response);
+            HttpClientUtils.closeQuietly(httpclient);
         }
     }
 
@@ -373,27 +392,37 @@ public class ApplicationClient extends BaseClient{
 		}
 	}
 
-	public void changeAppIcon(String applicationHash, File appIcon) throws Exception {
-		HttpClient httpclient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
-		HttpPost httppost = new HttpPost(this.endpoint);
-		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-		builder.addPart(PARAM_NAME_CHANGE_ICON, new FileBody(appIcon));
-		builder.addPart(PARAM_NAME_ACTION, new StringBody(CHANGE_APP_ICON_ACTION, ContentType.TEXT_PLAIN));
-		builder.addPart(PARAM_NAME_APPLICATION_HASH_ID, new StringBody(applicationHash, ContentType.TEXT_PLAIN));
-		httppost.setEntity(builder.build());
-		httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
-		org.apache.http.HttpResponse response = httpclient.execute(httppost);
-		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			return;
-		} else {
-			BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-			String result = "";
-			while (in.readLine() != null) {
-				result += in.readLine();
-			}
-			throw new AppCloudIntegrationTestException("Update app icon failed " + result);
-		}
-	}
+	public void changeAppIcon(String applicationHash, File appIcon) throws AppCloudIntegrationTestException {
+        HttpClient httpclient = null;
+        org.apache.http.HttpResponse response = null;
+        try {
+            httpclient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
+            int timeout = (int) AppCloudIntegrationTestUtils.getTimeOutPeriod();
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout)
+                    .build();
+
+            HttpPost httppost = new HttpPost(this.endpoint);
+            httppost.setConfig(requestConfig);
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            builder.addPart(PARAM_NAME_CHANGE_ICON, new FileBody(appIcon));
+            builder.addPart(PARAM_NAME_ACTION, new StringBody(CHANGE_APP_ICON_ACTION, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_APPLICATION_HASH_ID, new StringBody(applicationHash, ContentType.TEXT_PLAIN));
+            httppost.setEntity(builder.build());
+            httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
+            response = httpclient.execute(httppost);
+
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                String result = EntityUtils.toString(response.getEntity());
+                throw new AppCloudIntegrationTestException("Update app icon failed " + result);
+            }
+        } catch (IOException e) {
+            log.error("Failed to invoke app icon update API.", e);
+            throw new AppCloudIntegrationTestException("Failed to invoke app icon update API.", e);
+        } finally {
+            HttpClientUtils.closeQuietly(response);
+            HttpClientUtils.closeQuietly(httpclient);
+        }
+    }
 
 }

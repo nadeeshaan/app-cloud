@@ -24,14 +24,19 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestConstants;
+import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestException;
+import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +47,7 @@ public class LogsClient extends BaseClient{
 	protected static final String PARAM_NAME_APPLICATION_REVISION = "selectedRevision";
 	public static final String UTF_8_ENCODING = "UTF-8";
 
-	private String endpoint;
+    private String endpoint;
 
 
 	/**
@@ -59,17 +64,33 @@ public class LogsClient extends BaseClient{
 	                    + AppCloudIntegrationTestConstants.REST_LOGS_ENDPOINT;
     }
 
-	public String getSnapshotLogs(String applicationKey, String applicationRevision) throws Exception {
-		HttpClient httpclient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
-		HttpPost httppost = new HttpPost(this.endpoint);
-		List<NameValuePair> params = new ArrayList<NameValuePair>(3);
-		params.add(new BasicNameValuePair(PARAM_NAME_ACTION, GET_SNAPSHOT_LOGS_ACTION));
-		params.add(new BasicNameValuePair(PARAM_NAME_APPLICATION_HASH_ID, applicationKey));
-		params.add(new BasicNameValuePair(PARAM_NAME_APPLICATION_REVISION, applicationRevision));
-		httppost.setEntity(new UrlEncodedFormEntity(params, UTF_8_ENCODING));
-		httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
-		HttpResponse response = httpclient.execute(httppost);
-		return EntityUtils.toString(response.getEntity());
-	}
+    public String getSnapshotLogs(String applicationKey, String applicationRevision)
+            throws AppCloudIntegrationTestException {
+        HttpClient httpclient = null;
+        org.apache.http.HttpResponse response = null;
+        try {
+            httpclient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
+            int timeout = (int) AppCloudIntegrationTestUtils.getTimeOutPeriod();
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout)
+                    .build();
+            HttpPost httppost = new HttpPost(this.endpoint);
+            httppost.setConfig(requestConfig);
+            List<NameValuePair> params = new ArrayList<NameValuePair>(3);
+            params.add(new BasicNameValuePair(PARAM_NAME_ACTION, "downloadLogs"));
+            params.add(new BasicNameValuePair(PARAM_NAME_APPLICATION_HASH_ID, applicationKey));
+            params.add(new BasicNameValuePair(PARAM_NAME_APPLICATION_REVISION, applicationRevision));
+            httppost.setEntity(new UrlEncodedFormEntity(params, UTF_8_ENCODING));
+            httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
+            response = httpclient.execute(httppost);
+            return EntityUtils.toString(response.getEntity());
+        } catch (IOException e) {
+            log.error("Failed to invoke app icon update API.", e);
+            throw new AppCloudIntegrationTestException("Failed to invoke app icon update API.", e);
+        } finally {
+            HttpClientUtils.closeQuietly(response);
+            HttpClientUtils.closeQuietly(httpclient);
+        }
+
+    }
 
 }

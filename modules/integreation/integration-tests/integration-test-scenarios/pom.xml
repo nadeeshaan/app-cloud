@@ -39,10 +39,10 @@
                 <version>2.12.4</version>
                 <inherited>false</inherited>
                 <configuration>
-                    <!--argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=128m -Xmx1024m -XX:PermSize=256m
+                   <!-- <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=128m -Xmx1024m -XX:PermSize=256m
                          -XX:MaxPermSize=512m -Xdebug -Xnoagent -Djava.compiler=NONE
                          -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Dhttps.protocols=TLSv1,SSLv3
-                     </argLine-->
+                     </argLine>-->
                     <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=128m -Dhttps.protocols=TLSv1,SSLv3</argLine>
                     <testFailureIgnore>false</testFailureIgnore>
                     <disableXmlReport>false</disableXmlReport>
@@ -51,6 +51,9 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                    <systemPropertyVariables>
+                        <log4j.configuration>file:${basedir}/src/test/resources/log4j.properties</log4j.configuration>
+                    </systemPropertyVariables>
                     <systemProperties>
                         <property>
                             <name>framework.resource.location</name>
