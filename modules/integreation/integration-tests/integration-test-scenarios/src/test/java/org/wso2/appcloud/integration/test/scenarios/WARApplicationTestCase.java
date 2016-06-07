@@ -37,6 +37,7 @@ public class WARApplicationTestCase extends AppCloudIntegrationBaseTestCase {
 
 	@Override
 	protected void assertLogContent(String logContent) {
-		Assert.assertTrue("Container haven't started up", logContent.contains(TOMCAT_SERVER_STARTED_MESSAGE));
+        Assert.assertTrue("Received log:" + logContent + " but expected line: " + TOMCAT_SERVER_STARTED_MESSAGE,
+                logContent.contains(TOMCAT_SERVER_STARTED_MESSAGE));
 	}
 }
