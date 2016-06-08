@@ -414,7 +414,7 @@ var log = new Log();
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url);
         xhr.send();
-        if ((appTypeExtension === currentExtension) && xhr.status == 200) {
+        if (appTypeExtension.equals(currentExtension) && xhr.status == 200) {
             print(true);
         } else {
             print(false);
