@@ -251,15 +251,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     } else if (uploadMethod === "url" ) {
                         formData.append('appCreationMethod', 'url');
                         formData.append('artifactUrl', $("#artifactUrl").val());
-                        if (appTypeName == "war") {
-                            formData.append('uploadedFileName', "VERSION_HASH_ID.war");
-                        } else if (appTypeName == "mss") {
-                            formData.append('uploadedFileName', "VERSION_HASH_ID.jar");
-                        } else if (appTypeName == "php" || appTypeName == "jaggery") {
-                            formData.append('uploadedFileName', "VERSION_HASH_ID.zip");
-                        } else if (appTypeName == "wso2dataservice") {
-                            formData.append('uploadedFileName', "VERSION_HASH_ID.dbs");
-                        }
+                        formData.append('uploadedFileName', "VERSION_HASH_ID." + APP_TYPE_EXTENSION);
                     } else if (uploadMethod === "github" ) {
                         formData.append('appCreationMethod', 'github');
                         formData.append('gitRepoUrl', $("#gitRepoUrl").val());
@@ -642,7 +634,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
             jagg.post("../blocks/application/application.jag", {
                 action:"isUploadUrlValid",
                 url:$("#artifactUrl").val(),
-                appTypeName: appTypeName
+                appTypeName: appTypeName,
+                appTypeExtension: APP_TYPE_EXTENSION
             },function (result) {
                if(JSON.parse(result) == true){
                     $("#url-upload-progress").html("<i class=\"fa fa-check\"></i>");
