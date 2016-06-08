@@ -295,7 +295,7 @@
             <lastName>Fernando</lastName>
             <email>firstName@example.com</email>
             <admin>appcloudtestcases.gmail.com</admin>
-            <adminPassword>xxxxx</adminPassword>
+            <adminPassword>Admin@abc123</adminPassword>
             <tenantDomain>appcloudtestcas</tenantDomain>
             <usagePlan>Demo</usagePlan>
         </defaultTenant>
