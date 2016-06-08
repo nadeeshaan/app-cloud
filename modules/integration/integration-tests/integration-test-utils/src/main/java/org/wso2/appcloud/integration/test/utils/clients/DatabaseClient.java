@@ -30,25 +30,25 @@ import java.util.Map;
 
 public class DatabaseClient extends BaseClient {
 
-    private final String CREATE_DATABASE_ACTION = "createDatabaseAndAttachUser";
-    private final String CREATE_DATABASE_USER_ACTION = "createDatabaseUser";
-    private final String ATTACH_USER_TO_DATABASE_ACTION = "attachUserWithPermissions";
-    private final String DETACH_USER_FROM_DATABASE_ACTION = "detachUser";
-    private final String DELETE_USER_ACTION = "deleteUser";
-    private final String DELETE_DATABASE_ACTION = "dropDatabase";
-    private final String GET_DATABASE_INFO_ACTION = "getDatabaseInfoForDataTable";
-    private final String GET_DATABASE_USERS_INFO_ACTION = "getDatabaseUsersForDataTable";
+    private static final String CREATE_DATABASE_ACTION = "createDatabaseAndAttachUser";
+    private static final String CREATE_DATABASE_USER_ACTION = "createDatabaseUser";
+    private static final String ATTACH_USER_TO_DATABASE_ACTION = "attachUserWithPermissions";
+    private static final String DETACH_USER_FROM_DATABASE_ACTION = "detachUser";
+    private static final String DELETE_USER_ACTION = "deleteUser";
+    private static final String DELETE_DATABASE_ACTION = "dropDatabase";
+    private static final String GET_DATABASE_INFO_ACTION = "getDatabaseInfoForDataTable";
+    private static final String GET_DATABASE_USERS_INFO_ACTION = "getDatabaseUsersForDataTable";
 
-    private final String DATABASE_NAME = "databaseName";
-    private final String CUSTOM_PASSWORD = "customPassword";
+    private static final String DATABASE_NAME = "databaseName";
+    private static final String CUSTOM_PASSWORD = "customPassword";
     //TODO change dbName to databaseName in  blocks/database/add/ajax/add.jag getDatabaseUsersForDataTable
-    private final String DB_NAME = "dbName";
+    private static final String DB_NAME = "dbName";
     //TODO change username to userName in blocks/database/users/ajax/list.jag createDatabaseUser and detachUser
-    private final String USER_NAME = "username";
-    private final String PASSWORD = "password";
-    private final String IS_BASIC = "isBasic";
+    private static final String USER_NAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String IS_BASIC = "isBasic";
     //TODO change name to userName in deleteUser
-    private final String NAME = "name";
+    private static final String NAME = "name";
 
 
     /**
