@@ -153,19 +153,6 @@ public class BaseClient {
                                                        + jsonObject.get(AppCloudIntegrationTestConstants.RESPONSE_MESSAGE_NAME).toString());
         }
     }
-    protected void checkErrors(org.apache.http.HttpResponse response) throws AppCloudIntegrationTestException {
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = new JSONObject(EntityUtils.toString(response.getEntity()));
-            if (jsonObject.keySet().contains("error")) {
-                log.error("Response received as: " + EntityUtils.toString(response.getEntity()));
-                throw new AppCloudIntegrationTestException("Operation not successful: "
-                        + jsonObject.get(AppCloudIntegrationTestConstants.RESPONSE_MESSAGE_NAME).toString());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 	/**
 	 * login to app mgt.
