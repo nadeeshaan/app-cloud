@@ -53,4 +53,16 @@ sed -i "/\/Host/i  \\\t<Context path=\"""\" docBase=\"$APP_WAR\" debug=\"0\" rel
 
 sed -i '/<Context>/a <JarScanner scanClassPath="false" />' /opt/wso2as-${WSO2_AS_VERSION}-m1/conf/context.xml
 
-/opt/tomcat/bin/catalina.sh run
+#Calculate max heap size and the perm size for Java Opts
+#Check whether TOTAL_MEMORY env variable defined or and not empty
+if [[ $TOTAL_MEMORY && ${TOTAL_MEMORY-_} ]]; then
+    let MAX_HEAP_SIZE=$TOTAL_MEMORY/512*256
+    let PERM_SIZE=$TOTAL_MEMORY/512*64
+    JAVA_OPTS="-Xms128m -Xmx"$MAX_HEAP_SIZE"m"
+    export JAVA_OPTS=$JAVA_OPTS
+fi
+
+/opt/tomcat/bin/catalina.sh start
+
+#tail process will run in foreground
+tail -F /opt/tomcat/logs/catalina.out

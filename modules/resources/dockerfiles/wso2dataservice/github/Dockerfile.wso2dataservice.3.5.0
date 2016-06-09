@@ -23,11 +23,12 @@ ENV DATASERVICE_DEPLOYMENT_DIR $CARBON_HOME_PATH/repository/deployment/server/da
 ENV MNT /mnt
 ENV APP_HOST HOST_NAME
 ENV DBS_FILE_DIR PROJECT_ROOT
+ENV TOTAL_MEMORY VAL_TOTAL_MEMORY
 
 RUN git clone GIT_REPO_URL --branch GIT_REPO_BRANCH --single-branch "$MNT/" && \
     cp -r $MNT/$DBS_FILE_DIR/* $DATASERVICE_DEPLOYMENT_DIR && \
     rm -rf $MNT/* && \
     sed -i '/<!--HostName>/c\\t<HostName>'$APP_HOST'</HostName>' $CARBON_HOME_PATH/repository/conf/carbon.xml && \
     sed -i '/<!--MgtHostName>/c\\t<MgtHostName>'$APP_HOST'</MgtHostName>' $CARBON_HOME_PATH/repository/conf/carbon.xml
-
-WORKDIR "$DATASERVICE_DEPLOYMENT_DIR"
+    
+CMD ["bash", "-c", "source /init.sh"]

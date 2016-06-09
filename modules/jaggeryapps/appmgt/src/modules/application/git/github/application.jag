@@ -72,7 +72,7 @@ var addApplicationViaGitHub = function (applicationName, versionName, applicatio
 
     var runtimeProperties = version.getRuntimeProperties();
     var absFileUploadedPath =  createDockerFileForGitHub(applicationName, versionName, runtimeId, gitHubRepoUrl,
-                                                         gitHubRepoBranch, projectRoot, versionHashId, dockerOpClient, appCreationMethod, runtimePropertiesArray);
+                                                         gitHubRepoBranch, projectRoot, versionHashId, dockerOpClient, appCreationMethod, runtimePropertiesArray, conSpecMemory);
     appManager.buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName,
                                 versionHashId, dockerOpClient);
     appManager.pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerOpClient);
@@ -81,7 +81,8 @@ var addApplicationViaGitHub = function (applicationName, versionName, applicatio
 };
 
 
-var createDockerFileForGitHub =  function(applicationName, versionName, runtimeId, gitHubRepoUrl, gitHubRepoBranch, projectRoot, versionHashId, dockerOpClient, appCreationMethod, runtimePropertiesArray){
+var createDockerFileForGitHub =  function(applicationName, versionName, runtimeId, gitHubRepoUrl, gitHubRepoBranch,
+                                          projectRoot, versionHashId, dockerOpClient, appCreationMethod, runtimePropertiesArray, conSpecMemory){
     var msg = "Docker file creation successfully triggered in appcloud";
     appManager.addEvent(DOCKER_FILE_CREATE, EVENT_PENDING, msg, versionHashId);
     var absFileUploadedPath;
@@ -97,6 +98,7 @@ var createDockerFileForGitHub =  function(applicationName, versionName, runtimeI
         dockerFilePropertyMap.put("GIT_REPO_BRANCH", gitHubRepoBranch);
         dockerFilePropertyMap.put("PROJECT_ROOT", projectRoot);
         dockerFilePropertyMap.put("HOST_NAME", hostName);
+        dockerFilePropertyMap.put("VAL_TOTAL_MEMORY", conSpecMemory);
         var appRuntimeProperties = appManager.getRuntimePropertyMap(runtimePropertiesArray);
 
         dockerOpClient.createDockerFile(dockerFilePath, runtimeId, dockerTemplateFilePath, appCreationMethod, dockerFilePropertyMap, appRuntimeProperties);

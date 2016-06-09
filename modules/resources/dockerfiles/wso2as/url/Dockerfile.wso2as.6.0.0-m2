@@ -21,7 +21,8 @@ FROM wso2-appcloud/wso2as:6.0.0-m2-base
 ENV APP_WAR ARTIFACT_NAME
 ENV URL ARTIFACT_URL
 ENV WEB_APP_HOME /opt/tomcat/webapps/
+ENV TOTAL_MEMORY VAL_TOTAL_MEMORY
 
 RUN wget "$URL" -O "$WEB_APP_HOME$APP_WAR"
 
-CMD ["/init.sh"]
+CMD ["bash", "-c", "source /init.sh"]
