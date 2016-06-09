@@ -25,7 +25,6 @@ ENV APP_HOST HOST_NAME
 ENV TOTAL_MEMORY VAL_TOTAL_MEMORY
 
 COPY "$DATASERVICE_DBS" "$DATASERVICE_DEPLOYMENT_DIR"
-WORKDIR "$DATASERVICE_DEPLOYMENT_DIR"
 RUN sed -i '/<!--HostName>/c\\t<HostName>'$APP_HOST'</HostName>' $CARBON_HOME_PATH/repository/conf/carbon.xml && \
     sed -i '/<!--MgtHostName>/c\\t<MgtHostName>'$APP_HOST'</MgtHostName>' $CARBON_HOME_PATH/repository/conf/carbon.xml
 
