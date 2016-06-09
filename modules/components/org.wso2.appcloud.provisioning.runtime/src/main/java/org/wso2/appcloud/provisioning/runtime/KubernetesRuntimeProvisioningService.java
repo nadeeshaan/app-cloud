@@ -308,7 +308,8 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
 						            .getName());
 			            }
 			            LogWatch logs = kubernetesClient.pods().inNamespace(namespace.getMetadata().getName())
-			                                            .withName(pod.getMetadata().getName()).inContainer(container.getName()).watchLog();
+			                                            .withName(pod.getMetadata().getName())
+			                                            .inContainer(container.getName()).watchLog();
 
 			            //logStream should close by after the streaming done in front end
 			            //you can use closeLogStream() method in DeploymentStreamLogs
@@ -344,12 +345,15 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
         DeploymentLogs deploymentLogs = new DeploymentLogs();
         Map<String, String> logOutPut = new HashMap<>();
         PrettyLoggable prettyLoggable;
+        PrettyLoggable prettyLoggablePrev;
         PodList podList = KubernetesProvisioningUtils.getPods(applicationContext);
         if (podList != null) {
             try {
                 int podCounter = 1;
                 for (Pod pod : podList.getItems()) {
                     for (io.fabric8.kubernetes.api.model.Container container : KubernetesHelper.getContainers(pod)) {
+	                    prettyLoggablePrev = kubernetesClient.pods().inNamespace(namespace.getMetadata().getName())
+	                                                         .withName(pod.getMetadata().getName()).terminated();
                         if (query == null || (query.getDurationInHours() < 0 && query.getTailingLines() < 0)) {
                             prettyLoggable = kubernetesClient.pods().inNamespace(namespace.getMetadata().getName())
                                     .withName(pod.getMetadata().getName()).inContainer(container.getName());
@@ -379,7 +383,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
                             log.debug("Retrieving logs in pod : " + pod.getMetadata().getName() + "-" + container
                                     .getName());
                         }
-                        String logs = (String) prettyLoggable.getLog(true);
+                        String logs = (String) prettyLoggablePrev.getLog() + (String) prettyLoggable.getLog(true);
                         logOutPut.put("Replica-" + podCounter + "-" + container.getName(), logs);
                         deploymentLogs.setDeploymentLogs(logOutPut);
                     }
