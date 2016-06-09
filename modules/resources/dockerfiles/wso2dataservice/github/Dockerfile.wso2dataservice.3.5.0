@@ -22,9 +22,12 @@ ENV CARBON_HOME_PATH /opt/wso2dss-3.5.0
 ENV DATASERVICE_DEPLOYMENT_DIR $CARBON_HOME_PATH/repository/deployment/server/dataservices/
 ENV MNT /mnt
 ENV APP_HOST HOST_NAME
+ENV DBS_FILE_DIR PROJECT_ROOT
 
 RUN git clone GIT_REPO_URL --branch GIT_REPO_BRANCH --single-branch "$MNT/" && \
-    cp -r "$MNT"PROJECT_ROOT/* "$DATA_SERVICE_DEPLOYMENT_DIR/" && \
-    rm -rf "$MNT"/* && \
+    cp -r $MNT/$DBS_FILE_DIR/* $DATASERVICE_DEPLOYMENT_DIR && \
+    rm -rf $MNT/* && \
     sed -i '/<!--HostName>/c\\t<HostName>'$APP_HOST'</HostName>' $CARBON_HOME_PATH/repository/conf/carbon.xml && \
     sed -i '/<!--MgtHostName>/c\\t<MgtHostName>'$APP_HOST'</MgtHostName>' $CARBON_HOME_PATH/repository/conf/carbon.xml
+
+WORKDIR "$DATASERVICE_DEPLOYMENT_DIR"

@@ -38,6 +38,8 @@ var DASHBOARD_BASE_URL="https://analytics.cloud.wso2.com/monitoring/webapps/";
 var NOT_ALLOWED_ENV_VARIABLES = "EnvironmentVariables.NotAllowedVariables";
 var POD_DELETE_TIMEOUT = "Pod.Delete.Timeout";
 var POD_DELETE_WAIT = "Pod.Delete.Wait";
+var MAX_CONTAINER_SPEC_MEMORY = "Max.ContainerSpec.Memory";
+var MAX_CONTAINER_SPEC_CPU = "Max.ContainerSpec.CPU";
 
 //events related constants
 var DATABASE_ADD = "Adding application to database";

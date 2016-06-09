@@ -251,13 +251,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     } else if (uploadMethod === "url" ) {
                         formData.append('appCreationMethod', 'url');
                         formData.append('artifactUrl', $("#artifactUrl").val());
-                    if (appTypeName == "war") {
-                        formData.append('uploadedFileName', "VERSION_HASH_ID.war");
-                    } else if (appTypeName == "mss") {
-                        formData.append('uploadedFileName', "VERSION_HASH_ID.jar");
-                    } else if (appTypeName == "php" || appTypeName == "jaggery") {
-                        formData.append('uploadedFileName', "VERSION_HASH_ID.zip");
-                    }
+                        formData.append('uploadedFileName', "VERSION_HASH_ID." + APP_TYPE_EXTENSION);
                     } else if (uploadMethod === "github" ) {
                         formData.append('appCreationMethod', 'github');
                         formData.append('gitRepoUrl', $("#gitRepoUrl").val());
@@ -640,7 +634,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
             jagg.post("../blocks/application/application.jag", {
                 action:"isUploadUrlValid",
                 url:$("#artifactUrl").val(),
-                appTypeName: appTypeName
+                appTypeName: appTypeName,
+                appTypeExtension: APP_TYPE_EXTENSION
             },function (result) {
                if(JSON.parse(result) == true){
                     $("#url-upload-progress").html("<i class=\"fa fa-check\"></i>");
@@ -658,9 +653,11 @@ jagg.template("application", function (inputs, outputs, jagg) {
             });
         }
 
-        // radio buttons are disabled untill application name is set
-        $('input[name=fileUploadRadioOptions]').prop("disabled",true);
-        $('input[name=fileUploadRadioOptions]').prop("title","This option is disabled, Please enter a application name first");
+        // radio buttons are disabled untill application name is set when creating new applications
+        if (!isNewVersion) {
+            $('input[name=fileUploadRadioOptions]').prop("disabled",true);
+            $('input[name=fileUploadRadioOptions]').prop("title","This option is disabled, Please enter a application name first");
+        }
         var createNewAppForm = $("#applicationName");
         createNewAppForm.on('focusout keyup blur click', function () {
             checkApplicationExistence();
@@ -974,7 +971,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                            class="custom-radio"> Upload from URL
                 </label>
 		<label class="radio-inline">
-                    <input type="radio" name="inlineRadioOptions" id="inlineRadioSample" value="deploy-sample"
+                    <input type="radio" name="fileUploadRadioOptions" id="inlineRadioSample" value="deploy-sample"
                            class="custom-radio"> Deploy Sample App
                 </label>
                 <%  if(isAppTypeBuildable == 'false'){ %>
@@ -1004,7 +1001,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     <input id="artifactUrl" name="artifactUrl" type="text" class="form-control" placeholder="Enter artifact URL" />
                     <span class="input-group-btn">
                         <a class="btn btn-primary" id="url-upload" type="button" disabled>Upload from URL
-                        <span id="url-upload-progress"><span></a>
+                        <span id="url-upload-progress"></span></a>
                     </span>
                 </div>
             </div>

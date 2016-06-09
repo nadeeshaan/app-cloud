@@ -109,8 +109,12 @@ var log = new Log();
             }
 
             if (isAppCountLowerThanMax) {
+
+                var maxConSpecMemory = parseInt(modManager.getPropertyValue(MAX_CONTAINER_SPEC_MEMORY));
+                var maxConSpecCPU = parseInt(modManager.getPropertyValue(MAX_CONTAINER_SPEC_CPU));
+
                 //Check for the memory and cpu values of the application creation request
-                if ((conSpecMemory <= 1024) && (conSpecCpu <= 500)) {
+                if ((conSpecMemory <= maxConSpecMemory) && (conSpecCpu <= maxConSpecCPU)) {
                     if (isFileAttached) {
                         applicationModule.uploadExistingArchive(uploadedArtifact, appTypeName, applicationName,
                                 applicationRevision);
@@ -132,16 +136,17 @@ var log = new Log();
                     response.status = 200;
                     response.content = "Application creation is successfully submitted";
                 } else {
-                    if (conSpecMemory > 512) {
+                    if (conSpecMemory > maxConSpecMemory) {
                         log.warn("Application creation request not accepted because the maximum memory limit of " +
-                                "container specification is 512.");
+                                "container specification is " + maxConSpecMemory + ".");
                     }
-                    if (conSpecCpu > 300) {
+                    if (conSpecCpu > maxConSpecCPU) {
                         log.warn("Application creation request not accepted because the maximum cpu limit of container "
-                                + "specification is 300.");
+                                + "specification is " + maxConSpecCPU + ".");
                     }
                     response.status = 400; //bad request
-                    response.content = "Maximum limit of conSpecMemory is 512 and conSpecCpu 300";
+                    response.content = "Maximum limit of conSpecMemory is " + maxConSpecMemory + " and conSpecCpu is " +
+                            maxConSpecCPU + ".";
                 }
             } else {
                 response.status = 400; //bad request
@@ -401,15 +406,15 @@ var log = new Log();
     } else if (action == "isUploadUrlValid") {
 
         var appTypeName = request.getParameter("appTypeName");
+        var appTypeExtension = request.getParameter("appTypeExtension");
         var managerModule = jagg.module("manager");
-        var expectedExtenstion = managerModule.getPropertyValue(appTypeName + "_app_extension");
         var url = request.getParameter("url");
-        var currentExtension = stringify(url.split(/[. ]+/).pop());
+        var currentExtension = url.split(/[. ]+/).pop();
 
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url);
         xhr.send();
-        if (expectedExtenstion.equals(currentExtension) && xhr.status == 200) {
+        if (appTypeExtension.equals(currentExtension) && xhr.status == 200) {
             print(true);
         } else {
             print(false);
