@@ -28,12 +28,13 @@ public class MSF4JApplicationTestCase extends AppCloudIntegrationBaseTestCase {
 	public static final String MSS_SERVER_STARTED_MESSAGE = "Microservices server started in";
 	public static final String MSF4J_APPLICATION_TYPE = "mss";
 
-	public MSF4JApplicationTestCase(){
-		super(AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.MSS_APP_RUNTIME_ID_KEY),
-		      AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.MSS_APP_FILE_NAME_KEY),
-		      MSF4J_APPLICATION_TYPE,AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.
-				                                                                           MSS_APP_CONTENT));
-	}
+    public MSF4JApplicationTestCase() {
+        super(AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.MSS_APP_RUNTIME_ID_KEY),
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.MSS_APP_FILE_NAME_KEY),
+                MSF4J_APPLICATION_TYPE, AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.
+                        MSS_APP_CONTENT), Long.parseLong(AppCloudIntegrationTestUtils
+                        .getPropertyValue(AppCloudIntegrationTestConstants.MSS_RUNTIME_START_TIMEOUT)));
+    }
 
 	@Override
 	protected void assertLogContent(String logContent) {

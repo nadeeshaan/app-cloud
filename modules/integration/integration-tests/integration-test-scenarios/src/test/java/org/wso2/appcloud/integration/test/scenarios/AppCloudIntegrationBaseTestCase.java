@@ -36,8 +36,8 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	private String fileName;
 	private String runtimeID;
 	private String sampleAppContent;
-	private String appIconImageFileName="appIcon.png";
-	private ApplicationClient applicationClient;
+	private long runtimeStartTimeout;
+    private ApplicationClient applicationClient;
 	private LogsClient logsClient;
 	protected String applicationName;
 	protected String applicationType;
@@ -48,10 +48,11 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	private String containerSpecMemory = "512";
 	private String containerSpecCpu = "300";
 
-	public AppCloudIntegrationBaseTestCase(String runtimeID, String fileName, String applicationType, String sampleAppContent){
+	public AppCloudIntegrationBaseTestCase(String runtimeID, String fileName, String applicationType, String sampleAppContent, long runtimeStartTimeout){
 		this.runtimeID = runtimeID;
 		this.fileName = fileName;
 		this.sampleAppContent = sampleAppContent;
+        this.runtimeStartTimeout = runtimeStartTimeout;
 		//Application details
 		this.applicationName = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.APP_NAME_KEY);
 		this.applicationType = applicationType;
@@ -94,16 +95,18 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	@SetEnvironment(executionEnvironments = {ExecutionEnvironment.PLATFORM})
 	@Test(description = "Testing application launch")
 	public void testLaunchApplication() throws Exception {
-		log.info("Waiting before trying application launch...");
-		Thread.sleep(AppCloudIntegrationTestUtils.getTimeOutPeriod());
+		log.info("Waiting "+runtimeStartTimeout+"milliseconds before trying application launch...");
+		Thread.sleep(runtimeStartTimeout);
 		JSONObject applicationBean = applicationClient.getApplicationBean(applicationName);
 		String launchURL = ((JSONObject) ((JSONObject) applicationBean
 				.get(AppCloudIntegrationTestConstants.PROPERTY_VERSIONS_NAME))
 				.get(applicationRevision)).getString(AppCloudIntegrationTestConstants.PROPERTY_DEPLOYMENT_URL);
 		if (applicationType.equals(MSF4JApplicationTestCase.MSF4J_APPLICATION_TYPE)) {
 			launchURL = launchURL + "/hello/wso2";
-		}
-		//make the launch url http
+        } else if (DSSApplicationTestCase.DSS_APPLICATION_TYPE.equals(applicationType)) {
+            launchURL = launchURL + "/services/CSVSampleService?wsdl";
+        }
+        //make the launch url http
 		launchURL = launchURL.replace("https", "http");
 		Boolean isLaunchSuccessfull = applicationClient.launchApplication(launchURL, sampleAppContent);
 		Assert.assertTrue("Application launch failed!", isLaunchSuccessfull);
@@ -113,13 +116,14 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	@SetEnvironment(executionEnvironments = {ExecutionEnvironment.PLATFORM})
 	@Test(description = "Testing application icon change", dependsOnMethods = {"testLaunchApplication"})
 	public void testChangeApplicationIcon() throws Exception {
-		File appIcon = new File(TestConfigurationProvider.getResourceLocation() + appIconImageFileName);
+        String appIconImageFileName = "appIcon.png";
+        File appIcon = new File(TestConfigurationProvider.getResourceLocation() + appIconImageFileName);
 		String applicationHash = applicationClient.getApplicationHash(applicationName);
 		applicationClient.changeAppIcon(applicationHash, appIcon);
 		JSONObject applicationBean = applicationClient.getApplicationBean(applicationName);
-		boolean isIconNull = applicationBean.get(AppCloudIntegrationTestConstants.PARAM_ICON).equals(null);
-		// applicationBean.get("icon") should be NOT null, therefore isIconNull variable should be false,
-		Assert.assertFalse("Application icon change has been failed!",isIconNull);
+        boolean isIconNull = (null == applicationBean.get(AppCloudIntegrationTestConstants.PARAM_ICON));
+        // applicationBean.get("icon") should be NOT null, therefore isIconNull variable should be false,
+        Assert.assertFalse("Application icon change has been failed!", isIconNull);
 
 	}
 
@@ -292,8 +296,8 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	@SetEnvironment(executionEnvironments = { ExecutionEnvironment.PLATFORM})
 	@Test(description = "Testing get logs", dependsOnMethods = {"testCreateVersion"})
 	public void testGetLogs() throws Exception {
-		long timeOutPeriod = AppCloudIntegrationTestUtils.getTimeOutPeriod();
-		Thread.sleep(timeOutPeriod);
+        log.info("Waiting "+runtimeStartTimeout+"milliseconds till runtime is started.");
+		Thread.sleep(runtimeStartTimeout);
 		String applicationHash = applicationClient.getApplicationHash(applicationName);
 		String applicationRevision =
 				AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.APP_NEW_REVISION_KEY);
@@ -324,7 +328,8 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		boolean isDeleted = applicationClient.deleteApplication(applicationHash);
 		Assert.assertEquals("Application deletion failed", isDeleted, true);
 		long timeOutPeriod = AppCloudIntegrationTestUtils.getTimeOutPeriod();
-                Thread.sleep(timeOutPeriod);
+        log.info("Waiting "+timeOutPeriod+"milliseconds till application is deleted.");
+        Thread.sleep(timeOutPeriod);
 	}
 
 	/**
@@ -342,12 +347,14 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		String actualStatus = null;
 		while (round <= retryCount) {
 			log.info("RetryApplicationActions round : " + round);
+
 			JSONObject result = applicationClient.getApplicationBean(applicationName);
 			actualStatus = ((JSONObject) ((JSONObject) result
 					.get(AppCloudIntegrationTestConstants.PROPERTY_VERSIONS_NAME))
 					.get(applicationRevision)).getString(AppCloudIntegrationTestConstants.PROPERTY_STATUS_NAME);
 			log.info("Application current status is : " + actualStatus);
 			if(!expectedStatus.equals(actualStatus)){
+                log.info("Waiting "+timeOutPeriod+"milliseconds till "+action+ " is completed.");
 				Thread.sleep(timeOutPeriod);
 				round++;
 				continue;

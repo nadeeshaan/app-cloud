@@ -28,12 +28,13 @@ public class PHPApplicationTestCase extends AppCloudIntegrationBaseTestCase {
 	public static final String PHP_SERVER_STARTED_MESSAGE = "apache2 -D FOREGROUND";
 	public static final String PHP_APPLICATION_TYPE = "php";
 
-	public PHPApplicationTestCase(){
-		super(AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.PHP_APP_RUNTIME_ID_KEY),
-		      AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.PHP_APP_FILE_NAME_KEY),
-		      PHP_APPLICATION_TYPE,AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.
-				                                                                         PHP_APP_CONTENT));
-	}
+    public PHPApplicationTestCase() {
+        super(AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.PHP_APP_RUNTIME_ID_KEY),
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.PHP_APP_FILE_NAME_KEY),
+                PHP_APPLICATION_TYPE, AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.
+                        PHP_APP_CONTENT), Long.parseLong(AppCloudIntegrationTestUtils
+                        .getPropertyValue(AppCloudIntegrationTestConstants.PHP_RUNTIME_START_TIMEOUT)));
+    }
 
 	@Override
 	protected void assertLogContent(String logContent) {

@@ -1400,6 +1400,7 @@ public class ApplicationDAO {
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
+            DBUtil.closeConnection(dbConnection);
         }
         return appCount;
     }
