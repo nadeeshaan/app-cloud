@@ -22,10 +22,13 @@ ENV CARBON_HOME_PATH /opt/wso2dss-3.5.0
 ENV DATASERVICE_DBS ARTIFACT_NAME
 ENV DATASERVICE_DEPLOYMENT_DIR $CARBON_HOME_PATH/repository/deployment/server/dataservices/
 ENV APP_HOST HOST_NAME
+ENV TOTAL_MEMORY VAL_TOTAL_MEMORY
 
 COPY "$DATASERVICE_DBS" "$DATASERVICE_DEPLOYMENT_DIR"
 WORKDIR "$DATASERVICE_DEPLOYMENT_DIR"
 RUN sed -i '/<!--HostName>/c\\t<HostName>'$APP_HOST'</HostName>' $CARBON_HOME_PATH/repository/conf/carbon.xml && \
     sed -i '/<!--MgtHostName>/c\\t<MgtHostName>'$APP_HOST'</MgtHostName>' $CARBON_HOME_PATH/repository/conf/carbon.xml
 
-CMD ["/init.sh"]
+WORKDIR "/"
+
+CMD ["bash", "-c", "source /init.sh"]

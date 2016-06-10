@@ -21,6 +21,7 @@ FROM java:8-jre
 ENV MSF4J_HOME /srv/msf4j
 ENV PATH $MSF4J_HOME:$PATH
 ENV HTTPS_CONF /opt/conf/https/
+ENV JAVA_OPTS="-Xms128m -Xmx128m -XX:MaxMetaspaceSize=128m"
 
 RUN mkdir -p "$MSF4J_HOME" && \
     mkdir -p "HTTPS_CONF/" && \
@@ -28,7 +29,11 @@ RUN mkdir -p "$MSF4J_HOME" && \
     adduser --system --shell /bin/bash --gecos 'WSO2User' --ingroup wso2 --disabled-login wso2user
 
 COPY wso2carbon.jks "$HTTPS_CONF"
-COPY netty-transports.yaml "$HTTPS_CONF" 
+COPY netty-transports.yaml "$HTTPS_CONF"
+
+# Add the startup script
+ADD init.sh /init.sh
+RUN chmod +x /init.sh
 
 WORKDIR $MSF4J_HOME
 
