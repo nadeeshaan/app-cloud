@@ -28,12 +28,15 @@ public class WARApplicationTestCase extends AppCloudIntegrationBaseTestCase {
 	public static final String TOMCAT_SERVER_STARTED_MESSAGE = "org.apache.catalina.startup.Catalina.start Server startup in";
 	public static final String WAR_APPLICATION_TYPE = "war";
 
-	public WARApplicationTestCase(){
-		super(AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.TOMCAT_APP_RUNTIME_ID_KEY),
-		      AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.TOMCAT_APP_FILE_NAME_KEY),
-		      WAR_APPLICATION_TYPE, AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.
-				                                                                          TOMCAT_APP_CONTENT));
-	}
+    public WARApplicationTestCase() {
+        super(AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.TOMCAT_APP_RUNTIME_ID_KEY),
+                AppCloudIntegrationTestUtils
+                        .getPropertyValue(AppCloudIntegrationTestConstants.TOMCAT_APP_FILE_NAME_KEY),
+                WAR_APPLICATION_TYPE,
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.TOMCAT_APP_CONTENT),
+                Long.parseLong(AppCloudIntegrationTestUtils
+                        .getPropertyValue(AppCloudIntegrationTestConstants.TOMCAT_RUNTIME_START_TIMEOUT)));
+    }
 
 	@Override
 	protected void assertLogContent(String logContent) {

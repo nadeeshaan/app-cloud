@@ -309,17 +309,26 @@
                 <runtimeID key="tomcat">1</runtimeID>
                 <runtimeID key="msf4j">2</runtimeID>
                 <runtimeID key="php">3</runtimeID>
+                <runtimeID key="wso2dataservice">6</runtimeID>
             </runtimeIDs>
+            <runtimeStartTimeouts>
+                <runtimeStartTimeout key="tomcat">120000</runtimeStartTimeout>
+                <runtimeStartTimeout key="msf4j">60000</runtimeStartTimeout>
+                <runtimeStartTimeout key="php">60000</runtimeStartTimeout>
+                <runtimeStartTimeout key="wso2dataservice">160000</runtimeStartTimeout>
+            </runtimeStartTimeouts>
             <sampleAppContents>
                 <sampleAppContent key="tomcat">Hello</sampleAppContent>
                 <sampleAppContent key="msf4j">Hello</sampleAppContent>
                 <sampleAppContent key="php">Hello</sampleAppContent>
+                <sampleAppContent key="wso2dataservice">CSVSampleService</sampleAppContent>
             </sampleAppContents>
 
             <files>
                 <file type="war">sample.war</file>
                 <file type="msf4j">helloworld.jar</file>
                 <file type="php">sample.zip</file>
+                <file type="wso2dataservice">CSVSampleService.dbs</file>
             </files>
             <properties>
                 <property key="key1">value1</property>
@@ -337,6 +346,7 @@
                 <tag key="tag3">tagValue3</tag>
                 <tag key="tag4">tagValue4</tag>
             </newTags>
+
         </application>
 
         <domainMapping>
@@ -344,8 +354,8 @@
         </domainMapping>
 
         <timeOutSetting>
-              <period>120000</period>
-              <retryCount>15</retryCount>
+              <period>150000</period>
+              <retryCount>5</retryCount>
         </timeOutSetting>
 
         <!--bamResources>

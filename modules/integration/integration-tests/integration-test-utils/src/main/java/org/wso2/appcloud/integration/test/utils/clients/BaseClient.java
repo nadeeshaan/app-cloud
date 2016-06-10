@@ -19,16 +19,29 @@
 
 package org.wso2.appcloud.integration.test.utils.clients;
 
+//import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestConstants;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestException;
+import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestUtils;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.test.utils.http.client.HttpRequestUtil;
 import org.wso2.carbon.automation.test.utils.http.client.HttpResponse;
@@ -36,6 +49,7 @@ import org.wso2.carbon.automation.test.utils.http.client.HttpResponse;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -134,6 +148,7 @@ public class BaseClient {
     protected void checkErrors(HttpResponse response) throws AppCloudIntegrationTestException {
         JSONObject jsonObject = new JSONObject(response.getData());
         if (jsonObject.keySet().contains("error")) {
+            log.error("Response received as: " + response.getData());
             throw new AppCloudIntegrationTestException("Operation not successful: "
                                                        + jsonObject.get(AppCloudIntegrationTestConstants.RESPONSE_MESSAGE_NAME).toString());
         }
@@ -199,4 +214,50 @@ public class BaseClient {
 		}
 		return URLEncodedUtils.format(qparams, CharEncoding.UTF_8);
 	}
+
+    public HttpResponse doPostRequest(String endpoint, List<NameValuePair> nameValuePairs) throws AppCloudIntegrationTestException {
+        HttpClient httpclient = null;
+        int timeout = (int) AppCloudIntegrationTestUtils.getTimeOutPeriod();
+        try {
+            httpclient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout)
+                    .build();
+            HttpPost httppost = new HttpPost(endpoint);
+            httppost.setConfig(requestConfig);
+
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
+            org.apache.http.HttpResponse httpResponse = (httpclient.execute(httppost));
+            return new HttpResponse(EntityUtils.toString(httpResponse.getEntity(),"UTF-8").replaceAll("\\s+", ""),
+                    httpResponse.getStatusLine().getStatusCode());
+        } catch (IOException e) {
+            log.error("Failed to invoke API endpoint:" + endpoint, e);
+            throw new AppCloudIntegrationTestException("Failed to invoke API endpoint:" + endpoint, e);
+        } finally {
+            HttpClientUtils.closeQuietly(httpclient);
+        }
+    }
+
+    public HttpResponse doGetRequest(String endpoint, Header[] headers) throws AppCloudIntegrationTestException {
+        HttpClient httpclient = null;
+        int timeout = (int) AppCloudIntegrationTestUtils.getTimeOutPeriod();
+        try {
+            httpclient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout)
+                    .build();
+            HttpGet httpGet = new HttpGet(endpoint);
+            httpGet.setConfig(requestConfig);
+            httpGet.setHeaders(headers);
+
+            httpGet.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
+            org.apache.http.HttpResponse httpResponse = (httpclient.execute(httpGet));
+            return new HttpResponse(EntityUtils.toString(httpResponse.getEntity()),
+                    httpResponse.getStatusLine().getStatusCode());
+        } catch (IOException e) {
+            log.error("Failed to invoke API endpoint:" + endpoint, e);
+            throw new AppCloudIntegrationTestException("Failed to invoke API endpoint:" + endpoint, e);
+        } finally {
+            HttpClientUtils.closeQuietly(httpclient);
+        }
+    }
 }

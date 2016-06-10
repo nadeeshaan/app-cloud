@@ -40,12 +40,19 @@ public class AppCloudIntegrationTestConstants {
 	public static final String TOMCAT_APP_RUNTIME_ID_KEY = "//appCloudProperties/application/runtimeIDs/runtimeID[@key='tomcat']";
 	public static final String MSS_APP_RUNTIME_ID_KEY = "//appCloudProperties/application/runtimeIDs/runtimeID[@key='msf4j']";
 	public static final String PHP_APP_RUNTIME_ID_KEY = "//appCloudProperties/application/runtimeIDs/runtimeID[@key='php']";
+	public static final String DSS_APP_RUNTIME_ID_KEY = "//appCloudProperties/application/runtimeIDs/runtimeID[@key='wso2dataservice']";
 	public static final String TOMCAT_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='war']";
 	public static final String MSS_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='msf4j']";
 	public static final String PHP_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='php']";
+	public static final String DSS_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='wso2dataservice']";
 	public static final String TOMCAT_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='war']";
 	public static final String MSS_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='msf4j']";
 	public static final String PHP_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='php']";
+	public static final String DSS_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='wso2dataservice']";
+	public static final String TOMCAT_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='tomcat']";
+	public static final String MSS_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='msf4j']";
+	public static final String PHP_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='php']";
+	public static final String DSS_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='wso2dataservice']";
 
 	public static final String APP_PROPERTIES_KEY = "//appCloudProperties/application/properties/property";
 	public static final String APP_NEW_PROPERTIES_KEY = "//appCloudProperties/application/newProperties/property";
