@@ -20,6 +20,7 @@
 package org.wso2.appcloud.integration.test.utils.clients;
 
 //import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.logging.Log;
@@ -163,11 +164,11 @@ public class BaseClient {
 	 */
 	protected void login(String userName, String password) throws Exception {
 		HttpResponse response = HttpRequestUtil.doPost(
-				new URL(getBackEndUrl() + AppCloudIntegrationTestConstants.APPMGT_URL_SURFIX
-				+ AppCloudIntegrationTestConstants.APPMGT_USER_LOGIN),
-				PARAM_NAME_ACTION + PARAM_EQUALIZER + ACTION_NAME_LOGIN + PARAM_SEPARATOR + PARAM_NAME_USER_NAME
-				+ PARAM_EQUALIZER + userName + PARAM_SEPARATOR + PARAM_NAME_PASSWORD + PARAM_EQUALIZER
-				+ password, getRequestHeaders());
+                new URL(getBackEndUrl() + AppCloudIntegrationTestConstants.APPMGT_URL_SURFIX
+                        + AppCloudIntegrationTestConstants.APPMGT_USER_LOGIN),
+                PARAM_NAME_ACTION + PARAM_EQUALIZER + ACTION_NAME_LOGIN + PARAM_SEPARATOR + PARAM_NAME_USER_NAME
+                        + PARAM_EQUALIZER + userName + PARAM_SEPARATOR + PARAM_NAME_PASSWORD + PARAM_EQUALIZER
+                        + password, getRequestHeaders());
 
 		if (response.getResponseCode() == HttpStatus.SC_OK && response.getData().equals("true")) {
 			String session = getSession(response.getHeaders());
@@ -230,7 +231,11 @@ public class BaseClient {
             org.apache.http.HttpResponse httpResponse = (httpclient.execute(httppost));
             return new HttpResponse(EntityUtils.toString(httpResponse.getEntity(),"UTF-8").replaceAll("\\s+", ""),
                     httpResponse.getStatusLine().getStatusCode());
-        } catch (IOException e) {
+        }catch (ConnectTimeoutException | java.net.SocketTimeoutException e1){
+            // In most of the cases, even though connection is timed out, actual activity is completed.
+            log.warn("Failed to get 200 ok response from endpoint:"+endpoint, e1);
+            return new HttpResponse(e1.getMessage(), HttpStatus.SC_REQUEST_TIMEOUT);
+        }  catch(IOException e) {
             log.error("Failed to invoke API endpoint:" + endpoint, e);
             throw new AppCloudIntegrationTestException("Failed to invoke API endpoint:" + endpoint, e);
         } finally {
