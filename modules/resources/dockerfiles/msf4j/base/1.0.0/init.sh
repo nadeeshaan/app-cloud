@@ -4,7 +4,8 @@
 #Check whether TOTAL_MEMORY env variable defined or and not empty
 if [[ $TOTAL_MEMORY && ${TOTAL_MEMORY-_} ]]; then
     let MAX_HEAP_SIZE=$TOTAL_MEMORY/256*128
-    JAVA_OPTS="-Xms128m -Xmx"$MAX_HEAP_SIZE"m"
+    let MAX_META_SPACE_SIZE=$TOTAL_MEMORY/256*128
+    JAVA_OPTS="-Xms128m -Xmx"$MAX_HEAP_SIZE"m -XX:MaxMetaspaceSize="$MAX_META_SPACE_SIZE"m"
     export JAVA_OPTS=$JAVA_OPTS
 fi
 

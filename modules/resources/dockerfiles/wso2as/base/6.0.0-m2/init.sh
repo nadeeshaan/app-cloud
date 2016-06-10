@@ -58,11 +58,13 @@ sed -i '/<Context>/a <JarScanner scanClassPath="false" />' /opt/wso2as-${WSO2_AS
 if [[ $TOTAL_MEMORY && ${TOTAL_MEMORY-_} ]]; then
     let MAX_HEAP_SIZE=$TOTAL_MEMORY/512*256
     let PERM_SIZE=$TOTAL_MEMORY/512*64
-    JAVA_OPTS="-Xms128m -Xmx"$MAX_HEAP_SIZE"m"
+    JAVA_OPTS="-Xms128m -Xmx"$MAX_HEAP_SIZE"m" "-XX:MaxMetaspaceSize=256m"
     export JAVA_OPTS=$JAVA_OPTS
 fi
 
-/opt/tomcat/bin/catalina.sh start
-
-#tail process will run in foreground
-tail -F /opt/tomcat/logs/catalina.out
+if [[ $TAIL_LOG && ${TAIL_LOG-_} && $TAIL_LOG == "true" ]]; then
+    #tail process will run in foreground
+    tail -F /opt/tomcat/logs/catalina.out
+else
+    /opt/tomcat/bin/catalina.sh run
+fi
