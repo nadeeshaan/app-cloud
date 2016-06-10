@@ -58,7 +58,7 @@ sed -i '/<Context>/a <JarScanner scanClassPath="false" />' /opt/wso2as-${WSO2_AS
 if [[ $TOTAL_MEMORY && ${TOTAL_MEMORY-_} ]]; then
     let MAX_HEAP_SIZE=$TOTAL_MEMORY/512*256
     let PERM_SIZE=$TOTAL_MEMORY/512*64
-    JAVA_OPTS="-Xms128m -Xmx"$MAX_HEAP_SIZE"m" "-XX:MaxMetaspaceSize=256m"
+    JAVA_OPTS="-Xms128m -Xmx"$MAX_HEAP_SIZE"m -XX:MaxMetaspaceSize=256m"
     export JAVA_OPTS=$JAVA_OPTS
 fi
 
