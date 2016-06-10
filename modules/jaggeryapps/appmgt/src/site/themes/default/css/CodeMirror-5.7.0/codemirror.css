@@ -277,6 +277,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 .CodeMirror-linenumber {
   -moz-box-sizing: content-box;
   box-sizing: content-box;
+  padding-bottom: 30px;
 }
 
 .CodeMirror-measure {

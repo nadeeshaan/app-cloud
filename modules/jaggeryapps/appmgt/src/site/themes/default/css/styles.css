@@ -2531,6 +2531,7 @@ th.hide-column-data, td.hide-column-data {
     padding: 31px 0px 5px;
     background-color: #5F5F5F;
     margin: -15px;
+    width: 100%;
 }
 
 .highlight {

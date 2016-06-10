@@ -57,59 +57,58 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
         </div><!-- EOF App factory menu actionbar-->
 
         <div class="container-fluid app-content-section">
-
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 msg-issues">
-                Download the logs of the deployed applications that are archived daily.
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 msg-issues">
+                    Download the logs of the deployed applications that are archived daily.
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="div-search">
-                <div class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <label for="log-search" class="col-sm-1 control-label">Revision: </label>
-                        <div class="col-sm-4">
-                            <select class="form-control" id="revision" disabled>
-                                <option><%=selectedRevision%></option>
-                                <% for(var i = 0; i < revisionsList.length; i++){
-                                    if(selectedRevision == revisionsList[i]){
-                                        continue;
-                                    }
-                                %>
-                                <option><%=revisionsList[i]%></option>
-                                <% }%>
-                            </select>
-                        </div>
-                        <label for="log-search" class="col-sm-1 control-label">Replica: </label>
-                        <div class="col-sm-4">
-                            <select class="form-control" id="replicas">
+            <div class="row">
+                <div class="div-search">
+                    <div class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="log-search" class="col-sm-1 control-label">Revision: </label>
+                            <div class="col-sm-4">
+                                <select class="form-control" id="revision" disabled>
+                                    <option><%=selectedRevision%></option>
+                                    <% for(var i = 0; i < revisionsList.length; i++){
+                                        if(selectedRevision == revisionsList[i]){
+                                            continue;
+                                        }
+                                    %>
+                                    <option><%=revisionsList[i]%></option>
+                                    <% }%>
+                                </select>
+                            </div>
+                            <label for="log-search" class="col-sm-1 control-label">Replica: </label>
+                            <div class="col-sm-4">
+                                <select class="form-control" id="replicas">
 
-                            </select>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="log-search" class="col-sm-1 control-label">Search: </label>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control log-search" id="log-search" placeholder="Enter search text">
+                                                  <span class="input-group-btn">
+                                                      <button type="button" action="findPrev" class="prev btn btn-default"><i class="fa fa-backward"></i> </button>
+                                                        <button type="button" action="findNext" class="next btn btn-default"><i class="fa  fa-forward"></i> </button>
+                                                  </span>
+                                </div><!-- /input-group -->
+                            </div><!-- /.col-lg-6 -->
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="log-search" class="col-sm-1 control-label">Search: </label>
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <input type="text" class="form-control log-search" id="log-search" placeholder="Enter search text">
-                                              <span class="input-group-btn">
-                                                  <button type="button" action="findPrev" class="prev btn btn-default"><i class="fa fa-backward"></i> </button>
-                                                    <button type="button" action="findNext" class="next btn btn-default"><i class="fa  fa-forward"></i> </button>
-                                              </span>
-                            </div><!-- /input-group -->
-                        </div><!-- /.col-lg-6 -->
+                </div>
+                <div class="col-xs-12 col-md-12">
+                    <div class="scroll-container" style="margin-top: 1.2em;">
+                        <textarea id="build-logs" name="build-logs" style="display: none">
+                            Loading...
+                        </textarea>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-12">
-                <div class="scroll-container" style="margin-top: 1.2em;">
-                    <textarea id="build-logs" name="build-logs" style="display: none">
-                        Loading...
-                    </textarea>
-                </div>
-            </div>
-        </div>
-    </div><!-- /.container -->
+        </div><!-- /.container -->
 
 <!-- include codemirror functions -->
 <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/CodeMirror-5.7.0/lib/codemirror.js'))%>"></script>
