@@ -40,61 +40,61 @@ import java.util.List;
 @Path("/containerSpecs")
 public class ContainerSpecServiceImpl {
 
-	private ContainerSpecDaoImpl ContainerSpecInstance = (ContainerSpecDaoImpl) DAOdelegate.getContainerSpecInstance();
-	private static final Log log = LogFactory.getLog(ContainerSpecServiceImpl.class);
+    private ContainerSpecDaoImpl ContainerSpecInstance = (ContainerSpecDaoImpl) DAOdelegate.getContainerSpecInstance();
+    private static final Log log = LogFactory.getLog(ContainerSpecServiceImpl.class);
 
-	@GET
-	@Produces({MediaType.APPLICATION_JSON})
-	public Response getContainerSpecifications() {
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getContainerSpecifications() {
 
-		try {
-			List<ContainerSpecifications> containerSpecificationsList = ContainerSpecInstance.getAllContainerSpecs();
-			GenericEntity<List<ContainerSpecifications>> entity = new
-					GenericEntity<List<ContainerSpecifications>>(containerSpecificationsList) {};
-			return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
-		} catch (SQLException e) {
-			String msg = "Error while getting container specifications list";
-			log.error(msg, e);
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).
-					type(MediaType.APPLICATION_JSON_TYPE).build();
-		}
+        try {
+            List<ContainerSpecifications> containerSpecificationsList = ContainerSpecInstance.getAllContainerSpecs();
+            GenericEntity<List<ContainerSpecifications>> entity = new
+                    GenericEntity<List<ContainerSpecifications>>(containerSpecificationsList) {};
+            return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (SQLException e) {
+            String msg = "Error while getting container specifications list";
+            log.error(msg, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).
+                    type(MediaType.APPLICATION_JSON_TYPE).build();
+        }
 
-	}
+    }
 
-	@GET
-	@Path("/{containerSpecId}")
-	@Produces({MediaType.APPLICATION_JSON})
-	public Response getContainerSpecification(@PathParam("containerSpecId") int containerSpecId) throws SQLException {
+    @GET
+    @Path("/{containerSpecId}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getContainerSpecification(@PathParam("containerSpecId") int containerSpecId) throws SQLException {
 
-		try {
-			ContainerSpecifications containerSpecifications = ContainerSpecInstance.
-					getContainerSpecById(containerSpecId);
-			return Response.ok().entity(containerSpecifications).type(MediaType.APPLICATION_JSON_TYPE).build();
-		} catch (SQLException e) {
-			String msg = "Error while getting conatiner specifications for specification ID: " + containerSpecId;
-			log.error(msg, e);
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).
-					type(MediaType.APPLICATION_JSON_TYPE).build();
-		}
-	}
+        try {
+            ContainerSpecifications containerSpecifications = ContainerSpecInstance.
+                    getContainerSpecById(containerSpecId);
+            return Response.ok().entity(containerSpecifications).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (SQLException e) {
+            String msg = "Error while getting conatiner specifications for specification ID: " + containerSpecId;
+            log.error(msg, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).
+                    type(MediaType.APPLICATION_JSON_TYPE).build();
+        }
+    }
 
-	@GET
-	@Path("allowedruntime/{runTimeId}")
-	@Produces({MediaType.APPLICATION_JSON})
-	public Response getContainerSpecificationbyRuntimeId(@PathParam("runTimeId") int runtimeId) throws SQLException {
+    @GET
+    @Path("allowedruntime/{runTimeId}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getContainerSpecificationbyRuntimeId(@PathParam("runTimeId") int runtimeId) throws SQLException {
 
-		try {
-			List<ContainerSpecifications> containerSpecificationsList = ContainerSpecInstance.
-					getContainerSpecByRuntimeID(runtimeId);
-			GenericEntity<List<ContainerSpecifications>> entity = new
-					GenericEntity<List<ContainerSpecifications>>(containerSpecificationsList) {};
-			return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
-		} catch (SQLException e) {
-			String msg = "Error while getting container specifications list";
-			log.error(msg, e);
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).
-					type(MediaType.APPLICATION_JSON_TYPE).build();
-		}
-	}
+        try {
+            List<ContainerSpecifications> containerSpecificationsList = ContainerSpecInstance.
+                    getContainerSpecByRuntimeID(runtimeId);
+            GenericEntity<List<ContainerSpecifications>> entity = new
+                    GenericEntity<List<ContainerSpecifications>>(containerSpecificationsList) {};
+            return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (SQLException e) {
+            String msg = "Error while getting container specifications list";
+            log.error(msg, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).
+                    type(MediaType.APPLICATION_JSON_TYPE).build();
+        }
+    }
 
 }
