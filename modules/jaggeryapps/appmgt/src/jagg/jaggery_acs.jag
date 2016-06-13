@@ -50,7 +50,7 @@
             }
 
             // validating the signature
-            var isSignatureValid = true; //ssoRelyingParty.validateSignature(samlResponse);
+            var isSignatureValid = ssoRelyingParty.validateSignature(samlResponse);
             if (!Boolean(isSignatureValid)) {
                 log.error("SAML response signature is verification failed.");
                 response.sendRedirect("../error.jag");
