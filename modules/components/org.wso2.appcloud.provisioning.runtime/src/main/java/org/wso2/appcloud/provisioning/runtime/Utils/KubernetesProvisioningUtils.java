@@ -119,6 +119,7 @@ public class KubernetesProvisioningUtils {
         selector.put("app", applicationContext.getId());
         selector.put("version", applicationContext.getVersion());
         selector.put("versionHashId", applicationContext.getVersionHashId());
+        selector.put("type", applicationContext.getType());
         return selector;
     }
 
