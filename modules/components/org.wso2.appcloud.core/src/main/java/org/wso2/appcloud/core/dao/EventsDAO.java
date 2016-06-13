@@ -78,7 +78,7 @@ public class EventsDAO {
      * @return
      * @throws AppCloudException
      */
-    public boolean deleteAppVersionEvents(String versionHashId) throws AppCloudException {
+    public boolean deleteAppVersionEvents(String versionHashId, int tenantId) throws AppCloudException {
 
         Connection dbConnection = DBUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
@@ -86,6 +86,7 @@ public class EventsDAO {
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.DELETE_ALL_APP_VERSION_EVENTS);
             preparedStatement.setString(1, versionHashId);
+            preparedStatement.setInt(2, tenantId);
 
             int result = preparedStatement.executeUpdate();
             dbConnection.commit();
@@ -110,7 +111,7 @@ public class EventsDAO {
      * @return
      * @throws AppCloudException
      */
-    public List<Event> getEventsOfApplication(String versionHashId) throws AppCloudException {
+    public List<Event> getEventsOfApplication(String versionHashId, int tenantId) throws AppCloudException {
 
         Connection dbConnection = DBUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
@@ -120,6 +121,7 @@ public class EventsDAO {
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_EVENTS_OF_APPLICATION);
             preparedStatement.setString(1, versionHashId);
+            preparedStatement.setInt(2, tenantId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             Event event;
