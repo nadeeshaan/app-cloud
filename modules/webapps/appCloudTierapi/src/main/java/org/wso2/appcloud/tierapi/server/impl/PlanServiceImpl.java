@@ -44,13 +44,8 @@ public class PlanServiceImpl implements PlanService {
     private PlanDaoImpl planInstance = (PlanDaoImpl) DAOdelegate.getPlanInstance();
     private static final Log log = LogFactory.getLog(PlanServiceImpl.class);
 
-    /**
-     * Get all Plans
-     *
-     *  @return {@link Response}
-     */
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON})
     public Response getPlans() {
 
         try {
@@ -66,15 +61,9 @@ public class PlanServiceImpl implements PlanService {
         }
     }
 
-    /**
-     * Get Plan using Plan ID
-     *
-     * @param planId    Plan ID of the plan
-     * @return {@link Response}
-     */
     @GET
     @Path("/{planId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON})
     public Response getPlan(@PathParam("planId") int planId) {
         try {
             Plan plan = planInstance.getPlanByPlanId(planId);
@@ -87,15 +76,9 @@ public class PlanServiceImpl implements PlanService {
         }
     }
 
-    /**
-     * Get allowed container specifications using Plan ID
-     *
-     * @param planId    Plan ID of the plan
-     * @return {@link Response}
-     */
     @GET
     @Path("/allowedSpecs/{planId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON})
     public Response getAllowedConSpecs(@PathParam("planId") int planId) {
         try {
             List<ContainerSpecifications> containerSpecificationsList = planInstance.getAllowedConSpecs(planId);

@@ -28,18 +28,32 @@ import javax.ws.rs.core.Response;
  */
 public interface ContainerSpecService {
 
+    /**
+     * Get all Container Specifications.
+     * @return {@link Response}
+     */
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON})
     public Response getContainerSpecifications();
 
+    /**
+     * Get Plan using Container Specifications ID.
+     * @param containerSpecId            Container Specifications ID of the Container Specification
+     * @return {@link Response}
+     */
     @GET
     @Path("/{containerSpecId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON})
     public Response getContainerSpecification(@PathParam("containerSpecId") int containerSpecId);
 
+    /**
+     * Get Container Specifications using Runtime ID.
+     * @param runtimeId         runTimeId ID
+     * @return {@link Response}
+     */
     @GET
     @Path("allowedruntime/{runTimeId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON})
     public Response getContainerSpecificationbyRuntimeId(@PathParam("runTimeId") int runtimeId);
 
 }

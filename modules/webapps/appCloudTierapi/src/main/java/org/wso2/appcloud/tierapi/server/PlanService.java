@@ -30,18 +30,35 @@ import javax.ws.rs.core.Response;
 
 public interface PlanService {
 
+    /**
+     * Get all Plans
+     *
+     * @return {@link Response}
+     */
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON})
     public Response getPlans();
 
+    /**
+     * Get Plan using Plan ID
+     *
+     * @param planId    Plan ID of the plan
+     * @return {@link Response}
+     */
     @GET
     @Path("/{planId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON})
     public Response getPlan(@PathParam("planId") int planId);
 
+    /**
+     * Get allowed container specifications using Plan ID
+     *
+     * @param planId    Plan ID of the plan
+     * @return {@link Response}
+     */
     @GET
     @Path("/allowedSpecs/{planId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON})
     public Response getAllowedConSpecs(@PathParam("planId") int planId);
 
 }
