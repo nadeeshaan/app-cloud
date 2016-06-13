@@ -232,6 +232,9 @@ jagg.module("application", {
     },
     waitForPodToGetDeleted: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").waitForPodToGetDeleted.apply(this, arguments);
+    },
+    getAllowedContainerSpecificationsForRuntime: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").getAllowedContainerSpecificationsForRuntime.apply(this, arguments);
     }
 });
 %>
