@@ -57,7 +57,7 @@ include("/jagg/constants.jag");
         var modApplication = jagg.module("application");
         try {
             var applicationType = modApplication.getApplication(applicationKey).applicationType;
-            var logMap = mod.getDownloadableRuntimeLogs(applicationKey, selectedRevision, "");
+            var logMap = mod.getDownloadableRuntimeLogs(applicationKey, selectedRevision, applicationType);
             print(logMap);
         } catch(e) {
             var msg = "Error while getting deployment logs";
