@@ -23,42 +23,37 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
 /**
- * Service class defines operations related to Plan related services.
+ * Service class defines operations related to Container Specifications related services.
  */
-
-public interface PlanService {
+public interface ContainerSpecService {
 
     /**
-     * Get all Plans
-     *
+     * Get all Container Specifications.
      * @return {@link Response}
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getPlans();
+    public Response getContainerSpecifications();
 
     /**
-     * Get Plan using Plan ID
-     *
-     * @param planId    Plan ID of the plan
+     * Get Plan using Container Specifications ID.
+     * @param containerSpecId            Container Specifications ID of the Container Specification
      * @return {@link Response}
      */
     @GET
-    @Path("/{planId}")
+    @Path("/{containerSpecId}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getPlan(@PathParam("planId") int planId);
+    public Response getContainerSpecification(@PathParam("containerSpecId") int containerSpecId);
 
     /**
-     * Get allowed container specifications using Plan ID
-     *
-     * @param planId    Plan ID of the plan
+     * Get Container Specifications using Runtime ID.
+     * @param runtimeId         runTimeId ID
      * @return {@link Response}
      */
     @GET
-    @Path("/allowedSpecs/{planId}")
+    @Path("allowedruntime/{runTimeId}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getAllowedConSpecs(@PathParam("planId") int planId);
+    public Response getContainerSpecificationbyRuntimeId(@PathParam("runTimeId") int runtimeId);
 
 }
