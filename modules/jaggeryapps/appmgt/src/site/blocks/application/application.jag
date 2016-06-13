@@ -189,12 +189,14 @@ var log = new Log();
         var versionKey = request.getParameter("versionKey");
         var conSpecMemory = request.getParameter("conSpecMemory");
         var conSpecCpu = request.getParameter("conSpecCpu");
+        var applicationHashId = applicationModule.getApplicationHashIdByName(applicationName);
+        var applicationType = applicationModule.getApplication(applicationHashId).applicationType;
         var podDeleteTimeOut = modManager.getPropertyValue(POD_DELETE_TIMEOUT);
 
         // redeploy application from kubernetes
         try {
-            if (applicationModule.redeployVersion(applicationName, applicationRevision, versionKey, conSpecMemory,
-                            conSpecCpu)) {
+            if (applicationModule.redeployVersion(applicationName, applicationRevision, versionKey, applicationType,
+                conSpecMemory, conSpecCpu)) {
                 response.status = 200;
                 response.message = "Application is successfully redeployed.";
             } else {
@@ -218,9 +220,11 @@ var log = new Log();
         var conSpecCpu = request.getParameter("conSpecCpu");
         var applicationHashId = applicationModule.getApplicationHashIdByName(applicationName);
         var versions = applicationModule.getVersionListOfApplication(applicationHashId);
+        var applicationType = applicationModule.getApplication(applicationHashId).applicationType;
 
         // redeploy application from kubernetes
-        applicationModule.redeployApplication(applicationName, applicationRevision, versionKey, conSpecMemory, conSpecCpu);
+        applicationModule.redeployApplication(applicationName, applicationRevision, versionKey, applicationType,
+                                              conSpecMemory, conSpecCpu);
         // stop other versions of the application
         if (versions.length > 1) {
             applicationModule.stopOtherVersions(applicationHashId, applicationRevision);

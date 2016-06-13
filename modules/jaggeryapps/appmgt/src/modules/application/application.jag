@@ -503,7 +503,7 @@ var updateApplicationStatus = function(versionHashId, status){
     ApplicationManager.updateVersionStatus(versionHashId, status);
 };
 
-var redeployVersion = function(applicationName, versionName, versionHashId, conSpecMemory, conSpecCpu){
+var redeployVersion = function(applicationName, versionName, versionHashId, appTypeName, conSpecMemory, conSpecCpu){
     deleteApplicationFromKubernetes(versionHashId);
     deleteEventsOfAppVersions(versionHashId);
     var msg = "Successfully triggered stopping container";
@@ -512,7 +512,7 @@ var redeployVersion = function(applicationName, versionName, versionHashId, conS
         updateApplicationStatus(versionHashId, APPLICATION_STOPPED);
         msg = "Successfully completed stopping container";
         addEvent(STOP_CONTAINERS, EVENT_SUCCEEDED, msg, versionHashId);
-        redeployApplication(applicationName, versionName, versionHashId, conSpecMemory, conSpecCpu);
+        redeployApplication(applicationName, versionName, versionHashId, appTypeName, conSpecMemory, conSpecCpu);
         return true;
     } else {
         msg = "Stopping container failed ";
@@ -526,10 +526,10 @@ var deleteEventsOfAppVersions = function(versionHashId){
     eventsManager.deleteAllEventsofAppVersion(versionHashId);
 }
 
-var redeployApplication = function(applicationName, versionName, versionHashId, conSpecMemory, conSpecCpu){
+var redeployApplication = function(applicationName, versionName, versionHashId, appTypeName, conSpecMemory, conSpecCpu){
     var deploymentConfig = buildDeploymentConfigFromDB(versionHashId);
 
-    deployApplication(applicationName, versionName, deploymentConfig, true, versionHashId, "redeploy", conSpecMemory, conSpecCpu);
+    deployApplication(applicationName, versionName, appTypeName, deploymentConfig, true, versionHashId, "redeploy", conSpecMemory, conSpecCpu);
 };
 var persistDeploymentConfig = function(deploymentConfig, versionHashId, applicationName, versionName){
 
