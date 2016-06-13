@@ -56,7 +56,7 @@ public class ContainerSpecServiceImpl {
 			GenericEntity<List<ContainerSpecifications>> entity = new
 					GenericEntity<List<ContainerSpecifications>>(containerSpecificationsList) {};
 			return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			String msg = "Error while getting container specifications list";
 			log.error(msg, e);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).
@@ -79,7 +79,7 @@ public class ContainerSpecServiceImpl {
 			ContainerSpecifications containerSpecifications = ContainerSpecInstance.
 					getContainerSpecById(containerSpecId);
 			return Response.ok().entity(containerSpecifications).type(MediaType.APPLICATION_JSON_TYPE).build();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			String msg = "Error while getting conatiner specifications for specification ID: " + containerSpecId;
 			log.error(msg, e);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).
@@ -103,7 +103,7 @@ public class ContainerSpecServiceImpl {
 			GenericEntity<List<ContainerSpecifications>> entity = new
 					GenericEntity<List<ContainerSpecifications>>(containerSpecificationsList) {};
 			return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			String msg = "Error while getting container specifications list";
 			log.error(msg, e);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).

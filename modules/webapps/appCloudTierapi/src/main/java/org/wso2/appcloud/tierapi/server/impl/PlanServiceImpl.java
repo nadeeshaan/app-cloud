@@ -31,6 +31,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -57,7 +58,7 @@ public class PlanServiceImpl implements PlanService {
             GenericEntity<List<Plan>> entity = new
                     GenericEntity<List<Plan>>(plansList) {};
             return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             String msg = "Error while gettings plans list";
             log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
@@ -78,7 +79,7 @@ public class PlanServiceImpl implements PlanService {
         try {
             Plan plan = planInstance.getPlanByPlanId(planId);
             return Response.ok().entity(plan).type(MediaType.APPLICATION_JSON_TYPE).build();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             String msg = "Error while getting details for plan with plan id: " + planId;
             log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
@@ -101,7 +102,7 @@ public class PlanServiceImpl implements PlanService {
             GenericEntity<List<ContainerSpecifications>> entity = new
                     GenericEntity<List<ContainerSpecifications>>(containerSpecificationsList) {};
             return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             String msg = "Error while getting allowed container specifications for plan with plan id: " + planId;
             log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
