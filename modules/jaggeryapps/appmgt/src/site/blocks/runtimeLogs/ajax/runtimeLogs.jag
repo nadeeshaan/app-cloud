@@ -37,8 +37,10 @@ include("/jagg/constants.jag");
         var selectedRevision = request.getParameter("selectedRevision");
         var isFirstRequest = request.getParameter("isFirstRequest");
         var mod = jagg.module("runtimeLogs");
+        var modApplication = jagg.module("application");
         try {
-            var logMap = mod.getFormattedRuntimeLogs(applicationKey, selectedRevision, "", isFirstRequest);
+            var applicationType = modApplication.getApplication(applicationKey).applicationType;
+            var logMap = mod.getFormattedRuntimeLogs(applicationKey, selectedRevision, applicationType, isFirstRequest);
             print(logMap);
         } catch(e) {
             var msg = "Error while getting deployment logs";
@@ -52,7 +54,9 @@ include("/jagg/constants.jag");
         var applicationKey = request.getParameter("applicationKey");
         var selectedRevision = request.getParameter("selectedRevision");
         var mod = jagg.module("runtimeLogs");
+        var modApplication = jagg.module("application");
         try {
+            var applicationType = modApplication.getApplication(applicationKey).applicationType;
             var logMap = mod.getDownloadableRuntimeLogs(applicationKey, selectedRevision, "");
             print(logMap);
         } catch(e) {
