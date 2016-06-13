@@ -19,20 +19,21 @@ package org.wso2.appcloud.tierapi.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.appcloud.core.DBUtil;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DBConfiguration {
 
-	private static final Log log = LogFactory.getLog(DBConfiguration.class);
+    private static final Log log = LogFactory.getLog(DBConfiguration.class);
 
-	public Connection getConnection() throws SQLException {
-		try {
-			return DBUtil.getDBConnection();
-		} catch (Exception e) {
-			String msg = "Error while connecting to Data Base ";
-			log.error(msg, e);
-			throw new SQLException(msg, e);
-		}
-	}
+    public Connection getConnection() throws SQLException {
+        try {
+            return DBUtil.getDBConnection();
+        } catch (Exception e) {
+            String msg = "Error while connecting to Data Base ";
+            log.error(msg, e);
+            throw new SQLException(msg, e);
+        }
+    }
 }

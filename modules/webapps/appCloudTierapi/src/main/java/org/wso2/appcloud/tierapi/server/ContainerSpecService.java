@@ -23,25 +23,23 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
 /**
- * Service class defines operations related to Plan related services.
+ * Service class defines operations related to Container Specifications related services.
  */
-
-public interface PlanService {
+public interface ContainerSpecService {
 
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getPlans();
+    public Response getContainerSpecifications();
 
     @GET
-    @Path("/{planId}")
+    @Path("/{containerSpecId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getPlan(@PathParam("planId") int planId);
+    public Response getContainerSpecification(@PathParam("containerSpecId") int containerSpecId);
 
     @GET
-    @Path("/allowedSpecs/{planId}")
+    @Path("allowedruntime/{runTimeId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getAllowedConSpecs(@PathParam("planId") int planId);
+    public Response getContainerSpecificationbyRuntimeId(@PathParam("runTimeId") int runtimeId);
 
 }

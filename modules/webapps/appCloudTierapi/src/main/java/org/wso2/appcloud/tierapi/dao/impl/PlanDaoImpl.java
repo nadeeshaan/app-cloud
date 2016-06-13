@@ -30,7 +30,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @XmlRootElement
 public class PlanDaoImpl implements PlanDao{
@@ -38,7 +37,7 @@ public class PlanDaoImpl implements PlanDao{
 	private static final Log log = LogFactory.getLog(PlanDaoImpl.class);
 
 	@Override
-	public List<Plan> getAllPlans() throws SQLException{
+	public List<Plan> getAllPlans() throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
 
@@ -81,7 +80,6 @@ public class PlanDaoImpl implements PlanDao{
 	public Plan getPlanByPlanId(int planId) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
-		Logger log = Logger.getLogger(PlanDaoImpl.class.getName());
 		Plan plan = new Plan();
 		String sql = "select * from AC_SUBSCRIPTION_PLANS WHERE PLAN_ID ="+planId;
 		try {
@@ -96,7 +94,8 @@ public class PlanDaoImpl implements PlanDao{
 			}
 			rs.close();
 		} catch (SQLException e) {
-			String msg = "Error while getting details of Plan with ID "+planId;
+			String msg = "Error while getting plan for plan ID: " + planId;
+			log.error(msg, e);
 			throw e;
 		} finally {
 
