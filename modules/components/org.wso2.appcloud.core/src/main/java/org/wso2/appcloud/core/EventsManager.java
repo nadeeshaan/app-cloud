@@ -47,9 +47,9 @@ public class EventsManager {
      * @throws AppCloudException
      */
     public Event[] getEventsOfApplication(String versionHashId) throws AppCloudException {
-
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         EventsDAO eventsDAO = new EventsDAO();
-        List<Event> events = eventsDAO.getEventsOfApplication(versionHashId);
+        List<Event> events = eventsDAO.getEventsOfApplication(versionHashId, tenantId);
 
         return events.toArray(new Event[events.size()]);
     }
@@ -60,9 +60,9 @@ public class EventsManager {
      * @throws AppCloudException
      */
     public void deleteAllEventsofAppVersion(String versionHashId)throws AppCloudException {
-
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         EventsDAO eventsDAO = new EventsDAO();
-        eventsDAO.deleteAppVersionEvents(versionHashId);
+        eventsDAO.deleteAppVersionEvents(versionHashId, tenantId);
 
     }
 }
