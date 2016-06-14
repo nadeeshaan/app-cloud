@@ -63,6 +63,7 @@ if [[ $TOTAL_MEMORY && ${TOTAL_MEMORY-_} ]]; then
 fi
 
 if [[ $TAIL_LOG && ${TAIL_LOG-_} && $TAIL_LOG == "true" ]]; then
+    /opt/tomcat/bin/catalina.sh start
     #tail process will run in foreground
     tail -F /opt/tomcat/logs/catalina.out
 else
