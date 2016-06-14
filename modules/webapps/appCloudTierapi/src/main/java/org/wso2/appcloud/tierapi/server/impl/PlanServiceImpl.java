@@ -56,7 +56,7 @@ public class PlanServiceImpl implements PlanService {
         } catch (SQLException e) {
             String msg = "Error while gettings plans list";
             log.error(msg, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg)
                     .type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
@@ -71,7 +71,7 @@ public class PlanServiceImpl implements PlanService {
         } catch (SQLException e) {
             String msg = "Error while getting details for plan with plan id: " + planId;
             log.error(msg, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg)
                     .type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
@@ -88,7 +88,7 @@ public class PlanServiceImpl implements PlanService {
         } catch (SQLException e) {
             String msg = "Error while getting allowed container specifications for plan with plan id: " + planId;
             log.error(msg, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg)
                     .type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
