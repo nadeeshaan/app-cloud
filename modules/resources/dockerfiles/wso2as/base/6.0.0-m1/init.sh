@@ -40,7 +40,7 @@ CERT_PASSWORD="wso2carbon"
 
 # Uncomment SSL section in server.xml
 # and insert SSL certificate information
-sed -i '$!N;s/<!--\s*\n\s*<Connector port="8443"/<Connector port="8443" keyAlias="wso2carbon" \
+sed -i '$!N;s/<!--\s*\n\s*<Connector port="8443"/<Connector port="8443" connectionTimeout="300000" keyAlias="wso2carbon" \
                keystoreFile="\/wso2carbon.jks" keystorePass="'$CERT_PASSWORD'"/g;P;D' \
                /opt/wso2as-${WSO2_AS_VERSION}-m1/conf/server.xml
 
