@@ -18,6 +18,7 @@ package org.wso2.appcloud.tierapi.dao.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.appcloud.tierapi.SQLQueryConstants;
 import org.wso2.appcloud.tierapi.bean.ContainerSpecifications;
 import org.wso2.appcloud.tierapi.dao.ContainerSpecsDao;
 import org.wso2.appcloud.tierapi.util.DBConfiguration;
@@ -39,19 +40,13 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
 		List<ContainerSpecifications> containerSpecsList = new ArrayList<ContainerSpecifications>();
-		String sql = "select * from AC_CONTAINER_SPECIFICATIONS";
 		try {
 			DBConfiguration dbCon = new DBConfiguration();
 			dbConnection = dbCon.getConnection();
-			preparedStatement = dbConnection.prepareStatement(sql);
+			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_CONTAINER_SPECIFICATIONS);
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
-				ContainerSpecifications containerSpec = new ContainerSpecifications();
-				containerSpec.setId(rs.getInt("CON_SPEC_ID"));
-				containerSpec.setConSpecName(rs.getString("CON_SPEC_NAME"));
-				containerSpec.setCpu(rs.getInt("CPU"));
-				containerSpec.setMemory(rs.getInt("MEMORY"));
-				containerSpec.setCostPerHour(rs.getInt("COST_PER_HOUR"));
+				ContainerSpecifications containerSpec = getContainerSpecifications(rs);
 				containerSpecsList.add(containerSpec);
 			}
 			rs.close();
@@ -75,21 +70,14 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
 		List<ContainerSpecifications> containerSpecsList = new ArrayList<ContainerSpecifications>();
-		String sql = "SELECT * FROM AC_CONTAINER_SPECIFICATIONS JOIN AC_RUNTIME_CONTAINER_SPECIFICATIONS "
-		             + "ON AC_CONTAINER_SPECIFICATIONS.CON_SPEC_ID = AC_RUNTIME_CONTAINER_SPECIFICATIONS.CON_SPEC_ID"
-		             + " WHERE AC_RUNTIME_CONTAINER_SPECIFICATIONS.id =" + runtimeId;
 		try {
 			DBConfiguration dbCon = new DBConfiguration();
 			dbConnection = dbCon.getConnection();
-			preparedStatement = dbConnection.prepareStatement(sql);
+			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CONTAINER_SPECIFICATIONS_BY_RUNTIME_ID);
+			preparedStatement.setInt(1, runtimeId);
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
-				ContainerSpecifications containerSpec = new ContainerSpecifications();
-				containerSpec.setId(rs.getInt("CON_SPEC_ID"));
-				containerSpec.setConSpecName(rs.getString("CON_SPEC_NAME"));
-				containerSpec.setCpu(rs.getInt("CPU"));
-				containerSpec.setMemory(rs.getInt("MEMORY"));
-				containerSpec.setCostPerHour(rs.getInt("COST_PER_HOUR"));
+				ContainerSpecifications containerSpec = getContainerSpecifications(rs);
 				containerSpecsList.add(containerSpec);
 			}
 			rs.close();
@@ -113,18 +101,14 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
 		ContainerSpecifications containerSpec = new ContainerSpecifications();
-		String sql = "select * from AC_CONTAINER_SPECIFICATIONS WHERE CON_SPEC_ID =" + containerSpecId;
 		try {
 			DBConfiguration dbCon = new DBConfiguration();
 			dbConnection = dbCon.getConnection();
-			preparedStatement = dbConnection.prepareStatement(sql);
+			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CONTAINER_SPECIFICATION_BY_ID);
+			preparedStatement.setInt(1, containerSpecId);
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
-				containerSpec.setId(rs.getInt("CON_SPEC_ID"));
-				containerSpec.setConSpecName(rs.getString("CON_SPEC_NAME"));
-				containerSpec.setCpu(rs.getInt("CPU"));
-				containerSpec.setMemory(rs.getInt("MEMORY"));
-				containerSpec.setCostPerHour(rs.getInt("COST_PER_HOUR"));
+				containerSpec = getContainerSpecifications(rs);
 			}
 			rs.close();
 		} catch (SQLException e) {
@@ -147,28 +131,21 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 	public ContainerSpecifications defineContainerSpec(ContainerSpecifications containerSpec) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
-		String sql = "INSERT INTO AC_CONTAINER_SPECIFICATIONS (CON_SPEC_NAME, CPU, MEMORY,COST_PER_HOUR) "
-		             + "VALUES (?, ?, ?, ?)";
 		try {
 			DBConfiguration dbCon = new DBConfiguration();
 			dbConnection = dbCon.getConnection();
-			preparedStatement = dbConnection.prepareStatement(sql);
+			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_CONTAINER_SPECIFICATION);
 			preparedStatement.setString(1, containerSpec.getConSpecName());
 			preparedStatement.setInt(2, containerSpec.getCpu());
 			preparedStatement.setInt(3, containerSpec.getMemory());
 			preparedStatement.setInt(4, containerSpec.getCostPerHour());
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
-			String sql2 = "select * from AC_CONTAINER_SPECIFICATIONS WHERE CON_SPEC_NAME= ?";
-			preparedStatement = dbConnection.prepareStatement(sql2);
+			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CONTAINER_SPECIFICATION_BY_NAME);
 			preparedStatement.setString(1, containerSpec.getConSpecName());
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
-				containerSpec.setId(rs.getInt("CON_SPEC_ID"));
-				containerSpec.setConSpecName(rs.getString("CON_SPEC_NAME"));
-				containerSpec.setCpu(rs.getInt("CPU"));
-				containerSpec.setMemory(rs.getInt("MEMORY"));
-				containerSpec.setCostPerHour(rs.getInt("COST_PER_HOUR"));
+				containerSpec = getContainerSpecifications(rs);
 			}
 		} catch (SQLException e) {
 			String msg = "Error while defining the Container Specifications";
@@ -190,11 +167,11 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
 		boolean isDeleted;
-		String sql = "DELETE FROM AC_CONTAINER_SPECIFICATIONS WHERE CON_SPEC_ID=" + containerSpecId;
 		try {
 			DBConfiguration dbCon = new DBConfiguration();
 			dbConnection = dbCon.getConnection();
-			preparedStatement = dbConnection.prepareStatement(sql);
+			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.DELETE_CONTAINER_SPECIFICATION);
+			preparedStatement.setInt(1, containerSpecId);
 			isDeleted = preparedStatement.executeUpdate() == 1 ? true : false;
 		} catch (SQLException e) {
 			String msg =
@@ -216,12 +193,10 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 	public ContainerSpecifications updateContainerSpecById(int containerSpecId, ContainerSpecifications containerSpec) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
-		String sql = "Update AC_CONTAINER_SPECIFICATIONS SET CON_SPEC_NAME=?, CPU= ?, MEMORY=?,"
-		             + "COST_PER_HOUR=? WHERE CON_SPEC_ID = ?";
 		try {
 			DBConfiguration dbCon = new DBConfiguration();
 			dbConnection = dbCon.getConnection();
-			preparedStatement = dbConnection.prepareStatement(sql);
+			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_CONTAINER_SPECIFICATION);
 			preparedStatement.setString(1, containerSpec.getConSpecName());
 			preparedStatement.setInt(2, containerSpec.getCpu());
 			preparedStatement.setInt(3, containerSpec.getMemory());
@@ -229,16 +204,11 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 			preparedStatement.setInt(5, containerSpecId);
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
-			String sql2 = "select * from AC_CONTAINER_SPECIFICATIONS WHERE CON_SPEC_ID= ?";
-			preparedStatement = dbConnection.prepareStatement(sql2);
+			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CONTAINER_SPECIFICATION_BY_ID);
 			preparedStatement.setInt(1, containerSpecId);
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
-				containerSpec.setId(rs.getInt("CON_SPEC_ID"));
-				containerSpec.setConSpecName(rs.getString("CON_SPEC_NAME"));
-				containerSpec.setCpu(rs.getInt("CPU"));
-				containerSpec.setMemory(rs.getInt("MEMORY"));
-				containerSpec.setCostPerHour(rs.getInt("COST_PER_HOUR"));
+				containerSpec = getContainerSpecifications(rs);
 			}
 		} catch (SQLException e) {
 			String msg =
@@ -253,6 +223,16 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 				dbConnection.close();
 			}
 		}
+		return containerSpec;
+	}
+
+	private ContainerSpecifications getContainerSpecifications(ResultSet rs) throws SQLException {
+		ContainerSpecifications containerSpec = new ContainerSpecifications();
+		containerSpec.setId(rs.getInt(SQLQueryConstants.CON_SPEC_ID));
+		containerSpec.setConSpecName(rs.getString(SQLQueryConstants.CON_SPEC_NAME));
+		containerSpec.setCpu(rs.getInt(SQLQueryConstants.CPU));
+		containerSpec.setMemory(rs.getInt(SQLQueryConstants.MEMORY));
+		containerSpec.setCostPerHour(rs.getInt(SQLQueryConstants.COST_PER_HOUR));
 		return containerSpec;
 	}
 }
