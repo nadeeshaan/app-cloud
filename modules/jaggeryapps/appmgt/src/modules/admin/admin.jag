@@ -63,8 +63,18 @@ var stopIdleApplicationByRunningTimePeriod = function (versionHashId, tenantId) 
 
 
 var whiteListApplicationVersion = function (applicationName, applicationRevision, tenantDomain) {
-    var versionHashId = getVersionHashId(applicationName, applicationRevision, tenantDomain);
-    ApplicationManager.whiteListApplicationVersion(versionHashId);
+    try {
+        context.startTenantFlow();
+        context.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
+        var versionHashId = getVersionHashId(applicationName, applicationRevision, tenantDomain);
+        ApplicationManager.whiteListApplicationVersion(versionHashId);
+    } catch (e) {
+        log.error("Error while white listing application : " + applicationName + " version : " + applicationRevision +
+                " for tenant : " + tenantDomain);
+        log.error(e);
+    } finally {
+        context.endTenantFlow();
+    }
 };
 
 var whiteListTenant = function (tenantDomain, maxAppCount) {
@@ -84,6 +94,8 @@ var getApplicationVersions = function (tenantDomain, applicationName) {
     var applicationVersions = [];
 
     try {
+        context.startTenantFlow();
+        context.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
         var versions = ApplicationManager.getAllVersionsOfApplication(applicationHashId);
         for (var i = 0; i < versions.size(); i++) {
             var versionObj = {};
@@ -100,6 +112,8 @@ var getApplicationVersions = function (tenantDomain, applicationName) {
                 tenantDomain);
         log.error(e);
         throw e;
+    } finally {
+        context.endTenantFlow();
     }
 
     return applicationVersions;
@@ -120,6 +134,8 @@ var getTenantAppMaxCount = function (tenantDomain) {
 
 var updateContainerSpecification = function (tenantDomain, applicationName, applicationRevision, memory, cpu) {
     try {
+        context.startTenantFlow();
+        context.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
         var versionHashId = getVersionHashId(applicationName, applicationRevision, tenantDomain);
         ApplicationManager.updateContainerSpecification(versionHashId, parseInt(memory), parseInt(cpu));
     } catch (e) {
@@ -127,6 +143,8 @@ var updateContainerSpecification = function (tenantDomain, applicationName, appl
                 " for tenant : " + tenantDomain);
         log.error(e);
         throw e;
+    } finally {
+        context.endTenantFlow();
     }
 };
 
