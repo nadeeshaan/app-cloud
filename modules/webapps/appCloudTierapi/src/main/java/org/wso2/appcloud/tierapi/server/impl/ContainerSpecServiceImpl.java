@@ -55,7 +55,7 @@ public class ContainerSpecServiceImpl {
         } catch (SQLException e) {
             String msg = "Error while getting container specifications list";
             log.error(msg, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).
                     type(MediaType.APPLICATION_JSON_TYPE).build();
         }
 
@@ -73,7 +73,7 @@ public class ContainerSpecServiceImpl {
         } catch (SQLException e) {
             String msg = "Error while getting conatiner specifications for specification ID: " + containerSpecId;
             log.error(msg, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).
                     type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
@@ -90,9 +90,9 @@ public class ContainerSpecServiceImpl {
                     GenericEntity<List<ContainerSpecifications>>(containerSpecificationsList) {};
             return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
         } catch (SQLException e) {
-            String msg = "Error while getting container specifications list";
+            String msg = "Error while getting container specifications list for runtime ID: " +runtimeId;
             log.error(msg, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).
                     type(MediaType.APPLICATION_JSON_TYPE).build();
         }
     }
