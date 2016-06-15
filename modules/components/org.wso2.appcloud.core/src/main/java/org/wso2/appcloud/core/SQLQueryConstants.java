@@ -176,7 +176,7 @@ public class SQLQueryConstants {
             "FROM AC_CONTAINER_SERVICE_PROXY " +
             "INNER JOIN AC_CONTAINER ON AC_CONTAINER_SERVICE_PROXY.container_id = AC_CONTAINER.id " +
             "INNER JOIN AC_DEPLOYMENT ON AC_CONTAINER.deployment_id = AC_DEPLOYMENT.id " +
-            "INNER JOIN AC_VERSION ON AC_DEPLOYMENT.id = AC_VERSION.deployment_id WHERE AC_VERSION.hash_id=? AND tenant_id=?";
+            "INNER JOIN AC_VERSION ON AC_DEPLOYMENT.id = AC_VERSION.deployment_id WHERE AC_VERSION.hash_id=? AND AC_VERSION.tenant_id=?";
 
 
     public static final String GET_ALL_APP_VERSIONS_CREATED_BEFORE_X_DAYS_AND_NOT_WHITE_LISTED =
