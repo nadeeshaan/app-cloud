@@ -20,11 +20,13 @@ FROM wso2-appcloud/wso2dataservice:3.5.0-base
 
 ENV CARBON_HOME_PATH /opt/wso2dss-3.5.0
 ENV URL ARTIFACT_URL
-ENV DATASERVICE_DEPLOYMENT_DIR $CARBON_HOME_PATH/repository/deployment/server/dataservices/
+ENV CAR_DEPLOYMENT_DIR $CARBON_HOME_PATH/repository/deployment/server/carbonapps/
 ENV APP_HOST HOST_NAME
 ENV TOTAL_MEMORY VAL_TOTAL_MEMORY
 
-WORKDIR "$DATASERVICE_DEPLOYMENT_DIR"
+RUN mkdir -p $CAR_DEPLOYMENT_DIR
+
+WORKDIR "$CAR_DEPLOYMENT_DIR"
 RUN wget "$URL"
 RUN sed -i '/<!--HostName>/c\\t<HostName>'$APP_HOST'</HostName>' $CARBON_HOME_PATH/repository/conf/carbon.xml && \
     sed -i '/<!--MgtHostName>/c\\t<MgtHostName>'$APP_HOST'</MgtHostName>' $CARBON_HOME_PATH/repository/conf/carbon.xml
