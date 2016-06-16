@@ -42,7 +42,7 @@ jagg.block("home", {
         if(!selectedRevision && application.defaultVersion){
             selectedRevision = application.defaultVersion;
         }
-        var restartCounts = applicationModule.getRestartCounts(application.applicationName, selectedRevision);
+        var restartCounts = applicationModule.getRestartCounts(application.applicationName, selectedRevision, application.applicationType);
         var selectedVersion = application.versions[selectedRevision];
         var conSpecCpu = selectedVersion.conSpecCpu;
         var conSpecMemory = selectedVersion.conSpecMemory;
