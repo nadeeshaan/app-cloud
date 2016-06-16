@@ -328,7 +328,7 @@
                 <file type="war">sample.war</file>
                 <file type="msf4j">helloworld.jar</file>
                 <file type="php">sample.zip</file>
-                <file type="wso2dataservice">CSVSampleService.dbs</file>
+                <file type="wso2dataservice">CSVSampleService.car</file>
             </files>
             <properties>
                 <property key="key1">value1</property>
