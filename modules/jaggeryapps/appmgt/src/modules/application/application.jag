@@ -469,11 +469,11 @@ var deployApplication = function(applicationName, versionName, appTypeName, depl
     return;
 };
 
-var getRestartCounts = function (applicationName, versionName){
+var getRestartCounts = function (applicationName, versionName, applicationType){
     var versionHashId = getVersionHashId(applicationName, versionName);
     var KubernetesRuntime = Packages.org.wso2.appcloud.provisioning.runtime.KubernetesRuntimeProvisioningService;
     var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(
-            applicationName, versionName, null , modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
+            applicationName, versionName, applicationType , modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
     var kubService = new KubernetesRuntime(applicationCtx);
     var restartCounts = kubService.getPodRestartCounts();
     return restartCounts;
@@ -508,7 +508,7 @@ var redeployVersion = function(applicationName, versionName, versionHashId, appT
     deleteEventsOfAppVersions(versionHashId);
     var msg = "Successfully triggered stopping container";
     addEvent(STOP_CONTAINERS, EVENT_PENDING, msg, versionHashId);
-    if (waitForPodToGetDeleted(applicationName, versionName, versionHashId)) {
+    if (waitForPodToGetDeleted(applicationName, versionName, versionHashId, appTypeName)) {
         updateApplicationStatus(versionHashId, APPLICATION_STOPPED);
         msg = "Successfully completed stopping container";
         addEvent(STOP_CONTAINERS, EVENT_SUCCEEDED, msg, versionHashId);
@@ -1573,11 +1573,11 @@ var getRuntimePropertyMap = function (runtimePropertyArray) {
     return getRuntimeProperties(runtimePropertyList);
 };
 
-var waitForPodToGetDeleted = function(applicationName, versionName, versionHashId) {
+var waitForPodToGetDeleted = function(applicationName, versionName, versionHashId, appTypeName) {
     var isPodDeleted = false;
 
     try {
-        var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(applicationName, versionName, null,
+        var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(applicationName, versionName, appTypeName,
                 modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
         //Maximum waiting time to check if the pod gets completely deleted (in milliseconds)
         var timeOut = modManager.getPropertyValue(POD_DELETE_TIMEOUT);

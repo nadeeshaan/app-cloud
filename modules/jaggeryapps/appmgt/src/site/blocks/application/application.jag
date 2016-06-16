@@ -158,13 +158,15 @@ var log = new Log();
         var applicationRevision = request.getParameter("applicationRevision");
         var versionKey = request.getParameter("versionKey");
         var podDeleteTimeOut = modManager.getPropertyValue(POD_DELETE_TIMEOUT);
+        var applicationHashId = applicationModule.getApplicationHashIdByName(applicationName);
+        var applicationType = applicationModule.getApplication(applicationHashId).applicationType;
 
         // delete application from kubernetes
         applicationModule.deleteApplicationFromKubernetes(versionKey);
 
         //Wait for the pod to get completely deleted
         try {
-            if (applicationModule.waitForPodToGetDeleted(applicationName, applicationRevision, versionKey)) {
+            if (applicationModule.waitForPodToGetDeleted(applicationName, applicationRevision, versionKey, applicationType)) {
                 // update application status to stopped
                 applicationModule.updateApplicationStatus(versionKey, APPLICATION_STOPPED);
                 applicationModule.deleteEventsOfAppVersions(versionKey);
