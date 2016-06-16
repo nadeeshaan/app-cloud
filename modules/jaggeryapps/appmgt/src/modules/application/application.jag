@@ -1391,10 +1391,11 @@ var addCustomUrl = function (customUrl, applicationName, versionName) {
     var versionHashId = Util.getVersionHashId(applicationName, versionName, tenantId);
     var KubernetesRuntimeProvisioningService =
             Packages.org.wso2.appcloud.provisioning.runtime.KubernetesRuntimeProvisioningService;
-    var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(
-            applicationName, versionName, null, modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
-    var kubernetesRuntimeProvisioningService = new KubernetesRuntimeProvisioningService(applicationCtx);
     var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
+    var appType = getApplication(applicationHashId).applicationType;
+    var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(
+            applicationName, versionName, appType, modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
+    var kubernetesRuntimeProvisioningService = new KubernetesRuntimeProvisioningService(applicationCtx);
     var application = ApplicationManager.getApplicationByHashId(applicationHashId);
     var defaultVersionName = application.getDefaultVersion();
 
@@ -1427,8 +1428,11 @@ var setPreviousVersionUrl = function (applicationName, versionName) {
     var versionHashId = getVersionHashId(applicationName, versionName);
     var KubernetesRuntimeProvisioningService =
             Packages.org.wso2.appcloud.provisioning.runtime.KubernetesRuntimeProvisioningService;
+    var tenantId = modManager.getTenantId();
+    var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
+    var appType = getApplication(applicationHashId).applicationType;
     var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(
-            applicationName, versionName, null, modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
+            applicationName, versionName, appType, modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
     var kubernetesRuntimeProvisioningService = new KubernetesRuntimeProvisioningService(applicationCtx);
     var ServiceProxy = Packages.org.wso2.appcloud.provisioning.runtime.beans.ServiceProxy();
     var containerServiceProxies = getContainerServiceProxies(versionHashId);
