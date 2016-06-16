@@ -785,7 +785,7 @@ var getApplicationHashIdByName = function(applicationName){
     try {
         var tenantId = modManager.getTenantId();
         var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
-        return ApplicationManager.getApplicationHashIdByName(applicationName);
+        return applicationHashId;
     } catch (e){
         var msg = "Error while getting application hash id for application : " + applicationName;
         log.error(msg);
