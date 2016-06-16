@@ -824,7 +824,9 @@ var getApplication = function(applicationHashId){
         applicationObject.applicationName = application.applicationName;
         applicationObject.hashId = application.hashId;
         applicationObject.description = application.description;
-        applicationObject.defaultVersion = application.versions.get(0).versionName;
+        if(application.versions != null || application.versions.get(0) != null){
+            applicationObject.defaultVersion = application.versions.get(0).versionName;
+        }
         applicationObject.applicationType = application.applicationType;
         applicationObject.icon = getApplicationIconAsBase64String(application);
         applicationObject.defaultVersionName = application.defaultVersion;

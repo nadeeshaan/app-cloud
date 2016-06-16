@@ -315,7 +315,7 @@
                 <runtimeStartTimeout key="tomcat">120000</runtimeStartTimeout>
                 <runtimeStartTimeout key="msf4j">60000</runtimeStartTimeout>
                 <runtimeStartTimeout key="php">60000</runtimeStartTimeout>
-                <runtimeStartTimeout key="wso2dataservice">160000</runtimeStartTimeout>
+                <runtimeStartTimeout key="wso2dataservice">400000</runtimeStartTimeout>
             </runtimeStartTimeouts>
             <sampleAppContents>
                 <sampleAppContent key="tomcat">Hello</sampleAppContent>
