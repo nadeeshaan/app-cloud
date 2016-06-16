@@ -783,6 +783,8 @@ var generateApplicationHashId = function(applicationName){
 
 var getApplicationHashIdByName = function(applicationName){
     try {
+        var tenantId = modManager.getTenantId();
+        var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
         return ApplicationManager.getApplicationHashIdByName(applicationName);
     } catch (e){
         var msg = "Error while getting application hash id for application : " + applicationName;
