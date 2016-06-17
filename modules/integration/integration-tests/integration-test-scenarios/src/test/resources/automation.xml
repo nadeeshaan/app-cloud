@@ -349,6 +349,12 @@
 
         </application>
 
+        <databaseProperties>
+            <databaseName>mcdb</databaseName>
+            <dbUserNameOne>sanga</dbUserNameOne>
+            <dbUserNameTwo>mayya</dbUserNameTwo>
+            <dbPassword>admin123</dbPassword>
+        </databaseProperties>
         <domainMapping>
             <domainName>example.com</domainName>
         </domainMapping>

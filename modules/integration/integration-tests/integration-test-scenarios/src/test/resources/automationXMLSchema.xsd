@@ -699,6 +699,17 @@
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
+                            <xs:element name="databaseProperties">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element type="xs:string" name="databaseName" maxOccurs="unbounded" minOccurs="0"/>
+                                        <xs:element type="xs:string" name="dbUserNameOne" maxOccurs="unbounded" minOccurs="0"/>
+                                        <xs:element type="xs:string" name="dbUserNameTwo" maxOccurs="unbounded" minOccurs="0"/>
+                                        <xs:element type="xs:string" name="dbPassword" maxOccurs="unbounded" minOccurs="0"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+
                             <xs:element name="domainMapping">
                                 <xs:complexType>
                                     <xs:sequence>

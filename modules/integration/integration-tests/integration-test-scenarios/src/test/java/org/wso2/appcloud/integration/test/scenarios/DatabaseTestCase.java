@@ -38,10 +38,10 @@ public class DatabaseTestCase {
     private String defaultAdmin;
     private String defaultAdminPassword;
     private String serverUrl;
-    private String dbName = "mcdb";
-    private String dbUserName = "sanga";
-    private String dbUserName2 = "mayya";
-    private String dbUserPassword = "admin123";
+    private String dbName;
+    private String dbUserName;
+    private String dbUserName2;
+    private String dbUserPassword ;
     private String tenantDomain;
     private String dbNameWithTenantName;
     private String dbUserNameWithTenantHash;
@@ -52,6 +52,10 @@ public class DatabaseTestCase {
     @BeforeClass(alwaysRun = true)
     public void setEnvironment() throws Exception {
         serverUrl = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.URLS_APPCLOUD);
+        dbName = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DATABASE_NAME);
+        dbUserName = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DATABASE_USER_ONE);
+        dbUserName2 = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DATABASE_USER_TWO);
+        dbUserPassword = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DATABASE_PASSWORD);
         defaultAdmin = AppCloudIntegrationTestUtils.getAdminUsername();
         defaultAdminPassword = AppCloudIntegrationTestUtils.getAdminPassword();
         tenantDomain = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants

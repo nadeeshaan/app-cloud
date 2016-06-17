@@ -31,6 +31,11 @@ public class AppCloudIntegrationTestConstants {
     public static final String TIMEOUT_PERIOD = "//appCloudProperties/timeOutSetting/period";
     public static final String TIMEOUT_RETRY_COUNT = "//appCloudProperties/timeOutSetting/retryCount";
     public static final String URLS_APPCLOUD = "//appCloudProperties/urls/appCloud";
+	public static final String DATABASE_NAME = "//appCloudProperties/databaseProperties/databaseName";
+	public static final String DATABASE_USER_ONE = "//appCloudProperties/databaseProperties/dbUserNameOne";
+	public static final String DATABASE_USER_TWO = "//appCloudProperties/databaseProperties/dbUserNameTwo";
+	public static final String DATABASE_PASSWORD = "//appCloudProperties/databaseProperties/dbPassword";
+
 
 	// Default Application Details
 	public static final String APP_NAME_KEY = "//appCloudProperties/application/applicationName";
