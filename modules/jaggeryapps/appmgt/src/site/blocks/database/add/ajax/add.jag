@@ -31,6 +31,7 @@ var DEFAULT_TEMPLATE = 'DEFAULT_ALL_PERMISSIONS';
 	mod = jagg.module("databases"),
 	site = require("/site/conf/site.json");
     if (!jagg.getUser()) {
+        print(UNAUTHORIZED_ERROR_RESPONSE);
         return;
     }
 	if (action == "createDatabaseAndAttachUser") {

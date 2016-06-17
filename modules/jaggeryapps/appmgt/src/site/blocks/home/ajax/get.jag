@@ -25,6 +25,7 @@ include("/jagg/constants.jag");
             applicationMod = jagg.module("application"),
             site = require("/site/conf/site.json");
     if (!jagg.getUser()) {
+        print(UNAUTHORIZED_ERROR_RESPONSE);
         return;
     }
     if (action == "getAppIconUrl") {

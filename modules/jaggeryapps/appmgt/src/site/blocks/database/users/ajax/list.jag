@@ -28,6 +28,7 @@ var result = {};
 	action = request.getParameter("action"),
 	site = require("/site/conf/site.json");
     if (!jagg.getUser()) {
+        print(UNAUTHORIZED_ERROR_RESPONSE);
         return;
     }
 	if (action == "deleteUser") {
