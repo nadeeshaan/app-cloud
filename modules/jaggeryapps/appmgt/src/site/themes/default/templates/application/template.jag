@@ -721,7 +721,6 @@ jagg.template("application", function (inputs, outputs, jagg) {
             action:"getApplication",
             applicationName:$("#applicationName").val()
         },function (result) {
-            console.log(result);
             if (result.trim() !== "") {
                 jagg.popMessage({type:'confirm', modalStatus: true, title:'Delete Tag',content:'Application with name: '
                     + $("#applicationName").val() + ' already exists. Do you want to go to the existing application?',
