@@ -21,8 +21,14 @@ include("/jagg/jagg.jag");
 var site = require("/site/conf/site.json");
 
 (function () {
-    var applicationKey = request.getParameter("applicationKey");
 
+    var user = jagg.getUser();
+    if (!user) {
+        jagg.includeBlock("sso/filter", {});
+        return;
+    }
+
+    var applicationKey = request.getParameter("applicationKey");
     jagg.render({
         "name": "page/master",
         "inputs": {
