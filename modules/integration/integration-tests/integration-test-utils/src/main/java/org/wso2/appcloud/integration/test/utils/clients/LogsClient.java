@@ -19,9 +19,9 @@
 
 package org.wso2.appcloud.integration.test.utils.clients;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -82,6 +82,7 @@ public class LogsClient extends BaseClient{
             httppost.setEntity(new UrlEncodedFormEntity(params, UTF_8_ENCODING));
             httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
             response = httpclient.execute(httppost);
+            org.junit.Assert.assertEquals("Retrieving logs failed. Cannot connect to pod.",response.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
             return EntityUtils.toString(response.getEntity());
         } catch (IOException e) {
             log.error("Failed to invoke app icon update API.", e);
