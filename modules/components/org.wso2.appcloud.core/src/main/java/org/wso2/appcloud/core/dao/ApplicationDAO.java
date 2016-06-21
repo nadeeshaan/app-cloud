@@ -1555,14 +1555,17 @@ public class ApplicationDAO {
 		}
 	}
 
-	public void whiteListTenant(Connection dbConnection, int tenantId, int maxAppCount) throws AppCloudException {
-		PreparedStatement preparedStatement;
+    public void whiteListTenant(Connection dbConnection, int tenantId, int maxAppCount, int maxDatabaseCount)
+            throws AppCloudException {
+        PreparedStatement preparedStatement;
 		try {
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_WHITE_LISTED_TENANT);
 			preparedStatement.setInt(1, tenantId);
 			preparedStatement.setInt(2, maxAppCount);
-            preparedStatement.setInt(3, maxAppCount);
-			preparedStatement.execute();
+            preparedStatement.setInt(3, maxDatabaseCount);
+            preparedStatement.setInt(4, maxAppCount);
+            preparedStatement.setInt(5, maxDatabaseCount);
+            preparedStatement.execute();
 		} catch (SQLException e) {
 			String msg = "White listing failed for tenant id : " + tenantId;
 			throw new AppCloudException(msg, e);
@@ -1593,6 +1596,67 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String message = "Error while updating container specification with version hash id : " + versionHashId;
             throw new AppCloudException(message, e);
+        } finally {
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
+    }
+
+    public int getWhiteListedTenantMaxDatabaseCount(Connection dbConnection, int tenantID) throws AppCloudException {
+        PreparedStatement preparedStatement = null;
+        int maxDatabaseCount;
+
+        try {
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_WHITE_LISTED_TENANT_DETAILS);
+            preparedStatement.setInt(1, tenantID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                maxDatabaseCount = resultSet.getInt(SQLQueryConstants.MAX_DATABASE_COUNT);
+            } else {
+                maxDatabaseCount = -1;
+            }
+        } catch (SQLException e) {
+            String msg = "Get maximum database count failed for tenant id : " + tenantID;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
+        return maxDatabaseCount;
+    }
+
+    public void whiteListMaxDatabaseCount(Connection dbConnection, int tenantId, int maxDatabaseCount)
+            throws AppCloudException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.
+                    ADD_WHITE_LISTED_MAX_DATABASE_COUNT_FOR_TENANT);
+            preparedStatement.setInt(1, tenantId);
+            preparedStatement.setInt(2, maxDatabaseCount);
+            preparedStatement.setInt(3, maxDatabaseCount);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            String msg = "White listing maximum database count failed for tenant id : " + tenantId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
+    }
+
+    public void whiteListMaxAppCount(Connection dbConnection, int tenantId, int maxAppCount)
+            throws AppCloudException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.
+                    ADD_WHITE_LISTED_MAX_APP_COUNT_FOR_TENANT);
+            preparedStatement.setInt(1, tenantId);
+            preparedStatement.setInt(2, maxAppCount);
+            preparedStatement.setInt(3, maxAppCount);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            String msg = "White listing maximum application count failed for tenant id : " + tenantId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
         }

@@ -687,12 +687,12 @@ public class ApplicationManager {
 		}
 	}
 
-	public static void whiteListTenant(int tenantId, int maxAppCount) throws AppCloudException {
-		ApplicationDAO applicationDAO = new ApplicationDAO();
+    public static void whiteListTenant(int tenantId, int maxAppCount, int maxDatabaseCount) throws AppCloudException {
+        ApplicationDAO applicationDAO = new ApplicationDAO();
 		Connection dbConnection = DBUtil.getDBConnection();
 		try {
-			applicationDAO.whiteListTenant(dbConnection, tenantId, maxAppCount);
-			dbConnection.commit();
+            applicationDAO.whiteListTenant(dbConnection, tenantId, maxAppCount, maxDatabaseCount);
+            dbConnection.commit();
 		} catch (AppCloudException e){
 			String msg = "Error whitelisting tenant for tenant id : " + tenantId;
 			throw new AppCloudException(msg, e);
@@ -721,5 +721,60 @@ public class ApplicationManager {
         }
 
         return isUpdatedSuccess;
+    }
+
+    public static int getMaxDatabaseCountForWhiteListedTenants(int tenantID) throws AppCloudException {
+        ApplicationDAO applicationDAO = new ApplicationDAO();
+        Connection dbConnection = DBUtil.getDBConnection();
+
+        int maxDatabaseCount = 0;
+        try {
+            maxDatabaseCount = applicationDAO.getWhiteListedTenantMaxDatabaseCount(dbConnection, tenantID);
+        } catch (AppCloudException e) {
+            String msg = "Error while getting maximum database count for whitelisted tenant for tenant id: " + tenantID;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+        return maxDatabaseCount;
+    }
+
+    public static void whiteListMaxDatabaseCount(int tenantId, int maxDatabaseCount) throws AppCloudException {
+        ApplicationDAO applicationDAO = new ApplicationDAO();
+        Connection dbConnection = DBUtil.getDBConnection();
+        try {
+            applicationDAO.whiteListMaxDatabaseCount(dbConnection, tenantId, maxDatabaseCount);
+            dbConnection.commit();
+        } catch (AppCloudException e) {
+            String msg = "Error whitelisting maximum database count for tenant id : " + tenantId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } catch (SQLException e) {
+            String msg = "Error whitelisting maximum database count for tenant id : " + tenantId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+    }
+
+    public static void whiteListMaxAppCount(int tenantId, int maxAppCount) throws AppCloudException {
+        ApplicationDAO applicationDAO = new ApplicationDAO();
+        Connection dbConnection = DBUtil.getDBConnection();
+        try {
+            applicationDAO.whiteListMaxAppCount(dbConnection, tenantId, maxAppCount);
+            dbConnection.commit();
+        } catch (AppCloudException e) {
+            String msg = "Error whitelisting maximum application count for tenant id : " + tenantId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } catch (SQLException e) {
+            String msg = "Error whitelisting maximum application count for tenant id : " + tenantId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
     }
 }
