@@ -35,6 +35,12 @@ jagg.module("admin", {
     },
     updateContainerSpecification: function () {
         return jagg.require(jagg.getModulesDir() + "admin/admin.jag").updateContainerSpecification.apply(this, arguments);
+    },
+    whiteListMaxDatabaseCount: function () {
+        return jagg.require(jagg.getModulesDir() + "admin/admin.jag").whiteListMaxDatabaseCount.apply(this, arguments);
+    },
+    whiteListMaxApplicationCount: function () {
+        return jagg.require(jagg.getModulesDir() + "admin/admin.jag").whiteListMaxApplicationCount.apply(this, arguments);
     }
 });
 %>
