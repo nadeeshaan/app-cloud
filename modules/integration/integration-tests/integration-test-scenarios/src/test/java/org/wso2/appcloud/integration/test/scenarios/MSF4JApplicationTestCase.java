@@ -34,7 +34,9 @@ public class MSF4JApplicationTestCase extends AppCloudIntegrationBaseTestCase {
                 AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.MSS_APP_FILE_NAME_KEY),
                 MSF4J_APPLICATION_TYPE, AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.
                         MSS_APP_CONTENT), Long.parseLong(AppCloudIntegrationTestUtils
-                        .getPropertyValue(AppCloudIntegrationTestConstants.MSS_RUNTIME_START_TIMEOUT)));
+                        .getPropertyValue(AppCloudIntegrationTestConstants.MSS_RUNTIME_START_TIMEOUT)),
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_CPU),
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_MEMORY));
     }
 
 	@Override

@@ -45,24 +45,35 @@ public class AppCloudIntegrationTestConstants {
 	public static final String TOMCAT_APP_RUNTIME_ID_KEY = "//appCloudProperties/application/runtimeIDs/runtimeID[@key='tomcat']";
 	public static final String MSS_APP_RUNTIME_ID_KEY = "//appCloudProperties/application/runtimeIDs/runtimeID[@key='msf4j']";
 	public static final String PHP_APP_RUNTIME_ID_KEY = "//appCloudProperties/application/runtimeIDs/runtimeID[@key='php']";
+	public static final String JAGGERY_APP_RUNTIME_ID_KEY = "//appCloudProperties/application/runtimeIDs/runtimeID[@key='jaggery']";
 	public static final String DSS_APP_RUNTIME_ID_KEY = "//appCloudProperties/application/runtimeIDs/runtimeID[@key='wso2dataservice']";
 	public static final String TOMCAT_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='war']";
 	public static final String MSS_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='msf4j']";
 	public static final String PHP_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='php']";
+	public static final String JAGGERY_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='jaggery']";
 	public static final String DSS_APP_FILE_NAME_KEY = "//appCloudProperties/application/files/file[@type='wso2dataservice']";
 	public static final String TOMCAT_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='war']";
 	public static final String MSS_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='msf4j']";
 	public static final String PHP_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='php']";
+	public static final String JAGGERY_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='jaggery']";
 	public static final String DSS_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='wso2dataservice']";
 	public static final String TOMCAT_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='tomcat']";
 	public static final String MSS_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='msf4j']";
 	public static final String PHP_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='php']";
+	public static final String JAGGERY_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='jaggery']";
 	public static final String DSS_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='wso2dataservice']";
 
 	public static final String APP_PROPERTIES_KEY = "//appCloudProperties/application/properties/property";
 	public static final String APP_NEW_PROPERTIES_KEY = "//appCloudProperties/application/newProperties/property";
 	public static final String APP_TAGS_KEY = "//appCloudProperties/application/tags/tag";
 	public static final String APP_NEW_TAGS_KEY = "//appCloudProperties/application/newTags/tag";
+
+
+	// container specifications
+	public static final String LARGE_CPU = "//appCloudProperties/containerSpecifications/cpuValues/cpu[@key='large']";
+	public static final String EXTRA_LARGE_CPU = "//appCloudProperties/containerSpecifications/cpuValues/cpu[@key='extraLarge']";
+	public static final String LARGE_MEMORY = "//appCloudProperties/containerSpecifications/memoryValues/memory[@key='large']";
+	public static final String EXTRA_LARGE_MEMORY = "//appCloudProperties/containerSpecifications/memoryValues/memory[@key='extraLarge']";
 
 	// Rest endpoints
 	public static final String REST_APPLICATION_ENDPOINT = "application/application.jag";
