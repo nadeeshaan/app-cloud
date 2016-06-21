@@ -143,7 +143,12 @@ jagg.module("databases", {
     getAllDatabasesInfo: function () {
         return jagg.require(jagg.getModulesDir() + "databases/add/add.jag").getAllDatabasesInfo.apply(this, arguments);
     },
-
+	getDatabaseCount: function () {
+		return jagg.require(jagg.getModulesDir() + "databases/add/add.jag").getDatabaseCount.apply(this, arguments);
+	},
+	getMaxDatabaseCount: function () {
+		return jagg.require(jagg.getModulesDir() + "databases/add/add.jag").getMaxDatabaseCount.apply(this, arguments);
+	}
   
 });
 %>
