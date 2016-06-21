@@ -310,18 +310,21 @@
                 <runtimeID key="msf4j">2</runtimeID>
                 <runtimeID key="php">3</runtimeID>
                 <runtimeID key="wso2dataservice">6</runtimeID>
+                <runtimeID key="jaggery">5</runtimeID>
             </runtimeIDs>
             <runtimeStartTimeouts>
                 <runtimeStartTimeout key="tomcat">120000</runtimeStartTimeout>
                 <runtimeStartTimeout key="msf4j">60000</runtimeStartTimeout>
                 <runtimeStartTimeout key="php">60000</runtimeStartTimeout>
                 <runtimeStartTimeout key="wso2dataservice">400000</runtimeStartTimeout>
+                <runtimeStartTimeout key="jaggery">400000</runtimeStartTimeout>
             </runtimeStartTimeouts>
             <sampleAppContents>
                 <sampleAppContent key="tomcat">Hello</sampleAppContent>
                 <sampleAppContent key="msf4j">Hello</sampleAppContent>
                 <sampleAppContent key="php">Hello</sampleAppContent>
                 <sampleAppContent key="wso2dataservice">CSVSampleService</sampleAppContent>
+                <sampleAppContent key="jaggery">Hello</sampleAppContent>
             </sampleAppContents>
 
             <files>
@@ -329,6 +332,7 @@
                 <file type="msf4j">helloworld.jar</file>
                 <file type="php">sample.zip</file>
                 <file type="wso2dataservice">CSVSampleService.car</file>
+                <file type="jaggery">hellojaggery.zip</file>
             </files>
             <properties>
                 <property key="key1">value1</property>
@@ -363,7 +367,16 @@
               <period>150000</period>
               <retryCount>5</retryCount>
         </timeOutSetting>
-
+        <containerSpecifications>
+            <cpuValues>
+                <cpu key="large">300</cpu>
+                <cpu key="extraLarge">500</cpu>
+            </cpuValues>
+            <memoryValues>
+                <memory key="large">512</memory>
+                <memory key="extraLarge">1024</memory>
+            </memoryValues>
+        </containerSpecifications>
         <!--bamResources>
                 <userActivityScriptPath>/tmp/UserActivityScript</userActivityScriptPath>
         </bamResources-->
