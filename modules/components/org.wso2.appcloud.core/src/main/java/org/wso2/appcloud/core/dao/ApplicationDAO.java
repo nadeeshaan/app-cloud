@@ -1558,10 +1558,10 @@ public class ApplicationDAO {
     public void whiteListTenant(Connection dbConnection, int tenantId, int maxAppCount, int maxDatabaseCount)
             throws AppCloudException {
         PreparedStatement preparedStatement;
-		try {
-			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_WHITE_LISTED_TENANT);
-			preparedStatement.setInt(1, tenantId);
-			preparedStatement.setInt(2, maxAppCount);
+        try {
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_WHITE_LISTED_TENANT);
+            preparedStatement.setInt(1, tenantId);
+            preparedStatement.setInt(2, maxAppCount);
             preparedStatement.setInt(3, maxDatabaseCount);
             preparedStatement.setInt(4, maxAppCount);
             preparedStatement.setInt(5, maxDatabaseCount);

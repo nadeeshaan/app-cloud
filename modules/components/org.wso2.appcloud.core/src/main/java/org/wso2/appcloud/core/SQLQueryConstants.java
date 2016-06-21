@@ -93,7 +93,7 @@ public class SQLQueryConstants {
             "INSERT INTO AC_CONTAINER_SERVICE_PROXY (name, protocol, port, backend_port, container_id, tenant_id, host_url) " +
                     "values (?, ?, ?, ?, ?, ?, ?)";
 
-	public static final String ADD_WHITE_LISTED_TENANT =
+    public static final String ADD_WHITE_LISTED_TENANT =
             "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count, max_database_count) values (?, ?, ?) " +
                     "ON DUPLICATE KEY UPDATE max_app_count=?, max_database_count=?";
 

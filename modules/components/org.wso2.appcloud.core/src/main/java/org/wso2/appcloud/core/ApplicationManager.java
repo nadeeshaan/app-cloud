@@ -689,20 +689,20 @@ public class ApplicationManager {
 
     public static void whiteListTenant(int tenantId, int maxAppCount, int maxDatabaseCount) throws AppCloudException {
         ApplicationDAO applicationDAO = new ApplicationDAO();
-		Connection dbConnection = DBUtil.getDBConnection();
-		try {
+        Connection dbConnection = DBUtil.getDBConnection();
+        try {
             applicationDAO.whiteListTenant(dbConnection, tenantId, maxAppCount, maxDatabaseCount);
             dbConnection.commit();
-		} catch (AppCloudException e){
-			String msg = "Error whitelisting tenant for tenant id : " + tenantId;
-			throw new AppCloudException(msg, e);
-		} catch (SQLException e) {
-			String msg = "Error whitelisting tenant for tenant id : " + tenantId;
-			throw new AppCloudException(msg, e);
-		} finally {
-			DBUtil.closeConnection(dbConnection);
-		}
-	}
+        } catch (AppCloudException e) {
+            String msg = "Error whitelisting tenant for tenant id : " + tenantId;
+            throw new AppCloudException(msg, e);
+        } catch (SQLException e) {
+            String msg = "Error whitelisting tenant for tenant id : " + tenantId;
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+    }
 
     public static boolean updateContainerSpecification(String versionHashId, int memory, int cpu)
             throws AppCloudException {

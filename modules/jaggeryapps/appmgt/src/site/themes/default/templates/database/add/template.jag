@@ -19,9 +19,9 @@
 
 jagg.template("database/add", function (inputs, outputs, jagg) { %>
 <%
-var isDefaultMode = request.getParameter("isDefaultMode");
-var dbUsers = outputs.dbUsers;
-isEdit = request.getParameter("isEdit");
+    var isDefaultMode = request.getParameter("isDefaultMode");
+    var dbUsers = outputs.dbUsers;
+    isEdit = request.getParameter("isEdit");
     var databaseCount = outputs.databaseCount;
     var maxDatabases = outputs.maxDatabases;
     %>
