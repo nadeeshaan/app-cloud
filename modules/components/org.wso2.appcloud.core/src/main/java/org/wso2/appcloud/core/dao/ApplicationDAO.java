@@ -91,7 +91,6 @@ public class ApplicationDAO {
             String msg =
                     "Error occurred while adding application : " + application.getApplicationName() + " to database " +
                             "in tenant : " + tenantId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
 
         } catch (IOException e) {
