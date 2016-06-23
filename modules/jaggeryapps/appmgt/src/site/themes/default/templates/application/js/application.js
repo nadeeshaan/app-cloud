@@ -78,9 +78,14 @@ $(document).on('click', '.btn-primary-add-val', function () {
     var addBlock = $(this).parent().parent();
     var key = addBlock.find('.element-add-key')[0].value;
     var value = addBlock.find('.element-add-value')[0].value;
-    drawInitialEnvTagPane(addBlock, key, value);
+    var paneId = addBlock.parent().attr('id');
+    var initialValueElement = '<input type="text" class="form-control element-add-value" placeholder="Value">\n';
+    if (paneId === "env-pane") {
+        initialValueElement = '<select id="value" name="value" class="form-control select2 element-add-value"></select>\n';
+    }
+    drawInitialEnvTagPane(addBlock, key, value, initialValueElement);
 });
-function drawInitialEnvTagPane(addBlock, key, value){
+function drawInitialEnvTagPane(addBlock, key, value, initialValueElement){
     var panelBody = addBlock.parent();
     panelBody.append(
         '<div class="form-inline  property-seperator prop-key-vals-holder">\n'+
@@ -107,9 +112,9 @@ function drawInitialEnvTagPane(addBlock, key, value){
         '<label class="sr-only" for="key">Key</label>\n'+
         '<input type="text" class="form-control element-add-key" id="key" placeholder="Key">\n'+
         '</div>\n'+
-        '<div class="form-group">\n'+
+        '<div class="form-group custom-env-class-for-demo">\n'+
         '<label class="sr-only" for="value">Value</label>\n'+
-        '<select id="value" name="value" class="form-control select2 element-add-value"></select>\n' +
+        initialValueElement +
         '</div>\n'+
         '<div class="form-group">\n'+
         '<button class="btn btn-primary btn-primary-add btn-primary-add-val" disabled>Add</button>\n'+
