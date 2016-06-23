@@ -830,7 +830,7 @@ var getApplication = function(applicationHashId){
         applicationObject.applicationName = application.applicationName;
         applicationObject.hashId = application.hashId;
         applicationObject.description = application.description;
-        if(application.versions != null && application.versions.get(0) != null){
+        if(application.versions != null || application.versions.get(0) != null){
             applicationObject.defaultVersion = application.versions.get(0).versionName;
         }
         applicationObject.applicationType = application.applicationType;
