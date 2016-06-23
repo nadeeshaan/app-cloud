@@ -23,7 +23,6 @@ import org.wso2.appcloud.common.AppCloudException;
 import org.wso2.appcloud.core.DBUtil;
 import org.wso2.appcloud.core.SQLQueryConstants;
 import org.wso2.appcloud.core.dto.*;
-import org.wso2.carbon.context.CarbonContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,7 +98,6 @@ public class ApplicationDAO {
             String msg =
                     "Error while generating stream of the icon for application : " + application.getApplicationName() +
                     " in tenant : " + tenantId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -158,7 +156,6 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg = "Error occurred while adding application version to database for application id : " + applicationId +
                          " version : " + version.getVersionName() + " in tenant : " + tenantId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -203,7 +200,6 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg = "Error occurred while adding tags to database for version with hash id : " + versionHashId + " in tenant : "
                          + tenantId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
 
         } finally {
@@ -247,7 +243,6 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg = "Error occurred while adding property to the database for version id : " + versionHashId + " in " +
                          "tenant : " + tenantId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
 
         } finally {
@@ -274,7 +269,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while updating deployment detail for version with hash id : " + versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -307,7 +301,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while inserting deployment record.";
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -344,7 +337,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while inserting deployment container record.";
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -370,7 +362,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while inserting container service proxy record.";
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -393,7 +384,6 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg =
                     "Error occurred while updating application icon for application with id : " + applicationId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
 
         } finally {
@@ -427,7 +417,6 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg = "Error while updating application status : " + status + " for version with the hash id : " +
                          versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -454,7 +443,6 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg = "Error while updating runtime property Key : " + oldKey + " for version with hash id : " +
                          versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -478,7 +466,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while updating tag Key : " + oldKey + " for version with hash id : " + versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -522,7 +509,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while retrieving application list from database for tenant : " + tenantId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -553,7 +539,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while getting the list of versions for the application with hash id : " + applicationHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -583,7 +568,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while getting the list of version hash ids of application : " + applicationHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -615,7 +599,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while retrieving the data for checking whether an application has multiple versions";
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -643,7 +626,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while getting application hash id by version hash id : " + versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -673,7 +655,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while getting the application name of application with hash id : " + applicationHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         }
 
@@ -702,7 +683,6 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg = "Error while retrieving application hash id using application name : " + applicationName +
                          " in tenant : " + tenantId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -749,7 +729,6 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg =
                     "Error while retrieving application detail for application with hash id : " + applicationHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -799,7 +778,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while getting all versions of application with application hash id : " + applicationHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -842,7 +820,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while retrieving tags from database for version with hash id : " + versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -890,7 +867,6 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg = "Error while retrieving the runtime properties from the database for version with hash id : " +
                          versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -928,7 +904,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while retrieving the id of application with hash value : " + applicationHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -965,7 +940,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while retreiving id of version with hash value : " + hashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         }
         return versionId;
@@ -1003,7 +977,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while retrieving app types from database";
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -1051,7 +1024,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while retrieving list of runtime from database for app type : " + appType;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -1086,7 +1058,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while retrieving runtime info from database for runtime : " + runtimeId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -1118,7 +1089,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while inserting deployment record.";
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1158,7 +1128,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while inserting deployment container record.";
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1195,7 +1164,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while inserting deployment service proxy record.";
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1229,7 +1197,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while retrieving runtime transport detail for runtime : " + runtimeId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1255,7 +1222,6 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg = "Error while deleting runtime property Key : " + key + " for version with hash id : " +
                          versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1279,7 +1245,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while deleting tag with Key : " + key + " for version with hash id : " + versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1308,7 +1273,6 @@ public class ApplicationDAO {
             deleted = preparedStatement.execute();
         } catch (SQLException e) {
             String msg = "Error while executing the application deletion sql query with applicationHashId : " + applicationHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1327,7 +1291,6 @@ public class ApplicationDAO {
             return preparedStatement.execute();
         } catch (SQLException e) {
             String msg = "Error while executing the version deletion sql query with versionHashId : " + versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1355,7 +1318,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while deleting the versions of the application with hash id : " + applicationHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1377,7 +1339,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while deleting all deployment of application with hash id : " + applicationHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1400,7 +1361,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while deleting deployment record for version with the hash id : " + versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1421,7 +1381,6 @@ public class ApplicationDAO {
             }
         } catch (SQLException e) {
             String msg = "Error while getting the application count of the tenant : " + tenantId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1460,7 +1419,6 @@ public class ApplicationDAO {
             dbConnection.commit();
         } catch (SQLException e) {
             String msg = "Error while getting container service proxy with version hash id : " + versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1492,7 +1450,6 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg =
                     "Error occurred while updating container service proxy with version hash id : " + versionHashId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1521,7 +1478,6 @@ public class ApplicationDAO {
             updated = preparedStatement.execute();
         } catch (SQLException e) {
             String message = "Error while updating default version with application hash id : " + applicationHashId;
-            log.error(message, e);
             throw new AppCloudException(message, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1556,7 +1512,6 @@ public class ApplicationDAO {
 
         } catch (SQLException e) {
             String msg = "Error while retrieving application version detail for non white listed applications.";
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1580,7 +1535,6 @@ public class ApplicationDAO {
 			}
 		} catch (SQLException e) {
 			String msg = "Get Max App Count failed for tenant id : " + tenantID;
-			log.error(msg, e);
 			throw new AppCloudException(msg, e);
 		} finally {
 			DBUtil.closePreparedStatement(preparedStatement);
@@ -1598,7 +1552,6 @@ public class ApplicationDAO {
 			preparedStatement.execute();
 		} catch (SQLException e) {
 			String msg = "White listing failed for version hash : " + versionHashId;
-			log.error(msg, e);
 			throw new AppCloudException(msg, e);
 		}
 	}
@@ -1613,7 +1566,6 @@ public class ApplicationDAO {
 			preparedStatement.execute();
 		} catch (SQLException e) {
 			String msg = "White listing failed for tenant id : " + tenantId;
-			log.error(msg, e);
 			throw new AppCloudException(msg, e);
 		}
 	}
@@ -1641,7 +1593,6 @@ public class ApplicationDAO {
             return preparedStatement.execute();
         } catch (SQLException e) {
             String message = "Error while updating container specification with version hash id : " + versionHashId;
-            log.error(message, e);
             throw new AppCloudException(message, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
