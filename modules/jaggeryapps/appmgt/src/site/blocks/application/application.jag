@@ -196,6 +196,17 @@ var log = new Log();
         var podDeleteTimeOut = modManager.getPropertyValue(POD_DELETE_TIMEOUT);
 
         // redeploy application from kubernetes
+        if(applicationName == null){
+            response.status = 500;
+            response.content = "applicationName cannot be null. Please retry the request with the correct application name";
+        }
+        if(applicationRevision == null){
+            response.status = 500;
+            response.content = "applicationRevision cannot be null. Please retry the request with the correct application version";
+        }
+        if(versionKey == null){
+            versionKey = mod.getVersionHashId(applicationName, applicationRevision)
+        }
         try {
             if (applicationModule.redeployVersion(applicationName, applicationRevision, versionKey, applicationType,
                 conSpecMemory, conSpecCpu)) {

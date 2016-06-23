@@ -967,7 +967,14 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
 		if (podList != null) {
 			int podCounter = 0;
 			for (Pod pod : podList.getItems()) {
-				podRestartCounts.put(String.valueOf(podCounter), String.valueOf(pod.getStatus().getContainerStatuses().get(0).getRestartCount()));
+                if(pod.getStatus().getContainerStatuses().size() > 0) {
+                    podRestartCounts.put(String.valueOf(podCounter),
+                                         String.valueOf(pod.getStatus().getContainerStatuses().get(0).getRestartCount()));
+                } else {
+                    //In case query is done before the pod get fully created,
+                    //Restart count wont be available so returning 0
+                    podRestartCounts.put(String.valueOf(podCounter), String.valueOf(0));
+                }
 				podCounter++;
 			}
 			return podRestartCounts;

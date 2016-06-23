@@ -463,7 +463,9 @@ var deployApplication = function(applicationName, versionName, appTypeName, depl
             ApplicationManager.updateVersionStatus(versionHashId, APPLICATION_ERROR);
             log.info("Application rollback started for application:"+applicationName + " with revision:"+
                      versionName +" because pods are not running even after more than 5 minutes.");
-            deleteVersion(versionHashId, true, true);
+            if(!isRedeploy) {
+                deleteVersion(versionHashId, true, true);
+            }
         }
     }
     return;
@@ -584,6 +586,10 @@ var buildDeploymentConfigFromDB = function(versionHashId){
 
     var deploymentContainers = deployment.getContainers();
     var provisioningContainerList = new java.util.ArrayList();
+    if(deploymentContainers == null){
+        log.error("Cannot find the container information for deployment : " + deployment.getDeploymentName()
+                + ", versionHashId : " + versionHashId);
+    }
     var containerIterator = deploymentContainers.iterator();
     while(containerIterator.hasNext()){
         var deploymentContainer = containerIterator.next();
@@ -824,7 +830,7 @@ var getApplication = function(applicationHashId){
         applicationObject.applicationName = application.applicationName;
         applicationObject.hashId = application.hashId;
         applicationObject.description = application.description;
-        if(application.versions != null || application.versions.get(0) != null){
+        if(application.versions != null && application.versions.get(0) != null){
             applicationObject.defaultVersion = application.versions.get(0).versionName;
         }
         applicationObject.applicationType = application.applicationType;
