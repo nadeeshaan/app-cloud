@@ -35,7 +35,9 @@ public class WARApplicationTestCase extends AppCloudIntegrationBaseTestCase {
                 WAR_APPLICATION_TYPE,
                 AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.TOMCAT_APP_CONTENT),
                 Long.parseLong(AppCloudIntegrationTestUtils
-                        .getPropertyValue(AppCloudIntegrationTestConstants.TOMCAT_RUNTIME_START_TIMEOUT)));
+                        .getPropertyValue(AppCloudIntegrationTestConstants.TOMCAT_RUNTIME_START_TIMEOUT)),
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_CPU),
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_MEMORY));
     }
 
 	@Override

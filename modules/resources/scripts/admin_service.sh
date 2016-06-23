@@ -24,7 +24,7 @@ if [ $ACTION = "help" ]; then
     echo "./admin_service.sh getTenantMaxAppCount <tenant>"
     echo -e "\n"
     echo "***For update application version container specification***"
-    echo "./admin_service.sh updateConSpec <tenant> <app> <version> <memory> <cpu>"
+    echo "./admin_service.sh updateConSpec <tenant> <app> <version> <cpu> <memory>"
     echo -e "\n"
 elif [ $ACTION = "whiteListAppVersion" ]; then
     echo "----------White list application version----------" >> $LOGFILE

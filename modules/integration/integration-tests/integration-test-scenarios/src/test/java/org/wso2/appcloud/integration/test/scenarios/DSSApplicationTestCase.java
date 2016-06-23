@@ -18,6 +18,7 @@ package org.wso2.appcloud.integration.test.scenarios;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestConstants;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestUtils;
@@ -33,7 +34,9 @@ public class DSSApplicationTestCase extends AppCloudIntegrationBaseTestCase {
                 AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DSS_APP_FILE_NAME_KEY),
                 DSS_APPLICATION_TYPE, AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.
                         DSS_APP_CONTENT), Long.parseLong(AppCloudIntegrationTestUtils
-                        .getPropertyValue(AppCloudIntegrationTestConstants.DSS_RUNTIME_START_TIMEOUT)));
+                        .getPropertyValue(AppCloudIntegrationTestConstants.DSS_RUNTIME_START_TIMEOUT)),
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_CPU),
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_MEMORY));
     }
 
 	@Override
@@ -41,4 +44,22 @@ public class DSSApplicationTestCase extends AppCloudIntegrationBaseTestCase {
         Assert.assertTrue("Received log:" + logContent + " but expected line: " + DSS_SERVER_STARTED_MESSAGE,
                 logContent.contains(DSS_SERVER_STARTED_MESSAGE));
 	}
+
+    @Override
+    public void testLaunchApplication() throws Exception {
+
+        log.info("Waiting " + runtimeStartTimeout + "milliseconds before trying application launch...");
+        Thread.sleep(runtimeStartTimeout);
+        JSONObject applicationBean = applicationClient.getApplicationBean(applicationName);
+        String launchURL = ((JSONObject) ((JSONObject) applicationBean
+                .get(AppCloudIntegrationTestConstants.PROPERTY_VERSIONS_NAME))
+                .get(applicationRevision)).getString(AppCloudIntegrationTestConstants.PROPERTY_DEPLOYMENT_URL);
+        launchURL = launchURL + "/services/CSVSampleService?wsdl";
+        //make the launch url http
+        launchURL = launchURL.replace("https", "http");
+        Boolean isLaunchSuccessfull = applicationClient.launchApplication(launchURL, sampleAppContent);
+        Assert.assertTrue("Application launch failed!", isLaunchSuccessfull);
+
+    }
+
 }

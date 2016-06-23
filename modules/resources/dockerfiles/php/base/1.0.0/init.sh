@@ -28,6 +28,9 @@
         mv "$temp"/* "$dest"
     fi && rm -rf "$temp"
 
+chgrp -R www-data $WEB_ROOT
+chmod -R 775 $WEB_ROOT
+
 rm -rf "$UPLOAD_PATH/$PHP_APP_ZIP"
 
 apachectl -DFOREGROUND

@@ -699,6 +699,17 @@
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
+                            <xs:element name="databaseProperties">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element type="xs:string" name="databaseName" maxOccurs="unbounded" minOccurs="0"/>
+                                        <xs:element type="xs:string" name="dbUserNameOne" maxOccurs="unbounded" minOccurs="0"/>
+                                        <xs:element type="xs:string" name="dbUserNameTwo" maxOccurs="unbounded" minOccurs="0"/>
+                                        <xs:element type="xs:string" name="dbPassword" maxOccurs="unbounded" minOccurs="0"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+
                             <xs:element name="domainMapping">
                                 <xs:complexType>
                                     <xs:sequence>
@@ -713,6 +724,42 @@
                                         <xs:element type="xs:string" name="period" maxOccurs="unbounded" minOccurs="0"/>
                                         <xs:element type="xs:string" name="retryCount" maxOccurs="unbounded" minOccurs="0"/>
                                     </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="containerSpecifications">
+                                <xs:complexType>
+                                <xs:sequence>
+                                <xs:element name="cpuValues">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="cpu" maxOccurs="unbounded" minOccurs="0">
+                                                <xs:complexType>
+                                                    <xs:simpleContent>
+                                                        <xs:extension base="xs:string">
+                                                            <xs:attribute type="xs:string" name="key" use="required"/>
+                                                        </xs:extension>
+                                                    </xs:simpleContent>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="memoryValues">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="memory" maxOccurs="unbounded" minOccurs="0">
+                                                <xs:complexType>
+                                                    <xs:simpleContent>
+                                                        <xs:extension base="xs:string">
+                                                            <xs:attribute type="xs:string" name="key" use="required"/>
+                                                        </xs:extension>
+                                                    </xs:simpleContent>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="bamResources" minOccurs="0">

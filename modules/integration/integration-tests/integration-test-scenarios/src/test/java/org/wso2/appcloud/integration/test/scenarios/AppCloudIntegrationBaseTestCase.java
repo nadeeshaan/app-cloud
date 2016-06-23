@@ -33,11 +33,11 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	protected String defaultAppName;
 	protected String serverUrl;
 	protected String tenantDomain;
-	private String fileName;
+	protected String fileName;
 	private String runtimeID;
-	private String sampleAppContent;
-	private long runtimeStartTimeout;
-    private ApplicationClient applicationClient;
+	protected String sampleAppContent;
+	protected long runtimeStartTimeout;
+    protected ApplicationClient applicationClient;
 	private LogsClient logsClient;
 	protected String applicationName;
 	protected String applicationType;
@@ -45,14 +45,16 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	protected String applicationDescription;
 	protected String properties;
 	protected String tags;
-	private String containerSpecMemory = "512";
-	private String containerSpecCpu = "300";
+	private String containerSpecMemory;
+	private String containerSpecCpu;
 
-	public AppCloudIntegrationBaseTestCase(String runtimeID, String fileName, String applicationType, String sampleAppContent, long runtimeStartTimeout){
+	public AppCloudIntegrationBaseTestCase(String runtimeID, String fileName, String applicationType, String sampleAppContent, long runtimeStartTimeout , String containerSpecCpu, String containerSpecMemory){
 		this.runtimeID = runtimeID;
 		this.fileName = fileName;
 		this.sampleAppContent = sampleAppContent;
         this.runtimeStartTimeout = runtimeStartTimeout;
+		this.containerSpecCpu = containerSpecCpu;
+		this.containerSpecMemory = containerSpecMemory;
 		//Application details
 		this.applicationName = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.APP_NAME_KEY);
 		this.applicationType = applicationType;
@@ -91,7 +93,6 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		RetryApplicationActions(applicationRevision, AppCloudIntegrationTestConstants.STATUS_RUNNING, "Application " +
 		                                                                                              "creation");
 	}
-
 	@SetEnvironment(executionEnvironments = {ExecutionEnvironment.PLATFORM})
 	@Test(description = "Testing application launch")
 	public void testLaunchApplication() throws Exception {
@@ -101,11 +102,6 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		String launchURL = ((JSONObject) ((JSONObject) applicationBean
 				.get(AppCloudIntegrationTestConstants.PROPERTY_VERSIONS_NAME))
 				.get(applicationRevision)).getString(AppCloudIntegrationTestConstants.PROPERTY_DEPLOYMENT_URL);
-		if (applicationType.equals(MSF4JApplicationTestCase.MSF4J_APPLICATION_TYPE)) {
-			launchURL = launchURL + "/hello/wso2";
-        } else if (DSSApplicationTestCase.DSS_APPLICATION_TYPE.equals(applicationType)) {
-            launchURL = launchURL + "/services/CSVSampleService?wsdl";
-        }
         //make the launch url http
 		launchURL = launchURL.replace("https", "http");
 		Boolean isLaunchSuccessfull = applicationClient.launchApplication(launchURL, sampleAppContent);
