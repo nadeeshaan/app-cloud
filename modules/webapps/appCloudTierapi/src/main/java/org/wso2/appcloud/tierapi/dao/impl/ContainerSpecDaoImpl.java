@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.appcloud.tierapi.SQLQueryConstants;
 import org.wso2.appcloud.tierapi.bean.ContainerSpecifications;
 import org.wso2.appcloud.tierapi.dao.ContainerSpecsDao;
-import org.wso2.appcloud.tierapi.util.DBConfiguration;
+import org.wso2.appcloud.tierapi.util.DBUtil;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Connection;
@@ -39,28 +39,25 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 	public List<ContainerSpecifications> getAllContainerSpecs() throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
 		List<ContainerSpecifications> containerSpecsList = new ArrayList<ContainerSpecifications>();
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_CONTAINER_SPECIFICATIONS);
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				ContainerSpecifications containerSpec = getContainerSpecifications(rs);
 				containerSpecsList.add(containerSpec);
 			}
-			rs.close();
 		} catch (SQLException e) {
 			String msg = "Error while getting details of Container Specifications";
 			log.error(msg, e);
 			throw e;
 		} finally {
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closeResultSet(rs);
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return containerSpecsList;
 	}
@@ -69,29 +66,26 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 	public List<ContainerSpecifications> getContainerSpecByRuntimeID(int runtimeId) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
 		List<ContainerSpecifications> containerSpecsList = new ArrayList<ContainerSpecifications>();
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CONTAINER_SPECIFICATIONS_BY_RUNTIME_ID);
 			preparedStatement.setInt(1, runtimeId);
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				ContainerSpecifications containerSpec = getContainerSpecifications(rs);
 				containerSpecsList.add(containerSpec);
 			}
-			rs.close();
 		} catch (SQLException e) {
 			String msg = "Error while getting details of Container Specifications for Runtime ID " + runtimeId;
 			log.error(msg, e);
 			throw e;
 		} finally {
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closeResultSet(rs);
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return containerSpecsList;
 	}
@@ -100,29 +94,26 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 	public ContainerSpecifications getContainerSpecById(int containerSpecId) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
 		ContainerSpecifications containerSpec = new ContainerSpecifications();
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CONTAINER_SPECIFICATION_BY_ID);
 			preparedStatement.setInt(1, containerSpecId);
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				containerSpec = getContainerSpecifications(rs);
 			}
-			rs.close();
 		} catch (SQLException e) {
 			String msg =
 					"Error while getting details of Container Specification with the ID" + containerSpecId;
 			log.error(msg, e);
 			throw e;
 		} finally {
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closeResultSet(rs);
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return containerSpec;
 	}
@@ -131,8 +122,9 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 	public ContainerSpecifications defineContainerSpec(ContainerSpecifications containerSpec) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_CONTAINER_SPECIFICATION);
 			preparedStatement.setString(1, containerSpec.getConSpecName());
@@ -143,7 +135,7 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 			preparedStatement.close();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CONTAINER_SPECIFICATION_BY_NAME);
 			preparedStatement.setString(1, containerSpec.getConSpecName());
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				containerSpec = getContainerSpecifications(rs);
 			}
@@ -152,12 +144,9 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 			log.error(msg, e);
 			throw e;
 		} finally {
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closeResultSet(rs);
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return containerSpec;
 	}
@@ -168,7 +157,7 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 		PreparedStatement preparedStatement = null;
 		boolean isDeleted;
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.DELETE_CONTAINER_SPECIFICATION);
 			preparedStatement.setInt(1, containerSpecId);
@@ -179,12 +168,8 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 			log.error(msg, e);
 			throw e;
 		} finally {
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return isDeleted;
 	}
@@ -193,8 +178,9 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 	public ContainerSpecifications updateContainerSpecById(int containerSpecId, ContainerSpecifications containerSpec) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_CONTAINER_SPECIFICATION);
 			preparedStatement.setString(1, containerSpec.getConSpecName());
@@ -206,7 +192,7 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 			preparedStatement.close();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CONTAINER_SPECIFICATION_BY_ID);
 			preparedStatement.setInt(1, containerSpecId);
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				containerSpec = getContainerSpecifications(rs);
 			}
@@ -216,12 +202,9 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 			log.error(msg, e);
 			throw e;
 		} finally {
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closeResultSet(rs);
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return containerSpec;
 	}
