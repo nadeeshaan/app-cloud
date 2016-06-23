@@ -23,6 +23,7 @@ var selectedRevisionReplicaList = [];
 var selectedReplica;
 var editor;
 var isLogsAvailable = false;
+var timerId;
 $(document).ready(function () {
     editor = CodeMirror.fromTextArea(document.getElementById("build-logs"), {
         styleActiveLine: true,
@@ -33,7 +34,7 @@ $(document).ready(function () {
         theme:'icecoder'
     });
     initData(selectedRevision, true);
-    setInterval(function(){ initData(selectedRevision, false); }, 3000);
+    timerId = setInterval(function(){ initData(selectedRevision, false); }, 3000);
 });
 
 function regerateReplicasList(selectedRevisionReplicaList) {
@@ -93,24 +94,25 @@ function initData(selectedRevision, isFirstRequest){
                 result = result.trim();
                 var revisionStatus = result;
                 if (revisionStatus == "stopped") {
+                clearInterval(timerId);
                     jagg.message({
-                        content: "Application is stopped. Please go to back to the application and click the" +
-                        " Start button.",
+                        content: "Application is currently stopped, logs will be available after restarting.",
                         type: 'information',
                         id: 'view_log',
-                        timeout: '5000'
+                        timeout: '20000'
                     });
+                    setLogArea("Application is stopped, Since logs are currently not available.", true);
                 } else {
                     jagg.message({
                         content: "Deployment in progress. Please wait",
                         type: 'information',
                         id: 'view_log',
-                        timeout: '5000'
+                        timeout: '8000'
                     });
                 }
             }, function(jqXHR, textStatus, errorThrown) {
                 jagg.message({
-                    content: "Error occured while getting application revision status.",
+                    content: "Error occurred while getting application revision status.",
                     type: 'error',
                     id: 'view_log'
                 });
