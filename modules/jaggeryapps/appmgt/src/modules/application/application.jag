@@ -823,20 +823,22 @@ var getApplicationNameByHashId = function(applicationHashId){
  *                                              }
  */
 var getApplication = function(applicationHashId){
+    var applicationObject = {};
     try {
         var application = ApplicationManager.getApplicationByHashId(applicationHashId);
-        var applicationObject = {};
-
         applicationObject.applicationName = application.applicationName;
         applicationObject.hashId = application.hashId;
         applicationObject.description = application.description;
-        if(application.versions != null || application.versions.get(0) != null){
-            applicationObject.defaultVersion = application.versions.get(0).versionName;
+        if (application.versions != null) {
+            applicationObject.versions = generateVersionList(application.versions, application.applicationName,
+                    application.defaultVersion);
+            if (application.versions.get(0) != null) {
+                applicationObject.defaultVersion = application.versions.get(0).versionName;
+            }
         }
         applicationObject.applicationType = application.applicationType;
         applicationObject.icon = getApplicationIconAsBase64String(application);
         applicationObject.defaultVersionName = application.defaultVersion;
-        applicationObject.versions = generateVersionList(application.versions, application.applicationName, application.defaultVersion);
     } catch(e){
         log.error("Error while getting the application");
         log.error(e);
