@@ -84,6 +84,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var allowedRuntimeContainerSpecJson = jQuery.parseJSON('<%=allowedRuntimeContainerSpecJson%>');
     var containerSpecNamesJson = [];
     var versionHashIdAtFileUpload;
+    var progress;
 
     $(document).ready(function(){
 
@@ -308,7 +309,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 },
                 progressall: function(e, data) {
                     //First parameters is percentage, second parameter is decimal radix
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    progress = parseInt(data.loaded / data.total * 100, 10);
                     $('#progress .progress-bar').css(
                         'width',
                         progress + '%'
@@ -328,6 +329,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     }
                 },
                 change: function(e, data) {
+                    progress = 0;
+                    activateCreateApplication();
                     $.each(data.files, function(index, file) {
                         $("#uploadedFileName").val(file.name);
                     });
@@ -677,7 +680,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
         if ($('#applicationName').val() && $('#applicationRevision').val() && $('#container option:selected').val()
                         && $('#runtime').val() > 0 && ($("#uploadedFileName").val() || $("#artifactUrl").val() || ($("#gitRepoUrl").val()  && $("#gitRepoBranch").val()))) {// checks form for validity
 
-            if($("#uploadedFileName").val()){
+            if($("#uploadedFileName").val() && progress == 100){
                 if(validateArtifactType($("#uploadedFileName").val())){
                     $("#add-application").prop("disabled", false);
                 }else{
