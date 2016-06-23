@@ -727,9 +727,8 @@ public class ApplicationManager {
         ApplicationDAO applicationDAO = new ApplicationDAO();
         Connection dbConnection = DBUtil.getDBConnection();
 
-        int maxDatabaseCount = 0;
         try {
-            maxDatabaseCount = applicationDAO.getWhiteListedTenantMaxDatabaseCount(dbConnection, tenantID);
+            return applicationDAO.getWhiteListedTenantMaxDatabaseCount(dbConnection, tenantID);
         } catch (AppCloudException e) {
             String msg = "Error while getting maximum database count for whitelisted tenant for tenant id: " + tenantID;
             log.error(msg, e);
@@ -737,7 +736,6 @@ public class ApplicationManager {
         } finally {
             DBUtil.closeConnection(dbConnection);
         }
-        return maxDatabaseCount;
     }
 
     public static void whiteListMaxDatabaseCount(int tenantId, int maxDatabaseCount) throws AppCloudException {

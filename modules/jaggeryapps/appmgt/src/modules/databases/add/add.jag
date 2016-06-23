@@ -326,9 +326,9 @@ var getMaxDatabaseCount = function () {
 	try {
 		var tenantId = modManager.getTenantId();
 		var maxDatabaseCount = ApplicationManager.getMaxDatabaseCountForWhiteListedTenants(tenantId);
-		var subscriptionPlanBaseURL = modManager.getPropertyValue("SubscriptionPlanBaseURL");
-		var subscriptionPlanURL = subscriptionPlanBaseURL + "/plans/1";
 		if (maxDatabaseCount == -1) {
+			var subscriptionPlanBaseURL = modManager.getPropertyValue("SubscriptionPlanBaseURL");
+			var subscriptionPlanURL = subscriptionPlanBaseURL + "/plans/1";
 			var maxInstancesJson = get(subscriptionPlanURL, {}, "json");
 			maxDatabaseCount = parseInt(maxInstancesJson.data.maxDatabases);
 		}

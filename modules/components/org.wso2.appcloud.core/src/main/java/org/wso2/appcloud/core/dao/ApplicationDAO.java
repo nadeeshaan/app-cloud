@@ -1557,7 +1557,7 @@ public class ApplicationDAO {
 
     public void whiteListTenant(Connection dbConnection, int tenantId, int maxAppCount, int maxDatabaseCount)
             throws AppCloudException {
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_WHITE_LISTED_TENANT);
             preparedStatement.setInt(1, tenantId);
@@ -1603,12 +1603,13 @@ public class ApplicationDAO {
 
     public int getWhiteListedTenantMaxDatabaseCount(Connection dbConnection, int tenantID) throws AppCloudException {
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         int maxDatabaseCount;
 
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_WHITE_LISTED_TENANT_DETAILS);
             preparedStatement.setInt(1, tenantID);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 maxDatabaseCount = resultSet.getInt(SQLQueryConstants.MAX_DATABASE_COUNT);
             } else {
@@ -1616,9 +1617,9 @@ public class ApplicationDAO {
             }
         } catch (SQLException e) {
             String msg = "Get maximum database count failed for tenant id : " + tenantID;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
+            DBUtil.closeResultSet(resultSet);
             DBUtil.closePreparedStatement(preparedStatement);
         }
         return maxDatabaseCount;
@@ -1636,7 +1637,6 @@ public class ApplicationDAO {
             preparedStatement.execute();
         } catch (SQLException e) {
             String msg = "White listing maximum database count failed for tenant id : " + tenantId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1655,7 +1655,6 @@ public class ApplicationDAO {
             preparedStatement.execute();
         } catch (SQLException e) {
             String msg = "White listing maximum application count failed for tenant id : " + tenantId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
