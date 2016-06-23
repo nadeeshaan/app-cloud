@@ -244,7 +244,7 @@ $(document).ready(function () {
                             'lowercase': true,
                             'numbers': true,
                             'specialChars': true,
-                            'onPasswordGenerated': function(generatedPassword) {
+                            'onPasswordGenerated': function (generatedPassword) {
                                 var backslashRegex = new RegExp("\\\\", "g");
                                 var quoteRegex = new RegExp("\'");
                                 //backslash and single quote are not allowed as special characters in the password

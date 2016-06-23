@@ -1566,11 +1566,13 @@ public class ApplicationDAO {
             preparedStatement.setInt(4, maxAppCount);
             preparedStatement.setInt(5, maxDatabaseCount);
             preparedStatement.execute();
-		} catch (SQLException e) {
-			String msg = "White listing failed for tenant id : " + tenantId;
-			throw new AppCloudException(msg, e);
-		}
-	}
+        } catch (SQLException e) {
+            String msg = "White listing failed for tenant id : " + tenantId;
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
+    }
 
     /**
      * Update applications' version container specification.
