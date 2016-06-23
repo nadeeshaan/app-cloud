@@ -832,7 +832,7 @@ var getApplication = function(applicationHashId){
         if (application.versions != null) {
             applicationObject.versions = generateVersionList(application.versions, application.applicationName,
                     application.defaultVersion);
-            if (application.versions.get(0) != null) {
+            if (applicationObject.versions != null && application.versions.get(0) != null) {
                 applicationObject.defaultVersion = application.versions.get(0).versionName;
             }
         }
