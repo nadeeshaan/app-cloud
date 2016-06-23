@@ -22,7 +22,7 @@ import org.wso2.appcloud.tierapi.SQLQueryConstants;
 import org.wso2.appcloud.tierapi.bean.ContainerSpecifications;
 import org.wso2.appcloud.tierapi.bean.Plan;
 import org.wso2.appcloud.tierapi.dao.PlanDao;
-import org.wso2.appcloud.tierapi.util.DBConfiguration;
+import org.wso2.appcloud.tierapi.util.DBUtil;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Connection;
@@ -43,12 +43,13 @@ public class PlanDaoImpl implements PlanDao{
 		PreparedStatement preparedStatement = null;
 
 		List<Plan> plans = new ArrayList<Plan>();
+		ResultSet rs = null;
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_SUBSCRIPTION_PLANS);
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 
 			while (rs.next()) {
 				Plan plan = getPlan(rs);
@@ -59,13 +60,9 @@ public class PlanDaoImpl implements PlanDao{
 			log.error(msg, e);
 			throw e;
 		} finally {
-
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closeResultSet(rs);
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return plans;
 	}
@@ -75,12 +72,13 @@ public class PlanDaoImpl implements PlanDao{
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
 		Plan plan = new Plan();
+		ResultSet rs = null;
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_SUBSCRIPTION_PLANS_BY_PLAN_ID);
 			preparedStatement.setInt(1, planId);
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				plan = getPlan(rs);
 			}
@@ -90,13 +88,9 @@ public class PlanDaoImpl implements PlanDao{
 			log.error(msg, e);
 			throw e;
 		} finally {
-
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closeResultSet(rs);
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return plan;
 	}
@@ -105,10 +99,10 @@ public class PlanDaoImpl implements PlanDao{
 	public Plan definePlan(Plan plan) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
-
+		ResultSet rs = null;
 
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_SUBSCRIPTION);
 			preparedStatement.setString(1, plan.getPlanName());
@@ -119,7 +113,7 @@ public class PlanDaoImpl implements PlanDao{
 
 			preparedStatement= dbConnection.prepareStatement(SQLQueryConstants.GET_SUBSCRIPTION_PLANS_BY_PLAN_NAME);
 			preparedStatement.setString(1, plan.getPlanName());
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 
 			while (rs.next()) {
 				plan = getPlan(rs);
@@ -130,14 +124,9 @@ public class PlanDaoImpl implements PlanDao{
 			log.error(msg, e);
 			throw e;
 		} finally {
-
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closeResultSet(rs);
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return plan;
 	}
@@ -148,7 +137,7 @@ public class PlanDaoImpl implements PlanDao{
 		PreparedStatement preparedStatement = null;
 		boolean isDeleted;
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.DELETE_SUBSCRIPTION_PLAN);
 			preparedStatement.setInt(1, planId);
@@ -158,12 +147,8 @@ public class PlanDaoImpl implements PlanDao{
 			log.error(msg, e);
 			throw e;
 		} finally {
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return isDeleted;
 	}
@@ -172,8 +157,9 @@ public class PlanDaoImpl implements PlanDao{
 	public Plan updatePlanById(int planId, Plan plan) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_SUBSCRIPTION_PLAN);
 
@@ -185,7 +171,7 @@ public class PlanDaoImpl implements PlanDao{
 
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_SUBSCRIPTION_PLANS_BY_PLAN_ID);
 			preparedStatement.setInt(1, planId);
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 
 			while (rs.next()) {
 				plan = getPlan(rs);
@@ -195,12 +181,9 @@ public class PlanDaoImpl implements PlanDao{
 			log.error(msg, e);
 			throw e;
 		} finally {
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closeResultSet(rs);
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return plan;
 	}
@@ -209,13 +192,14 @@ public class PlanDaoImpl implements PlanDao{
 	public List<ContainerSpecifications> getAllowedConSpecs(int planId) throws SQLException {
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
 		List<ContainerSpecifications> allowedContainerSpecs = new ArrayList<ContainerSpecifications>();
 		try {
-			DBConfiguration dbCon = new DBConfiguration();
+			DBUtil dbCon = new DBUtil();
 			dbConnection = dbCon.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALLOWED_CONTAINER_SPECIFICATIONS);
 			preparedStatement.setInt(1, planId);
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				ContainerSpecifications containerSpecification = new ContainerSpecifications();
 				containerSpecification.setId(rs.getInt("CON_SPEC_ID"));
@@ -231,12 +215,9 @@ public class PlanDaoImpl implements PlanDao{
 			log.error(msg, e);
 			throw e;
 		} finally {
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-			if (dbConnection != null) {
-				dbConnection.close();
-			}
+			DBUtil.closeResultSet(rs);
+			DBUtil.closePreparedStatement(preparedStatement);
+			DBUtil.closeDatabaseConnection(dbConnection);
 		}
 		return allowedContainerSpecs;
 	}
