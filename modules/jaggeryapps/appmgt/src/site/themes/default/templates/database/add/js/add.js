@@ -244,13 +244,22 @@ $(document).ready(function () {
                             'lowercase': true,
                             'numbers': true,
                             'specialChars': true,
-                            'onPasswordGenerated': function (generatedPassword) {
-                                generatedPassword = 'Your password has been generated : ' + generatedPassword;
-                                $(".password-generator").attr('data-original-title', generatedPassword)
-                                        .tooltip('show', {placement: 'right'});
-                                $("#password").trigger('focus');
-                                if (!$(highPass).find('i').hasClass("fa-eye-slash")) {
-                                    $(highPass).click();
+                            'onPasswordGenerated': function(generatedPassword) {
+                                var backslashRegex = new RegExp("\\\\", "g");
+                                var quoteRegex = new RegExp("\'");
+                                //backslash and single quote are not allowed as special characters in the password
+                                if (backslashRegex.test(generatedPassword) || quoteRegex.test(generatedPassword)) {
+                                    $(".password-generator").trigger("click");
+                                } else {
+                                    generatedPassword = 'Your password has been generated : ' + generatedPassword;
+                                    $(".password-generator").attr('data-original-title', generatedPassword)
+                                        .tooltip('show', {
+                                            placement: 'right'
+                                        });
+                                    $("#password").trigger('focus');
+                                    if (!$(highPass).find('i').hasClass("fa-eye-slash")) {
+                                        $(highPass).click();
+                                    }
                                 }
                             }
                         });

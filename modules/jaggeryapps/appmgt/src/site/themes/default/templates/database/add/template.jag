@@ -82,7 +82,7 @@ jagg.template("database/add", function (inputs, outputs, jagg) { %>
                                         <li class="invalid" id="length"><span class="status_icon"></span>At least 6 characters</li>
                                         <li class="invalid" id="pnum"><span class="status_icon"></span>At least one number</li>
                                         <li class="invalid" id="capital"><span class="status_icon"></span>At least one lowercase &amp; one uppercase letter</li>
-                                        <li class="invalid" id="spchar"><span class="status_icon"></span>At least one special character</li>
+                                        <li class="invalid" id="spchar"><span class="status_icon"></span>At least one special character excluding \ and '</li>
                                     </ul>
                                 </div><!-- END pswd_info -->
                             </div><!-- END pwd_strength_wrap -->
