@@ -28,7 +28,7 @@ public class DBUtil {
 
     private static final Log log = LogFactory.getLog(DBUtil.class);
 
-    public Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         try {
             return org.wso2.appcloud.core.DBUtil.getDBConnection();
         } catch (Exception e) {
