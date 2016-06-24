@@ -73,8 +73,8 @@ var addApplication = function (applicationName, versionName, applicationDescript
     }
     var applicationRuntime = ApplicationManager.getRuntimeById(runtimeId);
     var tagName = applicationRuntime.getTag() +"-"+ versionHashId;
-    var DockerOpClient = Packages.org.wso2.appcloud.core.docker.DockerOpClient;
-    var dockerOpClient = new DockerOpClient(modManager.getPropertyValue("DockerClientURL"));
+    var DockerClient = Packages.org.wso2.appcloud.core.docker.DockerClient;
+    var dockerClient = new DockerClient(modManager.getPropertyValue("DockerClientURL"));
      var runtimeProperties = generateRuntimePropsList(runtimePropertiesArray);
     var hostName = constructAppLaunchURL(applicationName, versionName);
 
@@ -83,9 +83,9 @@ var addApplication = function (applicationName, versionName, applicationDescript
         renameDirectory(oldHashId, versionHashId, uploadedFileName);
     }
     var absFileUploadedPath =  createDockerFile(applicationName, versionName, runtimeId, uploadedFileName,
-            versionHashId, dockerOpClient, artifactUrl, hostName, appCreationMethod, runtimeProperties, conSpecMemory);
-    buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerOpClient);
-    pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerOpClient);
+            versionHashId, dockerClient, artifactUrl, hostName, appCreationMethod, runtimeProperties, conSpecMemory);
+    buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerClient);
+    pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient);
 
     triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName, appTypeName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
     putSelectedRevisionToSession(applicationHashId, versionName);
@@ -121,14 +121,14 @@ var triggerKubernetesDeployment = function(runtimeProperties, applicationRuntime
     deployApplication(applicationName, versionName, appTypeName, deploymentConfig, false, versionHashId, "new", conSpecMemory, conSpecCpu);
 }
 
-var pushDockerImage = function (applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerOpClient){
+var pushDockerImage = function (applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient){
 
     //Adding docker image push pending event
     var msg = "Docker image push successfully triggered in triggered";
     addEvent(DOCKER_REGISTRY_PUSH, EVENT_PENDING, msg, versionHashId);
 
     try {
-        dockerOpClient.pushDockerImage(modManager.getPropertyValue(PROPERTY_DOCKER_REGISTRY_URL),applicationRuntime.getImageName(), tagName);
+        dockerClient.pushDockerImage(modManager.getPropertyValue(PROPERTY_DOCKER_REGISTRY_URL),applicationRuntime.getImageName(), tagName);
     } catch (e) {
         var msg = "Error uploading docker image to remote registry";
         addEvent(DOCKER_REGISTRY_PUSH, EVENT_FAILED, msg, versionHashId);
@@ -155,7 +155,7 @@ var pushDockerImage = function (applicationName, versionName, applicationRuntime
     addEvent(DOCKER_REGISTRY_PUSH, EVENT_SUCCEEDED, msg, versionHashId);
 }
 
-var buildDockerImage = function (applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerOpClient){
+var buildDockerImage = function (applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerClient){
 
     //Adding docker build pending event
     var msg = "Docker image build successfully triggered in appcloud";
@@ -168,7 +168,7 @@ var buildDockerImage = function (applicationName, versionName, runtimeId, absFil
     try {
 
         var dockerRegTenantSpace = modManager.getTenantDomain().replace(".","-");
-        dockerOpClient.buildDockerImage(modManager.getPropertyValue(PROPERTY_DOCKER_REGISTRY_URL) ,applicationRuntime.getImageName(), tagName, absFileUploadedPath);
+        dockerClient.buildDockerImage(modManager.getPropertyValue(PROPERTY_DOCKER_REGISTRY_URL) ,applicationRuntime.getImageName(), tagName, absFileUploadedPath);
 
     } catch (e){
 
@@ -177,7 +177,7 @@ var buildDockerImage = function (applicationName, versionName, runtimeId, absFil
             try{
                 log.info("Retrying docker build retry counter value : " + i);
                 var dockerRegTenantSpace = modManager.getTenantDomain().replace(".","-");
-                dockerOpClient.buildDockerImage(modManager.getPropertyValue(PROPERTY_DOCKER_REGISTRY_URL) ,applicationRuntime.getImageName(), tagName, absFileUploadedPath);
+                dockerClient.buildDockerImage(modManager.getPropertyValue(PROPERTY_DOCKER_REGISTRY_URL) ,applicationRuntime.getImageName(), tagName, absFileUploadedPath);
                 //Adding docker build success event
                 var msg = "Docker image build successfully built";
                 addEvent(DOCKER_IMAGE_BUILD, EVENT_SUCCEEDED, msg, versionHashId);
@@ -325,7 +325,7 @@ var createAppVersionInDataBase = function( versionName,   runtimeId, runtimeProp
 }
 
 
-var createDockerFile = function (applicationName, versionName, runtimeId, uploadedFileName, versionHashId, dockerOpClient,
+var createDockerFile = function (applicationName, versionName, runtimeId, uploadedFileName, versionHashId, dockerClient,
                                  artifactUrl, hostName, appCreationMethod, runtimeProperties, conSpecMemory) {
     var msg = "Docker file creation successfully triggered in appcloud";
     addEvent(DOCKER_FILE_CREATE, EVENT_PENDING, msg, versionHashId);
@@ -357,7 +357,7 @@ var createDockerFile = function (applicationName, versionName, runtimeId, upload
         dockerFilePropertyMap.put("VAL_TOTAL_MEMORY", conSpecMemory);
         var appRuntimeProperties = getRuntimeProperties(runtimeProperties);
 
-        dockerOpClient.createDockerFile(dockerFilePath, runtimeId, dockerTemplateFilePath, appCreationMethod, dockerFilePropertyMap, appRuntimeProperties);
+        dockerClient.createDockerFile(dockerFilePath, runtimeId, dockerTemplateFilePath, appCreationMethod, dockerFilePropertyMap, appRuntimeProperties);
 
     } catch(e){
         var msg = "Error while creating docker file";
