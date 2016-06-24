@@ -28,7 +28,7 @@ public class DockerUtil {
     }
 
     public static String getDeploymentLocation(String appType) {
-        return DockerOpClientConstants.DOCKER_WAR_LOCATION;
+        return DockerClientConstants.DOCKER_WAR_LOCATION;
     }
 
     public static String getDockerFileTemplatePath(String runtimeId, String dockerTemplateFilePath,

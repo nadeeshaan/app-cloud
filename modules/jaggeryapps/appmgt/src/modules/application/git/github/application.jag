@@ -67,22 +67,22 @@ var addApplicationViaGitHub = function (applicationName, versionName, applicatio
 
     var applicationRuntime = ApplicationManager.getRuntimeById(runtimeId);
     var tagName = applicationRuntime.getTag() +"-"+ versionHashId;
-    var DockerOpClient = Packages.org.wso2.appcloud.core.docker.DockerOpClient;
-    var dockerOpClient = new DockerOpClient(modManager.getPropertyValue("DockerClientURL"));
+    var DockerClient = Packages.org.wso2.appcloud.core.docker.DockerClient;
+    var dockerClient = new DockerClient(modManager.getPropertyValue("DockerClientURL"));
 
     var runtimeProperties = version.getRuntimeProperties();
     var absFileUploadedPath =  createDockerFileForGitHub(applicationName, versionName, runtimeId, gitHubRepoUrl,
-                                                         gitHubRepoBranch, projectRoot, versionHashId, dockerOpClient, appCreationMethod, runtimePropertiesArray, conSpecMemory);
+                                                         gitHubRepoBranch, projectRoot, versionHashId, dockerClient, appCreationMethod, runtimePropertiesArray, conSpecMemory);
     appManager.buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName,
-                                versionHashId, dockerOpClient);
-    appManager.pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerOpClient);
+                                versionHashId, dockerClient);
+    appManager.pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient);
     appManager.triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName,
                                            runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
 };
 
 
 var createDockerFileForGitHub =  function(applicationName, versionName, runtimeId, gitHubRepoUrl, gitHubRepoBranch,
-                                          projectRoot, versionHashId, dockerOpClient, appCreationMethod, runtimePropertiesArray, conSpecMemory){
+                                          projectRoot, versionHashId, dockerClient, appCreationMethod, runtimePropertiesArray, conSpecMemory){
     var msg = "Docker file creation successfully triggered in appcloud";
     appManager.addEvent(DOCKER_FILE_CREATE, EVENT_PENDING, msg, versionHashId);
     var absFileUploadedPath;
@@ -101,7 +101,7 @@ var createDockerFileForGitHub =  function(applicationName, versionName, runtimeI
         dockerFilePropertyMap.put("VAL_TOTAL_MEMORY", conSpecMemory);
         var appRuntimeProperties = appManager.getRuntimePropertyMap(runtimePropertiesArray);
 
-        dockerOpClient.createDockerFile(dockerFilePath, runtimeId, dockerTemplateFilePath, appCreationMethod, dockerFilePropertyMap, appRuntimeProperties);
+        dockerClient.createDockerFile(dockerFilePath, runtimeId, dockerTemplateFilePath, appCreationMethod, dockerFilePropertyMap, appRuntimeProperties);
     } catch(e){
         var msg = "Error while creating docker file";
         appManager.addEvent(DOCKER_FILE_CREATE, EVENT_FAILED, msg, versionHashId);
