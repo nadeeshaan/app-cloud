@@ -42,8 +42,7 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 		ResultSet rs = null;
 		List<ContainerSpecifications> containerSpecsList = new ArrayList<ContainerSpecifications>();
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_CONTAINER_SPECIFICATIONS);
 			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
@@ -69,8 +68,7 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 		ResultSet rs = null;
 		List<ContainerSpecifications> containerSpecsList = new ArrayList<ContainerSpecifications>();
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CONTAINER_SPECIFICATIONS_BY_RUNTIME_ID);
 			preparedStatement.setInt(1, runtimeId);
 			rs = preparedStatement.executeQuery();
@@ -97,8 +95,7 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 		ResultSet rs = null;
 		ContainerSpecifications containerSpec = new ContainerSpecifications();
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CONTAINER_SPECIFICATION_BY_ID);
 			preparedStatement.setInt(1, containerSpecId);
 			rs = preparedStatement.executeQuery();
@@ -124,8 +121,7 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_CONTAINER_SPECIFICATION);
 			preparedStatement.setString(1, containerSpec.getConSpecName());
 			preparedStatement.setInt(2, containerSpec.getCpu());
@@ -157,8 +153,7 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 		PreparedStatement preparedStatement = null;
 		boolean isDeleted;
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.DELETE_CONTAINER_SPECIFICATION);
 			preparedStatement.setInt(1, containerSpecId);
 			isDeleted = preparedStatement.executeUpdate() == 1 ? true : false;
@@ -180,8 +175,7 @@ public class ContainerSpecDaoImpl implements ContainerSpecsDao {
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_CONTAINER_SPECIFICATION);
 			preparedStatement.setString(1, containerSpec.getConSpecName());
 			preparedStatement.setInt(2, containerSpec.getCpu());

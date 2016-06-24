@@ -45,8 +45,7 @@ public class PlanDaoImpl implements PlanDao{
 		List<Plan> plans = new ArrayList<Plan>();
 		ResultSet rs = null;
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_SUBSCRIPTION_PLANS);
 			rs = preparedStatement.executeQuery();
@@ -74,8 +73,7 @@ public class PlanDaoImpl implements PlanDao{
 		Plan plan = new Plan();
 		ResultSet rs = null;
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_SUBSCRIPTION_PLANS_BY_PLAN_ID);
 			preparedStatement.setInt(1, planId);
 			rs = preparedStatement.executeQuery();
@@ -102,8 +100,7 @@ public class PlanDaoImpl implements PlanDao{
 		ResultSet rs = null;
 
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_SUBSCRIPTION);
 			preparedStatement.setString(1, plan.getPlanName());
 			preparedStatement.setInt(2, plan.getMaxApplications());
@@ -137,8 +134,7 @@ public class PlanDaoImpl implements PlanDao{
 		PreparedStatement preparedStatement = null;
 		boolean isDeleted;
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.DELETE_SUBSCRIPTION_PLAN);
 			preparedStatement.setInt(1, planId);
 			isDeleted = preparedStatement.executeUpdate() == 1 ? true : false;
@@ -159,8 +155,7 @@ public class PlanDaoImpl implements PlanDao{
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_SUBSCRIPTION_PLAN);
 
 			preparedStatement.setString(1, plan.getPlanName());
@@ -195,8 +190,7 @@ public class PlanDaoImpl implements PlanDao{
 		ResultSet rs = null;
 		List<ContainerSpecifications> allowedContainerSpecs = new ArrayList<ContainerSpecifications>();
 		try {
-			DBUtil dbCon = new DBUtil();
-			dbConnection = dbCon.getConnection();
+			dbConnection = DBUtil.getConnection();
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALLOWED_CONTAINER_SPECIFICATIONS);
 			preparedStatement.setInt(1, planId);
 			rs = preparedStatement.executeQuery();

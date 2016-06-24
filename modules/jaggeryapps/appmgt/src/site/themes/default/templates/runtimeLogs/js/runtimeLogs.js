@@ -94,7 +94,7 @@ function initData(selectedRevision, isFirstRequest){
                 result = result.trim();
                 var revisionStatus = result;
                 if (revisionStatus == "stopped") {
-                clearInterval(timerId);
+                    clearInterval(timerId);
                     jagg.message({
                         content: "Application is currently stopped, logs will be available after restarting.",
                         type: 'information',
@@ -103,6 +103,7 @@ function initData(selectedRevision, isFirstRequest){
                     });
                     setLogArea("Application is stopped, Since logs are currently not available.", true);
                 } else {
+                    clearInterval(timerId);
                     jagg.message({
                         content: "Deployment in progress. Please wait",
                         type: 'information',
