@@ -28,6 +28,7 @@ public class Plan {
 	private int id;
 	private String planName;
 	private int maxApplications;
+	private int maxDatabases;
 
 	public Plan() {
 
@@ -62,4 +63,11 @@ public class Plan {
 		return maxApplications;
 	}
 
+	public int getMaxDatabases() {
+		return maxDatabases;
+	}
+
+	public void setMaxDatabases(int maxDatabases) {
+		this.maxDatabases = maxDatabases;
+	}
 }

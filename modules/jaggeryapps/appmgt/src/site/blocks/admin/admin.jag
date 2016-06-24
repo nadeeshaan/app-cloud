@@ -57,8 +57,9 @@ var log = new Log('site/blocks/admin/admin.jag');
     } else if (action == "whiteListTenant") {
         var tenantDomain = request.getParameter("tenantDomain");
         var maxAppCount = request.getParameter("maxAppCount");
+        var maxDatabaseCount = request.getParameter("maxDatabaseCount");
         try {
-            adminModule.whiteListTenant(tenantDomain, maxAppCount);
+            adminModule.whiteListTenant(tenantDomain, maxAppCount, maxDatabaseCount);
 
             response.status = 200;
             response.content = "White listed the given tenant.";
@@ -102,6 +103,38 @@ var log = new Log('site/blocks/admin/admin.jag');
         } catch (e) {
             response.status = 400;
             response.content = "Cpu and Memory increased failed for given application version";
+        }
+    } else if (action == "whiteListMaximumDatabaseCount") {
+        var tenantDomain = request.getParameter("tenantDomain");
+        var maxDatabaseCount = request.getParameter("maxDatabaseCount");
+
+        try {
+            adminModule.whiteListMaxDatabaseCount(tenantDomain, maxDatabaseCount);
+
+            response.status = 200;
+            response.content = "White listed the maximum database count for given tenant.";
+        } catch (e) {
+            var msg = "Error while white listing tenant for maximum database count.";
+            log.error(msg);
+            log.error(e);
+            response.status = 400;
+            response.content = "White listing tenant for maximum database count failed.";
+        }
+    } else if (action == "whiteListMaximumApplicationCount") {
+        var tenantDomain = request.getParameter("tenantDomain");
+        var maxAppCount = request.getParameter("maxAppCount");
+
+        try {
+            adminModule.whiteListMaxApplicationCount(tenantDomain, maxAppCount);
+
+            response.status = 200;
+            response.content = "White listed the maximum application count for given tenant.";
+        } catch (e) {
+            var msg = "Error while white listing tenant for maximum application count.";
+            log.error(msg);
+            log.error(e);
+            response.status = 400;
+            response.content = "White listing tenant for maximum application count failed.";
         }
     } else  {
         throw new Error("No action specified for: " + action);

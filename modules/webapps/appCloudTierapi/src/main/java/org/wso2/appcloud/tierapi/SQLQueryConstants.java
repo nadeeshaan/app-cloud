@@ -30,6 +30,7 @@ public class SQLQueryConstants {
     public static final String PLAN_ID = "PLAN_ID";
     public static final String PLAN_NAME = "PLAN_NAME";
     public static final String MAX_APPLICATIONS = "MAX_APPLICATIONS";
+    public static final String MAX_DATABASES = "MAX_DATABASES";
 
      /*==============================
         SQL Query Constants
