@@ -37,7 +37,8 @@ public class DockerUtil {
     public static String getDockerFileTemplatePath(String runtimeId, String dockerTemplateFilePath,
             String dockerFileCategory) throws AppCloudException {
         Connection dbConnection = DBUtil.getDBConnection();
-        ApplicationRuntime applicationRuntime = ApplicationManager.getApplicationDAO().getRuntimeById(dbConnection, Integer.parseInt(runtimeId));
+        ApplicationRuntime applicationRuntime = ApplicationManager.getApplicationDAO().
+                getRuntimeById(dbConnection, Integer.parseInt(runtimeId));
         String dockerBaseImageName = applicationRuntime.getImageName();
         String dockerBaseImageVersion = applicationRuntime.getTag();
 
