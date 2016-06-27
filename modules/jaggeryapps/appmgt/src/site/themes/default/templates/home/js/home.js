@@ -14,6 +14,7 @@ $(document).ready(function() {
     if(selectedApplicationRevision.status=='inactive'){
         displayApplicationInactiveMessage();
     }
+    setValueDefaultVersionCheckBox();
 });
 
 // wrapping functions
@@ -196,7 +197,7 @@ function changeSelectedRevision(newRevision){
                        'class="btn cu-btn cu-btn-md cu-btn-red" href="#yourlink">Error has occurred.</a></div>');
 
     }
-
+    setValueDefaultVersionCheckBox();
     // Set upload revision btn
     var uploadRevisionUrl = appCreationPageBaseUrl+"?appTypeName="+application.applicationType + //"&applicationName="+applicationName;
                             "&applicationName="+applicationName + "&encodedLabels="+encodedLabels + "&encodedEnvs="
@@ -323,4 +324,27 @@ function redirectAppListing() {
 
 function redirectAppHome() {
     window.location.replace("home.jag?applicationKey=" + applicationKey);
+}
+
+$("#default_version").change(function () {
+    var checked = $(this).is(":checked");
+    jagg.post("../blocks/urlmapper/urlmapper.jag", {
+        action: "setDefaultVersion",
+        applicationName: application.applicationName,
+        versionName: selectedApplicationRevision.versionName,
+        set: checked
+    }, function success() {
+        location.reload();
+    }, function (jqXHR, textStatus, errorThrown) {
+        jagg.message({content: jqXHR.responseText, type: 'error', id: 'view_log'});
+
+    });
+});
+
+function setValueDefaultVersionCheckBox() {
+    if (selectedApplicationRevision.versionName == application.defaultVersionName) {
+        $("#default_version").prop('checked', true);
+    } else {
+        $("#default_version").prop('checked', false);
+    }
 }

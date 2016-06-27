@@ -235,6 +235,9 @@ jagg.module("application", {
     },
     getAllowedContainerSpecificationsForRuntime: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").getAllowedContainerSpecificationsForRuntime.apply(this, arguments);
+    },
+    setDefaultVersion: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").setDefaultVersion.apply(this, arguments);
     }
 });
 %>

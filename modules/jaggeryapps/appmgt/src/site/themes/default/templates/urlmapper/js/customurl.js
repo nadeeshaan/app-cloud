@@ -20,14 +20,25 @@
 
 // page initialization
 $(document).ready(function () {
+    if (defaultVersionName == "null") {
+        jagg.message({
+            content: "Please set the default URL from the application home page",
+            type: 'error',
+            id: 'view_log'
+        });
+        $("#defaultVersion").text("Please set default version first");
+        showUpdateButton();
+        uiElementStateChange(true, true, true, true);
+    } else {
+        $("#defaultVersion").text(stripedUrl(defaultVersion.deploymentURL));
+        showUpdateButton();
+    }
     setExistingCustomUrl();
 });
 
 function setExistingCustomUrl() {
-    if (defaultVersionName !== null && versions[defaultVersionName] != undefined) {
-        var customUrl = versions[defaultVersionName].customtUrl;
-        var hostUrl = stripedUrl(customUrl);
-        $('#productionCustom').val(hostUrl);
+    if (customUrl !== "null") {
+        $('#productionCustom').val(stripedUrl(customUrl));
         uiElementStateChange(true, true, true);
         showEditButton();
     } else {
@@ -37,19 +48,15 @@ function setExistingCustomUrl() {
 }
 
 function verifyCustomUrl() {
-    var pointedUrl = $('#productionVersion').val();
+    var pointedUrl = stripedUrl(defaultVersion.deploymentURL).trim();
     var customUrl = $('#productionCustom').val();
-    var stripedPointedUrl = stripedUrl(pointedUrl);
-
     jagg.post("../blocks/urlmapper/urlmapper.jag", {
             action: "verifyCustomDomain",
             customUrl: customUrl,
-            pointedUrl: stripedPointedUrl
+            pointedUrl: pointedUrl
         }, verifyCustomUrlSuccess,
         function (jqXHR, textStatus, errorThrown) {
-            var errorMsg = "CNAME record does not exist for this config : \"" +
-                customUrl + " CNAME " + stripedPointedUrl + "\". Please publish a CNAME record first."
-            jagg.message({content: errorMsg, type: 'error', id: 'view_log'});
+            jagg.message({content: jqXHR.responseText, type: 'error', id: 'view_log'});
         });
 }
 
@@ -65,10 +72,11 @@ function verifyCustomUrlSuccess() {
     $('#updateCustomUrl').prop('disabled', false);
 }
 
-function uiElementStateChange(prodVersion, prodCustom, verifyUrl) {
+function uiElementStateChange(prodVersion, prodCustom, verifyUrl, updateBtn) {
     $("#productionVersion").prop('disabled', prodVersion);
     $("#productionCustom").prop('disabled', prodCustom);
     $("#verifyUrl").prop('disabled', verifyUrl);
+    $("#updateCustomUrl").prop('disabled', updateBtn);
 }
 
 function showUpdateButton() {
@@ -83,17 +91,16 @@ function showEditButton() {
 
 function updateCustomUrl() {
     var customUrl = $('#productionCustom').val();
-    var versionName = $("#productionVersion option:selected").text();
     jagg.post("../blocks/urlmapper/urlmapper.jag", {
         action: "updateCustomUrl",
         customUrl: customUrl,
         applicationName: applicationName,
-        versionName: versionName
+        versionName: defaultVersionName
     }, function (result) {
         jagg.message({content: "Custom domain successfully updated.", type: 'success', id: 'view_log'});
         showEditButton();
     }, function (jqXHR, textStatus, errorThrown) {
-        jagg.message({content: "Error occurred while updating custom domain.", type: 'error', id: 'view_log'});
+        jagg.message({content: jqXHR.responseText, type: 'error', id: 'view_log'});
 
     });
 }

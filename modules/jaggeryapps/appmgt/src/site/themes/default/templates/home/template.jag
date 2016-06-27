@@ -28,9 +28,6 @@ jagg.template("home", function(inputs, outputs, jagg) {
     var conSpecMemory = outputs.conSpecMemory;
     var versions = application.versions;
     var defaultVersionName = application.defaultVersionName;
-    if (application.defaultVersionName != null && versions[defaultVersionName] != undefined) {
-        versions[defaultVersionName].deploymentURL = versions[defaultVersionName].customtUrl;
-    }
     var selectedApplicationRevision = versions[selectedRevision];
     var revisions = outputs.revision;
     var applicationName = application.applicationName;
@@ -40,6 +37,10 @@ jagg.template("home", function(inputs, outputs, jagg) {
     var dashboardUrl = dashboardBaseUrl + applicationName + "-" + selectedRevision;
     var encodedLabels = encodeURIComponent(stringify(selectedApplicationRevision.tags), "UTF-8");
     var encodedEnvs = encodeURIComponent(stringify(selectedApplicationRevision.runtimeProperties), "UTF-8");
+    var customUrl = application.customUrl;
+    if (versions[defaultVersionName] != undefined && customUrl != null) {
+        versions[defaultVersionName].deploymentURL = customUrl;
+    }
 %>
 
 <script>
@@ -126,9 +127,9 @@ jagg.template("home", function(inputs, outputs, jagg) {
                 <h2><%=applicationName%></h2>
                   <h4 class="app-run-time">Runtime: <span id="runtime"><%=selectedApplicationRevision.runtimeName%></span></h4>
                 <p id="app-description"><%=(application.description)?application.description:''%></p>
-                <%if(defaultVersionName !== null && versions[defaultVersionName] != undefined) { %>
+                <%if (customUrl != null && defaultVersionName != null) { %>
                 <div class="app-preview-action-bar" id="custom-url-block">
-                    <div class="sec prod-url"><a href="<%=versions[defaultVersionName].customtUrl%>"><%=versions[defaultVersionName].customtUrl%></a>
+                    <div class="sec prod-url"><a href="<%=customUrl%>"><%=customUrl%></a>
                     <a href="/appmgt/site/pages/customurl.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>"><i class="fw fw-settings"></i></a>
                     </div>
                 </div>
@@ -214,6 +215,19 @@ jagg.template("home", function(inputs, outputs, jagg) {
                               </div>
                           </a>
                       </div>
+                      <div class="col-xs-12 col-md-12 col-lg-9">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="defaultversion" id="default_version" value="deploy-sample" class="custom-checkbox "/>Make this a default version
+                            <% if(defaultVersionName != null) { %>
+                            <label class="checkbox-inline">default version is set to <%=application.defaultVersionName%></label>
+                            <% } else { %>
+                            <label class="checkbox-inline">default version is not set</label>
+                            <% } %>
+                        </label>
+                      </div>
+                      <!--<div class="col-xs-12 col-md-12 col-lg-9">-->
+                        <!-- -->
+                      <!--</div>-->
                         <div class="col-xs-12 col-md-9 col-lg-9">
                             <div class="block-replica">
                                 <h3>Replicas</h3>
