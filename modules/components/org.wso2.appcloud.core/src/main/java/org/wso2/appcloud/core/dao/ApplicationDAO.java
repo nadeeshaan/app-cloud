@@ -636,8 +636,8 @@ public class ApplicationDAO {
 
     public String getApplicationNameByHashId(Connection dbConnection, String applicationHashId, int tenantId)
             throws AppCloudException {
-        PreparedStatement preparedStatement;
-        ResultSet resultSet;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         String applicationName = null;
 
         try {
@@ -655,6 +655,9 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg = "Error while getting the application name of application with hash id : " + applicationHashId;
             throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeResultSet(resultSet);
+            DBUtil.closePreparedStatement(preparedStatement);
         }
 
         return applicationName;
@@ -923,8 +926,9 @@ public class ApplicationDAO {
      */
     public int getVersionId(Connection dbConnection, String hashId, int tenantId) throws AppCloudException {
 
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         int versionId = 0;
+        ResultSet resultSet = null;
 
         try {
 
@@ -932,7 +936,7 @@ public class ApplicationDAO {
             preparedStatement.setString(1, hashId);
             preparedStatement.setInt(2, tenantId);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 versionId = resultSet.getInt(SQLQueryConstants.ID);
             }
@@ -940,6 +944,9 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             String msg = "Error while retreiving id of version with hash value : " + hashId;
             throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeResultSet(resultSet);
+            DBUtil.closePreparedStatement(preparedStatement);
         }
         return versionId;
     }
@@ -951,9 +958,8 @@ public class ApplicationDAO {
      * @return
      * @throws AppCloudException
      */
-    public List<ApplicationType> getAllApplicationTypes() throws AppCloudException {
+    public List<ApplicationType> getAllApplicationTypes(Connection dbConnection) throws AppCloudException {
 
-        Connection dbConnection = DBUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
@@ -980,7 +986,6 @@ public class ApplicationDAO {
         } finally {
             DBUtil.closeResultSet(resultSet);
             DBUtil.closePreparedStatement(preparedStatement);
-            DBUtil.closeConnection(dbConnection);
         }
         return applicationTypeList;
     }
@@ -993,10 +998,9 @@ public class ApplicationDAO {
      * @return
      * @throws AppCloudException
      */
-    public List<ApplicationRuntime> getRuntimesForAppType(String appType)
+    public List<ApplicationRuntime> getRuntimesForAppType(Connection dbConnection, String appType)
             throws AppCloudException {
 
-        Connection dbConnection = DBUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         List<ApplicationRuntime> applicationRuntimeList = new ArrayList<ApplicationRuntime>();
@@ -1027,15 +1031,13 @@ public class ApplicationDAO {
         } finally {
             DBUtil.closeResultSet(resultSet);
             DBUtil.closePreparedStatement(preparedStatement);
-            DBUtil.closeConnection(dbConnection);
         }
         return applicationRuntimeList;
     }
 
 
-    public ApplicationRuntime getRuntimeById (int runtimeId) throws AppCloudException {
+    public ApplicationRuntime getRuntimeById (Connection dbConnection, int runtimeId) throws AppCloudException {
 
-        Connection dbConnection = DBUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
         ApplicationRuntime applicationRuntime = new ApplicationRuntime();
         ResultSet resultSet = null;
@@ -1061,48 +1063,48 @@ public class ApplicationDAO {
         } finally {
             DBUtil.closeResultSet(resultSet);
             DBUtil.closePreparedStatement(preparedStatement);
-            DBUtil.closeConnection(dbConnection);
         }
         return applicationRuntime;
     }
 
-    public Deployment getDeployment(String versionHashId, int tenantId) throws AppCloudException{
+    public Deployment getDeployment(Connection dbConnection, String versionHashId, int tenantId) throws AppCloudException{
 
-        Connection dbConnection = DBUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
         Deployment deployment = new Deployment();
+        ResultSet rs = null;
         try {
 
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_DEPLOYMENT);
             preparedStatement.setString(1, versionHashId);
             preparedStatement.setInt(2, tenantId);
 
-            ResultSet rs =  preparedStatement.executeQuery();
+            rs =  preparedStatement.executeQuery();
             if(rs.next()) {
                 deployment.setDeploymentName(rs.getString(SQLQueryConstants.NAME));
                 deployment.setReplicas(rs.getInt(SQLQueryConstants.REPLICAS));
-                deployment.setContainers(getContainers(rs.getInt(SQLQueryConstants.ID), versionHashId, tenantId));
+                deployment.setContainers(getContainers(dbConnection, rs.getInt(SQLQueryConstants.ID), versionHashId,
+                        tenantId));
             }
 
-            dbConnection.commit();
 
         } catch (SQLException e) {
             String msg = "Error while inserting deployment record.";
             throw new AppCloudException(msg, e);
         } finally {
+            DBUtil.closeResultSet(rs);
             DBUtil.closePreparedStatement(preparedStatement);
-            DBUtil.closeConnection(dbConnection);
         }
 
         return deployment;
     }
 
 
-    public Set<Container> getContainers(int deploymentId, String versionHashId, int tenantId) throws AppCloudException{
+    public Set<Container> getContainers(Connection dbConnection, int deploymentId, String versionHashId, int tenantId)
+            throws AppCloudException{
 
-        Connection dbConnection = DBUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
         Set<Container> containers = new HashSet<>();
+        ResultSet rs = null;
 
         try {
 
@@ -1110,37 +1112,38 @@ public class ApplicationDAO {
             preparedStatement.setInt(1, deploymentId);
             preparedStatement.setInt(2, tenantId);
 
-            ResultSet rs = preparedStatement.executeQuery();
+            rs = preparedStatement.executeQuery();
             while(rs.next()) {
 
                 Container container = new Container();
                 container.setImageName(rs.getString(SQLQueryConstants.NAME));
                 container.setImageVersion(rs.getString(SQLQueryConstants.VERSION));
-                container.setServiceProxies(getContainerServiceProxies(rs.getInt(SQLQueryConstants.ID), tenantId));
+                container.setServiceProxies(getContainerServiceProxies(dbConnection, rs.getInt(SQLQueryConstants.ID),
+                        tenantId));
 
                 List<RuntimeProperty> runtimeProperties = getAllRuntimePropertiesOfVersion(dbConnection, versionHashId, tenantId);
                 container.setRuntimeProperties(runtimeProperties);
                 containers.add(container);
 
             }
-            dbConnection.commit();
 
         } catch (SQLException e) {
             String msg = "Error while inserting deployment container record.";
             throw new AppCloudException(msg, e);
         } finally {
+            DBUtil.closeResultSet(rs);
             DBUtil.closePreparedStatement(preparedStatement);
-            DBUtil.closeConnection(dbConnection);
         }
         return containers;
     }
 
 
-    private Set<ContainerServiceProxy> getContainerServiceProxies(int containerId, int tenantId) throws AppCloudException{
+    private Set<ContainerServiceProxy> getContainerServiceProxies(Connection dbConnection, int containerId,
+                                                                  int tenantId) throws AppCloudException{
 
-        Connection dbConnection = DBUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
         Set<ContainerServiceProxy> containerServiceProxies= new HashSet<>();
+        ResultSet resultSet = null;
 
         try {
 
@@ -1148,7 +1151,7 @@ public class ApplicationDAO {
             preparedStatement.setInt(1, containerId);
             preparedStatement.setInt(2, tenantId);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 ContainerServiceProxy containerServiceProxy = new ContainerServiceProxy();
                 containerServiceProxy.setServiceName(resultSet.getString(SQLQueryConstants.NAME));
@@ -1159,31 +1162,30 @@ public class ApplicationDAO {
                 containerServiceProxies.add(containerServiceProxy);
             }
 
-            dbConnection.commit();
 
         } catch (SQLException e) {
             String msg = "Error while inserting deployment service proxy record.";
             throw new AppCloudException(msg, e);
         } finally {
+            DBUtil.closeResultSet(resultSet);
             DBUtil.closePreparedStatement(preparedStatement);
-            DBUtil.closeConnection(dbConnection);
         }
         return containerServiceProxies;
     }
 
 
-    public List<Transport> getTransportsForRuntime(int runtimeId) throws AppCloudException{
+    public List<Transport> getTransportsForRuntime(Connection dbConnection, int runtimeId) throws AppCloudException{
 
-        Connection dbConnection = DBUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
         List<Transport> transports = new ArrayList<>();
+        ResultSet resultSet = null;
 
         try {
 
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_TRANSPORTS_FOR_RUNTIME);
             preparedStatement.setInt(1, runtimeId);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 Transport transport = new Transport();
                 transport.setServiceName(resultSet.getString(SQLQueryConstants.NAME));
@@ -1198,8 +1200,8 @@ public class ApplicationDAO {
             String msg = "Error while retrieving runtime transport detail for runtime : " + runtimeId;
             throw new AppCloudException(msg, e);
         } finally {
+            DBUtil.closeResultSet(resultSet);
             DBUtil.closePreparedStatement(preparedStatement);
-            DBUtil.closeConnection(dbConnection);
         }
         return transports;
     }
@@ -1366,14 +1368,14 @@ public class ApplicationDAO {
         }
     }
 
-	public int getApplicationCount(int tenantId) throws AppCloudException {
-        Connection dbConnection = DBUtil.getDBConnection();
+	public int getApplicationCount(Connection dbConnection, int tenantId) throws AppCloudException {
         PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
         int appCount = 0;
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_TENANT_APPLICATION_COUNT);
             preparedStatement.setInt(1, tenantId);
-            ResultSet rs = preparedStatement.executeQuery();
+            rs = preparedStatement.executeQuery();
             dbConnection.commit();
             if (rs.next()) {
                 appCount = rs.getInt(1);
@@ -1382,8 +1384,8 @@ public class ApplicationDAO {
             String msg = "Error while getting the application count of the tenant : " + tenantId;
             throw new AppCloudException(msg, e);
         } finally {
+            DBUtil.closeResultSet(rs);
             DBUtil.closePreparedStatement(preparedStatement);
-            DBUtil.closeConnection(dbConnection);
         }
         return appCount;
     }
@@ -1394,17 +1396,17 @@ public class ApplicationDAO {
      * @return
      * @throws AppCloudException
      */
-    public List<ContainerServiceProxy> getContainerServiceProxyByVersion(String versionHashId, int tenantId)
-            throws AppCloudException {
-        Connection dbConnection = DBUtil.getDBConnection();
+    public List<ContainerServiceProxy> getContainerServiceProxyByVersion(Connection dbConnection, String versionHashId,
+                                                                         int tenantId) throws AppCloudException {
         PreparedStatement preparedStatement = null;
         List<ContainerServiceProxy> containerServiceProxies = new ArrayList<ContainerServiceProxy>();
+        ResultSet rs = null;
 
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CONTAINER_SERVICE_PROXY);
             preparedStatement.setString(1, versionHashId);
             preparedStatement.setInt(2, tenantId);
-            ResultSet rs = preparedStatement.executeQuery();
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 ContainerServiceProxy containerServiceProxy = new ContainerServiceProxy();
                 containerServiceProxy.setServiceName(rs.getString(SQLQueryConstants.NAME));
@@ -1420,8 +1422,8 @@ public class ApplicationDAO {
             String msg = "Error while getting container service proxy with version hash id : " + versionHashId;
             throw new AppCloudException(msg, e);
         } finally {
+            DBUtil.closeResultSet(rs);
             DBUtil.closePreparedStatement(preparedStatement);
-            DBUtil.closeConnection(dbConnection);
         }
         return containerServiceProxies;
     }
@@ -1486,9 +1488,10 @@ public class ApplicationDAO {
     }
 
 
-    public Version[] getApplicationVersionsByRunningTimePeriod(int numberOfHours) throws AppCloudException {
-        Connection dbConnection = DBUtil.getDBConnection();
+    public Version[] getApplicationVersionsByRunningTimePeriod(Connection dbConnection, int numberOfHours)
+            throws AppCloudException {
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         List<Version> versions = new ArrayList<>();
 
         try {
@@ -1497,7 +1500,7 @@ public class ApplicationDAO {
                     SQLQueryConstants.GET_ALL_APP_VERSIONS_CREATED_BEFORE_X_DAYS_AND_NOT_WHITE_LISTED);
             preparedStatement.setInt(1, numberOfHours);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 Version version = new Version();
                 version.setHashId(resultSet.getString(SQLQueryConstants.HASH_ID));
@@ -1506,15 +1509,14 @@ public class ApplicationDAO {
 
                 versions.add(version);
             }
-            dbConnection.commit();
 
 
         } catch (SQLException e) {
             String msg = "Error while retrieving application version detail for non white listed applications.";
             throw new AppCloudException(msg, e);
         } finally {
+            DBUtil.closeResultSet(resultSet);
             DBUtil.closePreparedStatement(preparedStatement);
-            DBUtil.closeConnection(dbConnection);
         }
         return versions.toArray(new Version[versions.size()]);
     }
@@ -1542,7 +1544,7 @@ public class ApplicationDAO {
 	}
 
 	public void whiteListApplicationVersion(Connection dbConnection, String versionHashId, int tenantId) throws AppCloudException {
-		PreparedStatement preparedStatement;
+		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_WHITE_LIST_APPLICATION_VERSION);
 			preparedStatement.setBoolean(1, true);
@@ -1552,8 +1554,10 @@ public class ApplicationDAO {
 		} catch (SQLException e) {
 			String msg = "White listing failed for version hash : " + versionHashId;
 			throw new AppCloudException(msg, e);
-		}
-	}
+		} finally {
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
+    }
 
     public void whiteListTenant(Connection dbConnection, int tenantId, int maxAppCount, int maxDatabaseCount)
             throws AppCloudException {
