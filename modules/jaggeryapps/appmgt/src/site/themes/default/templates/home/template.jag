@@ -217,7 +217,11 @@ jagg.template("home", function(inputs, outputs, jagg) {
                       </div>
                       <div class="col-xs-12 col-md-12 col-lg-9">
                         <label class="checkbox-inline">
+                            <% if (selectedApplicationRevision.status=='running') { %>
                             <input type="checkbox" name="defaultversion" id="default_version" value="deploy-sample" class="custom-checkbox "/>Make this a default version
+                            <% } else { %>
+                            <input type="checkbox" name="defaultversion" id="default_version" value="deploy-sample" class="custom-checkbox " disabled/>Make this a default version
+                            <% } %>
                             <% if(defaultVersionName != null) { %>
                             <label class="checkbox-inline">default version is set to <%=application.defaultVersionName%></label>
                             <% } else { %>

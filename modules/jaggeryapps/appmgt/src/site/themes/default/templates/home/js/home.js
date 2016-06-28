@@ -15,6 +15,7 @@ $(document).ready(function() {
         displayApplicationInactiveMessage();
     }
     setValueDefaultVersionCheckBox();
+    disableDefaultVersionCheckedBox();
 });
 
 // wrapping functions
@@ -197,6 +198,7 @@ function changeSelectedRevision(newRevision){
                        'class="btn cu-btn cu-btn-md cu-btn-red" href="#yourlink">Error has occurred.</a></div>');
 
     }
+    disableDefaultVersionCheckedBox();
     setValueDefaultVersionCheckBox();
     // Set upload revision btn
     var uploadRevisionUrl = appCreationPageBaseUrl+"?appTypeName="+application.applicationType + //"&applicationName="+applicationName;
@@ -348,3 +350,12 @@ function setValueDefaultVersionCheckBox() {
         $("#default_version").prop('checked', false);
     }
 }
+
+function disableDefaultVersionCheckedBox() {
+    if (selectedApplicationRevision.status != 'running') {
+        $("#default_version").attr('disabled', true);
+    } else {
+        $("#default_version").attr('disabled', false);
+    }
+}
+
