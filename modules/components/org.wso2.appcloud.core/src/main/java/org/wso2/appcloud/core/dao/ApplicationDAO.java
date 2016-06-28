@@ -89,7 +89,7 @@ public class ApplicationDAO {
 
             if (versions != null) {
                 for (Version version : versions) {
-                    addVersion(dbConnection, version, application.getApplicationName(), applicationId, tenantId);
+                    addVersion(dbConnection, version, applicationId, tenantId);
                 }
             }
 
@@ -128,8 +128,8 @@ public class ApplicationDAO {
      * @param tenantId      tenant id
      * @throws AppCloudException
      */
-    public void addVersion(Connection dbConnection, Version version, String applicationName, int applicationId,
-                           int tenantId) throws AppCloudException {
+    public void addVersion(Connection dbConnection, Version version, int applicationId, int tenantId)
+            throws AppCloudException {
 
 
         PreparedStatement preparedStatement = null;

@@ -83,7 +83,7 @@ public class ApplicationManager {
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
             int applicationId = getApplicationDAO().getApplicationId(dbConnection, applicationHashId, tenantId);
-            getApplicationDAO().addVersion(dbConnection, version, "", applicationId, tenantId);
+            getApplicationDAO().addVersion(dbConnection, version, applicationId, tenantId);
             dbConnection.commit();
         } catch (AppCloudException e) {
             String msg = "Error while adding the application version for application id : " + applicationHashId +
