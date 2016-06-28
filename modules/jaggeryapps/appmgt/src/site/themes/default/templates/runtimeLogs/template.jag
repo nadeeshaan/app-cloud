@@ -69,9 +69,11 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
                             <label for="log-search" class="col-sm-1 control-label">Revision: </label>
                             <div class="col-sm-4">
                                 <select class="form-control" id="revision" disabled>
-                                    <option><%=selectedRevision%></option>
                                     <% for(var i = 0; i < revisionsList.length; i++){
                                         if(selectedRevision == revisionsList[i]){
+                                    %>
+                                        <option selected><%=revisionsList[i]%></option>
+                                    <%
                                             continue;
                                         }
                                     %>
@@ -97,6 +99,14 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
                                                   </span>
                                 </div><!-- /input-group -->
                             </div><!-- /.col-lg-6 -->
+                            <label for="noOfLines" class="col-sm-1 control-label">No Of Lines: </label>
+                            <div class="col-sm-4">
+                                <select class="form-control" id="noOfLines">
+                                    <option value="10" selected="selected">10</option>
+                                    <option value="100">100</option>
+                                    <option value="500">500</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -109,6 +119,19 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
                 </div>
             </div>
         </div><!-- /.container -->
+    <!-- --------------------------------------- Overlay ----------------------------------------- -->
+    <div class="modal fade build-logs-modal" id="log_download_progress_modal">
+        <div class="modal-dialog modal-dialog-margin-top-md ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal-title">Downloadable Log File Preparation Progress</h4>
+                </div>
+                <div class="modal-body" id="log_download_progress_modal_body">
+                </div>
+                <div class="modal-body" id="log_download_progress_modal_footer"></div>
+            </div><!-- /.modal-content -->
+        </div>
+     </div><!-- /.modal -->
 
 <!-- include codemirror functions -->
 <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/CodeMirror-5.7.0/lib/codemirror.js'))%>"></script>

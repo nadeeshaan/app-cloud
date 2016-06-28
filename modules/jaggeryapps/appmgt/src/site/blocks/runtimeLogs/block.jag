@@ -34,7 +34,7 @@ jagg.block("runtimeLogs", {
         var viewRuntimeLogPermission = true;
         var applicationMod = jagg.module("application");
         var applicationKey = inputs.applicationKey;
-        var selectedRevision = inputs.applicationRevision;
+        var selectedRevision = inputs.selectedRevision;
         var revisionsList = applicationMod.getVersionListOfApplication(applicationKey);
         if(!selectedRevision) {
             selectedRevision = applicationMod.getSelectedRevisionFromSession(applicationKey);
