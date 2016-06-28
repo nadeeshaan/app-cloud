@@ -1882,7 +1882,6 @@ public class ApplicationDAO {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int maxDatabaseCount;
-
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_WHITE_LISTED_TENANT_DETAILS);
             preparedStatement.setInt(1, tenantID);

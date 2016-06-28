@@ -158,4 +158,16 @@ var whiteListMaxApplicationCount = function (tenantDomain, maxAppCount) {
     ApplicationManager.whiteListMaxAppCount(tenantId, maxAppCount);
 };
 
+var getTenantMaxDatabaseCount = function (tenantDomain) {
+    var tenantId = modManager.getTenantIdForGivenTenantDomain(tenantDomain);
+    var databaseCountObj = {};
+    try {
+        databaseCountObj.maxDatabaseCount = ApplicationManager.getMaxDatabaseCountForWhiteListedTenants(tenantId);
+    } catch (e) {
+        log.error("Error while getting maximum database count for tenant : " + tenantDomain);
+        throw e;
+    }
+    return databaseCountObj;
+};
+
 %>
