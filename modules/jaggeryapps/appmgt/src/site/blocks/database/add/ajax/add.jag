@@ -24,6 +24,7 @@ include("/jagg/constants.jag");
 var log= new Log();
 var response = {};
 var DEFAULT_TEMPLATE = 'DEFAULT_ALL_PERMISSIONS';
+var databaseModule = jagg.module("databases");
 
 (function () {
 	var result,
@@ -41,25 +42,33 @@ var DEFAULT_TEMPLATE = 'DEFAULT_ALL_PERMISSIONS';
         var isBasic = request.getParameter("isBasic");
 
         try{
-            var templateCreated = mod.createTemplateWithAllPermissions(DEFAULT_TEMPLATE);
-            var actualDBName = mod.createDatabase(databaseName);
-            if(actualDBName.indexOf('already exists') > -1){
-                print("database exists");
-            }
+            var databaseCount = databaseModule.getDatabaseCount();
+            var maxDatabases = databaseModule.getMaxDatabaseCount();
 
-            var userName;
-            if(isBasic === 'true'){
-                userName = mod.createDatabaseUser(userNameFromRequest, customPassword);
-                if(userName.indexOf('already exists') == -1) {
-                    isUserCreated = true;
+            if (databaseCount < maxDatabases) {
+                var templateCreated = mod.createTemplateWithAllPermissions(DEFAULT_TEMPLATE);
+                var actualDBName = mod.createDatabase(databaseName);
+                if (actualDBName.indexOf('already exists') > -1) {
+                    print("database exists");
                 }
-            }
 
-            var dbResult;
-            if(isBasic === 'true'){
-                dbResult = mod.attachNewUser(actualDBName, userName, DEFAULT_TEMPLATE);
+                var userName;
+                if (isBasic === 'true') {
+                    userName = mod.createDatabaseUser(userNameFromRequest, customPassword);
+                    if (userName.indexOf('already exists') == -1) {
+                        isUserCreated = true;
+                    }
+                }
+
+                var dbResult;
+                if (isBasic === 'true') {
+                    dbResult = mod.attachNewUser(actualDBName, userName, DEFAULT_TEMPLATE);
+                } else {
+                    dbResult = mod.attachNewUser(actualDBName, userNameFromRequest, DEFAULT_TEMPLATE);
+                }
             } else {
-                dbResult = mod.attachNewUser(actualDBName, userNameFromRequest, DEFAULT_TEMPLATE);
+                response.status = 400;
+                response.content = "Maximum number of databases that can be created is " + maxDatabases;
             }
         }catch(e){
             log.error(e);

@@ -16,7 +16,7 @@
 
 package org.wso2.appcloud.core.docker;
 
-public class DockerOpClientConstants {
+public class DockerClientConstants {
     public static final String DOCKER_CLIENT_API_VERSION = "1.19";
     public static final int DOCKER_CLIENT_READ_TIMEOUT = 1000;
     public static final int DOCKER_CLIENT_TOTAL_CONNECTIONS = 1000;

@@ -53,6 +53,7 @@ public class SQLQueryConstants {
     public static final String CON_SPEC_CPU = "con_spec_cpu";
     public static final String CON_SPEC_MEMORY = "con_spec_memory";
     public static final String IS_WHITE_LISTED = "is_white_listed";
+    public static final String MAX_DATABASE_COUNT = "max_database_count";
 
 
 
@@ -92,10 +93,17 @@ public class SQLQueryConstants {
             "INSERT INTO AC_CONTAINER_SERVICE_PROXY (name, protocol, port, backend_port, container_id, tenant_id, host_url) " +
                     "values (?, ?, ?, ?, ?, ?, ?)";
 
-	public static final String ADD_WHITE_LISTED_TENANT =
-			"INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count) values (?, ?) ON DUPLICATE KEY UPDATE "
-                    + "max_app_count=?";
+    public static final String ADD_WHITE_LISTED_TENANT =
+            "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count, max_database_count) values (?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE max_app_count=?, max_database_count=?";
 
+    public static final String ADD_WHITE_LISTED_MAX_DATABASE_COUNT_FOR_TENANT =
+            "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_database_count) values (?, ?) ON DUPLICATE KEY UPDATE "
+                    + "max_database_count=?";
+
+    public static final String ADD_WHITE_LISTED_MAX_APP_COUNT_FOR_TENANT =
+            "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count) values (?, ?) ON DUPLICATE KEY UPDATE "
+                    + "max_app_count=?";
 
 
     /*Select Queries*/

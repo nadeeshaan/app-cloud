@@ -77,9 +77,9 @@ var whiteListApplicationVersion = function (applicationName, applicationRevision
     }
 };
 
-var whiteListTenant = function (tenantDomain, maxAppCount) {
+var whiteListTenant = function (tenantDomain, maxAppCount, maxDatabaseCount) {
     var tenantId = modManager.getTenantIdForGivenTenantDomain(tenantDomain);
-    ApplicationManager.whiteListTenant(tenantId, maxAppCount);
+    ApplicationManager.whiteListTenant(tenantId, maxAppCount, maxDatabaseCount);
 };
 
 var getVersionHashId = function(applicationName, versionName, tenantDomain){
@@ -146,6 +146,16 @@ var updateContainerSpecification = function (tenantDomain, applicationName, appl
     } finally {
         context.endTenantFlow();
     }
+};
+
+var whiteListMaxDatabaseCount = function (tenantDomain, maxDatabaseCount) {
+    var tenantId = modManager.getTenantIdForGivenTenantDomain(tenantDomain);
+    ApplicationManager.whiteListMaxDatabaseCount(tenantId, maxDatabaseCount);
+};
+
+var whiteListMaxApplicationCount = function (tenantDomain, maxAppCount) {
+    var tenantId = modManager.getTenantIdForGivenTenantDomain(tenantDomain);
+    ApplicationManager.whiteListMaxAppCount(tenantId, maxAppCount);
 };
 
 %>
