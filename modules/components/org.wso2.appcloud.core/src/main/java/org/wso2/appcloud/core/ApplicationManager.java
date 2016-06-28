@@ -43,7 +43,6 @@ import java.util.List;
 public class ApplicationManager {
 
     private static Log log = LogFactory.getLog(ApplicationManager.class);
-    private static ApplicationDAO applicationDAO;
 
     /**
      * Method for adding application.
