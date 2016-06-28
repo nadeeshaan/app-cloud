@@ -41,6 +41,9 @@ jagg.module("admin", {
     },
     whiteListMaxApplicationCount: function () {
         return jagg.require(jagg.getModulesDir() + "admin/admin.jag").whiteListMaxApplicationCount.apply(this, arguments);
+    },
+    getTenantMaxDatabaseCount: function () {
+        return jagg.require(jagg.getModulesDir() + "admin/admin.jag").getTenantMaxDatabaseCount.apply(this, arguments);
     }
 });
 %>

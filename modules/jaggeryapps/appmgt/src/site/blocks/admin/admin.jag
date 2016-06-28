@@ -116,7 +116,6 @@ var log = new Log('site/blocks/admin/admin.jag');
         } catch (e) {
             var msg = "Error while white listing tenant for maximum database count.";
             log.error(msg);
-            log.error(e);
             response.status = 400;
             response.content = "White listing tenant for maximum database count failed.";
         }
@@ -132,9 +131,18 @@ var log = new Log('site/blocks/admin/admin.jag');
         } catch (e) {
             var msg = "Error while white listing tenant for maximum application count.";
             log.error(msg);
-            log.error(e);
             response.status = 400;
             response.content = "White listing tenant for maximum application count failed.";
+        }
+    } else if (action == "getTenantMaxDatabaseCount") {
+        var tenantDomain = request.getParameter("tenantDomain");
+
+        try {
+            var maxDatabaseCount = adminModule.getTenantMaxDatabaseCount(tenantDomain);
+            print(maxDatabaseCount);
+        } catch (e) {
+            response.status = 400;
+            response.content = "Getting maximum database count failed.";
         }
     } else  {
         throw new Error("No action specified for: " + action);
