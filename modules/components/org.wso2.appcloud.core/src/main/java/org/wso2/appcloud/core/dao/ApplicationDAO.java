@@ -51,6 +51,24 @@ import java.util.Set;
 public class ApplicationDAO {
 
     private static final Log log = LogFactory.getLog(ApplicationDAO.class);
+    private static final ApplicationDAO applicationDAO = new ApplicationDAO();
+
+    /**
+     * Constructor
+     */
+    private ApplicationDAO() {
+
+    }
+
+    /**
+     * Method for getting current instance
+     *
+     * @return ApplicationDAO
+     * @throws AppCloudException
+     */
+    public static ApplicationDAO getInstance() {
+        return applicationDAO;
+    }
 
     /**
      * Method for adding application details to database.
