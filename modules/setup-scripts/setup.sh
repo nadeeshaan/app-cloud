@@ -15,7 +15,11 @@ DAS_VERSION=wso2das-3.0.1
 
 IP="$(ifconfig | grep -A 1 'eth0' | tail -1 | cut -d ':' -f 2 | cut -d ' ' -f 1)"
 
-APP_CLOUD_SRC_HOME=`pwd`/../../
+if [ -n "$2" ]; then
+    APP_CLOUD_SRC_HOME=$2
+else
+    APP_CLOUD_SRC_HOME=`pwd`/../../
+fi
 
 # Build source code
 mvn clean install -Dmaven.test.skip=true -f $APP_CLOUD_SRC_HOME/pom.xml
