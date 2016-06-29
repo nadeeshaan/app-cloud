@@ -40,10 +40,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * DAO class for persisting or retrieving application related data to database.
@@ -1969,6 +1966,68 @@ public class ApplicationDAO {
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
         }
+    }
+
+    /**
+     * Get the list of tagged applications
+     *
+     * @param dbConnection database connection
+     * @param tenantId     tenant id
+     * @return taggedApplicationsList List of all the tagged applications
+     * @throws AppCloudException
+     */
+    public List<Application> getTaggedApplicationsList(Connection dbConnection, int tenantId) throws AppCloudException {
+        PreparedStatement preparedStatement = null;
+        List<Application> taggedApplicationsList = new ArrayList<>();
+        Application application;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_APPLICATIONS_LIST_WITH_TAG);
+            preparedStatement.setInt(1, tenantId);
+            resultSet = preparedStatement.executeQuery();
+            Boolean applicationAddedtoList;
+            while (resultSet.next()) {
+                Tag tag;
+                applicationAddedtoList = false;
+                //Iterating the existing tagged application list to check whether the application is already added into the list
+                for (Application applicationTemp : taggedApplicationsList) {
+                    String hashId = resultSet.getString(SQLQueryConstants.HASH_ID);
+                    System.out.println(hashId);
+                    if (applicationTemp.getHashId().equals(hashId)) {
+                        applicationAddedtoList = true;
+                        tag = new Tag();
+                        tag.setTagName(resultSet.getString(SQLQueryConstants.TAG_KEY));
+                        tag.setTagValue(resultSet.getString(SQLQueryConstants.TAG_VALUE));
+                        applicationTemp.getVersions().get(0).getTags().add(tag);
+                    }
+                }
+                //Adding a new application if it is not already in the tagged application list
+                if (!applicationAddedtoList) {
+                    application = new Application();
+                    application.setApplicationName(resultSet.getString(SQLQueryConstants.APPLICATION_NAME));
+                    application.setApplicationType(resultSet.getString(SQLQueryConstants.APPLICATION_TYPE_NAME));
+                    application.setHashId(resultSet.getString(SQLQueryConstants.HASH_ID));
+                    application.setIcon(resultSet.getBlob(SQLQueryConstants.ICON));
+                    List<Tag> tags = new ArrayList<>();
+                    Version version = new Version();
+                    tag = new Tag();
+                    tag.setTagName(resultSet.getString(SQLQueryConstants.TAG_KEY));
+                    tag.setTagValue(resultSet.getString(SQLQueryConstants.TAG_VALUE));
+                    tags.add(tag);
+                    version.setTags(tags);
+                    application.setVersions(Collections.singletonList(version));
+                    taggedApplicationsList.add(application);
+                }
+            }
+        } catch (SQLException e) {
+            String msg = "Error while retrieving application list from database for tenant : " + tenantId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeResultSet(resultSet);
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
+        return taggedApplicationsList;
     }
 
 }

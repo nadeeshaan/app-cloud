@@ -1117,4 +1117,22 @@ public class ApplicationManager {
         }
     }
 
+    /**
+     * Get the list of tagged applications
+     *
+     * @return List of all the tagged applications
+     * @throws AppCloudException
+     */
+    public static Application[] getTaggedApplicationsList() throws AppCloudException {
+        Connection dbConnection = DBUtil.getDBConnection();
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        List<Application> applications;
+        try {
+            applications = ApplicationDAO.getInstance().getTaggedApplicationsList(dbConnection, tenantId);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+        return applications.toArray(new Application[applications.size()]);
+    }
+
 }

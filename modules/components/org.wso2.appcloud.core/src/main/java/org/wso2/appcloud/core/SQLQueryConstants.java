@@ -54,6 +54,8 @@ public class SQLQueryConstants {
     public static final String CON_SPEC_MEMORY = "con_spec_memory";
     public static final String IS_WHITE_LISTED = "is_white_listed";
     public static final String MAX_DATABASE_COUNT = "max_database_count";
+    public static final String TAG_KEY = "tag_key";
+    public static final String TAG_VALUE = "tag_value";
 
 
 
@@ -191,6 +193,16 @@ public class SQLQueryConstants {
             "SELECT * FROM AC_VERSION WHERE is_white_listed=0 AND status='running' AND timestamp <  timestampadd(HOUR, -?, now());";
 
 	public static final String GET_WHITE_LISTED_TENANT_DETAILS = "SELECT * FROM AC_WHITE_LISTED_TENANTS WHERE tenant_id=?";
+
+    public static final String GET_ALL_APPLICATIONS_LIST_WITH_TAG =
+            "SELECT app.name as application_name, app.hash_id as hash_id, type.name as app_type_name, " +
+            "icon.icon as icon, tag.name as tag_key, tag.value as tag_value " +
+            "FROM AC_APPLICATION app JOIN AC_APP_TYPE type " +
+            "ON app.app_type_id = type.id LEFT OUTER JOIN AC_APP_ICON icon " +
+            "ON app.id = icon.application_id JOIN AC_VERSION version " +
+            "ON app.id = version.application_id JOIN AC_TAG tag " +
+            "ON version.id = tag.version_id " +
+            "WHERE app.tenant_id=?";
 
     /* Update Queries */
 
