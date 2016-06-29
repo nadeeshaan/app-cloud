@@ -46,7 +46,8 @@ var databaseModule = jagg.module("databases");
             var maxDatabases = databaseModule.getMaxDatabaseCount();
 
             if (databaseCount < maxDatabases) {
-                if (databaseCount == 0) {
+                if (!mod.isDatabasePrivilegeTemplateExist(DEFAULT_TEMPLATE)) {
+                    log.info("amalka " + mod.isDatabasePrivilegeTemplateExist(DEFAULT_TEMPLATE));
                     var templateCreated = mod.createTemplateWithAllPermissions(DEFAULT_TEMPLATE);
                 }
                 var actualDBName = mod.createDatabase(databaseName);
