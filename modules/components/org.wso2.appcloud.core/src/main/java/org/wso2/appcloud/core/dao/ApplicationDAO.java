@@ -1985,14 +1985,13 @@ public class ApplicationDAO {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_APPLICATIONS_LIST_WITH_TAG);
             preparedStatement.setInt(1, tenantId);
             resultSet = preparedStatement.executeQuery();
-            Boolean applicationAddedtoList;
+            boolean applicationAddedtoList;
             while (resultSet.next()) {
                 Tag tag;
                 applicationAddedtoList = false;
                 //Iterating the existing tagged application list to check whether the application is already added into the list
                 for (Application applicationTemp : taggedApplicationsList) {
                     String hashId = resultSet.getString(SQLQueryConstants.HASH_ID);
-                    System.out.println(hashId);
                     if (applicationTemp.getHashId().equals(hashId)) {
                         applicationAddedtoList = true;
                         tag = new Tag();
