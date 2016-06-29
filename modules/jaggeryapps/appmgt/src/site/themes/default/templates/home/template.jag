@@ -86,7 +86,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                 <a id="leftMenuTagSet" href="/appmgt/site/pages/tags.jag?applicationKey=<%=applicationKey%>&versionKey=<%=selectedApplicationRevision.hashId%>"><i class="fa fa-tag"></i> Tags</a>
             </li>
             <li>
-                <a href="/appmgt/site/pages/runtimeLogs.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>"><i class="fa
+                <a href="/appmgt/site/pages/runtimeLogs.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>&versionKey=<%=selectedApplicationRevision.hashId%>"><i class="fa
                 fa-hdd-o"></i>Runtime Logs</a>
             </li>
             <li>
