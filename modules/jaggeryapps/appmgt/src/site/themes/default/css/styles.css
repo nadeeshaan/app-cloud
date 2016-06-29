@@ -2528,10 +2528,9 @@ th.hide-column-data, td.hide-column-data {
 }
 
 .div-search {
-    padding: 31px 0px 5px;
+    padding: 31px 25px 5px;
     background-color: #5F5F5F;
     margin: -15px;
-    width: 100%;
 }
 
 .highlight {

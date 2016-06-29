@@ -30,9 +30,11 @@ jagg.block("urlmapper", {
     getOutputs: function (inputs) {
         var applicationModule = jagg.module("application");
         var application = applicationModule.getApplication(inputs.applicationKey);
+        var selectedRevision = inputs.selectedRevision;
 
         return {
-            "application": application
+            "application": application,
+            "selectedRevision": selectedRevision
         };
     }
 

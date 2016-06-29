@@ -26,9 +26,15 @@ jagg.block("envs", {
 
     },
 
-    getOutputs:function (inputs) {
+    getOutputs: function (inputs) {
+        var applicationModule = jagg.module("application");
+        var selectedRevision = applicationModule.getSelectedRevisionFromSession(inputs.applicationKey);
+        var application = applicationModule.getApplication(inputs.applicationKey);
+        if (!selectedRevision && application.defaultVersion) {
+            selectedRevision = application.defaultVersion;
+        }
         return {
-
+            "selectedRevision": selectedRevision
         };
     }
 

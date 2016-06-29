@@ -21,6 +21,7 @@ include("/jagg/jagg.jag");
 
 jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
     var applicationKey = outputs.applicationKey;
+    var versionKey = outputs.versionKey;
 
     // revision list of the application
     // ex: ["1.0.0" , "2.0.0"]
@@ -39,6 +40,46 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
     var selectedRevision = "<%=selectedRevision%>";
     var revisionsList = jQuery.parseJSON('<%=revisionsList%>');
 </script>
+
+
+ <div class="navbar navbar-secondary">
+    <div class="container-fliud">
+        <div class="row">
+             <div class="side-pane-trigger">
+                <i class="fa fa-reorder"></i>
+            </div>
+            <div class="col-md-3 breadcrumb-secondary">
+                <a href="/appmgt/site/pages/index.jag"><i class="fa fa-cubes visible-xs visible-lg"></i></a>
+                    <span class="hidden-xs"><a href="/appmgt/site/pages/index.jag">Application Cloud</a></span>
+            </div>
+        </div>
+    </div>
+    </div>
+ <div class="inner-wrapper">
+<!-- left pane wrapper -->
+ <div class="left-pane ">
+    <ul>
+        <li>
+                <a id="leftMenuOverview" href="/appmgt/site/pages/home.jag?applicationKey=<%=applicationKey%>"><i class="fa fa-laptop"></i> Overview</a>
+        </li>
+        <li>
+                <a id="leftMenuEnvVars" href="/appmgt/site/pages/envs.jag?versionKey=<%=versionKey%>&applicationKey=<%=applicationKey%>"><i class="fa fa-wrench"></i> Env Variables</a>
+        </li>
+        <li>
+                <a id="leftMenuTagSet" href="/appmgt/site/pages/tags.jag?applicationKey=<%=applicationKey%>&versionKey=<%=versionKey%>"><i class="fa fa-tag"></i> Tags</a>
+        </li>
+        <li class="selected">
+                <a href="#"><i class="fa fa-hdd-o"></i>Runtime Logs</a>
+        </li>
+        <li>
+                <a href="/appmgt/site/pages/customurl.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>"><i class="fa fa-link"></i>Custom URL</a>
+        </li>
+
+    </ul>
+ </div>
+
+   <!-- right pane wrapper -->
+ <div class="right-pane">
 
         <!-- BOF App factory menu actionbar -->
         <div class="action-bar">
@@ -119,6 +160,8 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
                 </div>
             </div>
         </div><!-- /.container -->
+
+ </div></div>
     <!-- --------------------------------------- Overlay ----------------------------------------- -->
     <div class="modal fade build-logs-modal" id="log_download_progress_modal">
         <div class="modal-dialog modal-dialog-margin-top-md ">
@@ -132,7 +175,6 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
             </div><!-- /.modal-content -->
         </div>
      </div><!-- /.modal -->
-
 <!-- include codemirror functions -->
 <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/CodeMirror-5.7.0/lib/codemirror.js'))%>"></script>
 <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/CodeMirror-5.7.0/addon/selection/active-line.js'))%>"></script>

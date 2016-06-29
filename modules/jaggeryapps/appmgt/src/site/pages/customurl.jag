@@ -29,6 +29,7 @@ var site = require("/site/conf/site.json");
     }
 
     var applicationKey = request.getParameter("applicationKey");
+    var selectedRevision = request.getParameter("selectedRevision");
     jagg.render({
         "name": "page/master",
         "inputs": {
@@ -47,7 +48,8 @@ var site = require("/site/conf/site.json");
                             {
                                 "name": "urlmapper",
                                 "inputs": {
-                                    "applicationKey": applicationKey
+                                    "applicationKey": applicationKey,
+                                    "selectedRevision" : selectedRevision
                                 }
                             }
                         ]
