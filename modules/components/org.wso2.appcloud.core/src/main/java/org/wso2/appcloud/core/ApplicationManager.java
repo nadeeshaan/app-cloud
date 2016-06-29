@@ -1129,7 +1129,12 @@ public class ApplicationManager {
         List<Application> applications;
         try {
             applications = ApplicationDAO.getInstance().getTaggedApplicationsList(dbConnection, tenantId);
-        } finally {
+        } catch (AppCloudException e){
+            String msg = "Error while retrieving tagged applications for tenant : " + tenantId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        }
+        finally {
             DBUtil.closeConnection(dbConnection);
         }
         return applications.toArray(new Application[applications.size()]);

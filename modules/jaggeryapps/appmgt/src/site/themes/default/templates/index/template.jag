@@ -28,6 +28,7 @@ jagg.template("index", function(inputs, outputs, jagg) {
     <script type="text/javascript" xmlns="http://www.w3.org/1999/html" charset="utf-8">
         var applicationList = <%=applications%>;
         var taggedApplicationsList;
+        var searchbox;
 
         $(document).ready(function (){
 
@@ -42,69 +43,18 @@ jagg.template("index", function(inputs, outputs, jagg) {
                     init();
                 //Searching with the application tag key-value pair
                 } else if ($(this).val().substring(0,4) ==="tag:") {
-                    var searchbox = this;
-                    //Ajax call to get the tagged applications list
-                    jagg.post("../blocks/index/ajax/index.jag", {
-                        action: "getTaggedApplicationList"
-                        }, function (result) {
-                                taggedApplicationsList = jQuery.parseJSON(result);
-
-                                var finder = $(searchbox).val().substring(4);
-                                var finderKey = null;
-                                var finderVal = null;
-
-                                //Searching tagged applications when the user provides both key and value pair
-                                if (finder.includes(":")) {
-                                    var tempFinder = finder.split(":");
-                                    finderKey = tempFinder[0];
-                                    finderVal = tempFinder[1];
-
-                                    var typingPatternKey = new RegExp(finderKey.replace(/^\s+|\s+$/g, ''), "gi");
-                                    var typingPatternVal = new RegExp(finderVal.replace(/^\s+|\s+$/g, ''), "gi");
-                                    addTableColumnHeaders();
-
-                                    jQuery.grep(taggedApplicationsList, function (element, index) {
-                                        jQuery.each(element.tagArray, function( index, value ) {
-                                             if ((value.tagKey.match(typingPatternKey) != null)&&(value.tagValue.match(typingPatternVal) != null)) {
-                                                 addTableRow(element);
-                                             }
-                                        });
-                                    });
-                                }
-                                //Searching tagged applications when the user provides only the key value
-                                else {
-                                    var typingPatternKey = new RegExp(finder.replace(/^\s+|\s+$/g, ''), "gi");
-                                    addTableColumnHeaders();
-
-                                    jQuery.grep(taggedApplicationsList, function (element, index) {
-                                        jQuery.each(element.tagArray, function( index, value ) {
-                                             if (value.tagKey.match(typingPatternKey) != null) {
-                                                 addTableRow(element);
-                                             }
-                                        });
-                                    });
-                                }
-                                if ($("#item_list").children().length <= 1) {
-                                    if(finderKey != null){
-                                        $("#item_list").append($('<div class="col-centered col-md-4 ">' +
-                                                                    '<div class="cloud-new-content">' +
-                                                                        '<h3>No applications found with tag' +
-                                                                                ' key : ' + finderKey +
-                                                                                ', and value : '  + finderVal +
-                                                                        '.</h3>' +
-                                                                    '</div>' +
-                                                                 '</div>'));
-                                    } else {
-                                        $("#item_list").append($('<div class="col-centered col-md-4 ">' +
-                                                                    '<div class="cloud-new-content">' +
-                                                                        '<h3>No applications found with tag' +
-                                                                                ' key : ' + finder +
-                                                                        '.</h3>' +
-                                                                    '</div>' +
-                                                                 '</div>'));
-                                    }
-                                }
-                    });
+                    searchbox = this;
+                    if(taggedApplicationsList == null){
+                        //Ajax call to get the tagged applications list
+                        jagg.post("../blocks/index/ajax/index.jag", {
+                            action: "getTaggedApplicationList"
+                            }, function (result) {
+                                    taggedApplicationsList = jQuery.parseJSON(result);
+                                    searchForTaggedApplications();
+                        });
+                    } else {
+                        searchForTaggedApplications();
+                    }
                 //Search with the application name
                 } else {
                     var finder = $(this).val();
@@ -244,6 +194,65 @@ jagg.template("index", function(inputs, outputs, jagg) {
 
     function redirectAppListing() {
         window.location.replace("index.jag");
+    }
+
+    function searchForTaggedApplications(){
+        //Remove the string "tag:" from the finder
+        var finder = $(searchbox).val().substring(4);
+        var finderKey = null;
+        var finderVal = null;
+
+        //Searching tagged applications when the user provides both key and value pair
+        if (finder.includes(":")) {
+            var tempFinder = finder.split(":");
+            finderKey = tempFinder[0];
+            finderVal = tempFinder[1];
+
+            var typingPatternKey = new RegExp(finderKey.replace(/^\s+|\s+$/g, ''), "gi");
+            var typingPatternVal = new RegExp(finderVal.replace(/^\s+|\s+$/g, ''), "gi");
+            addTableColumnHeaders();
+
+            jQuery.grep(taggedApplicationsList, function (element, index) {
+                jQuery.each(element.tagArray, function( index, value ) {
+                     if ((value.tagKey.match(typingPatternKey) != null)&&(value.tagValue.match(typingPatternVal) != null)) {
+                         addTableRow(element);
+                     }
+                });
+            });
+        }
+        //Searching tagged applications when the user provides only the key value
+        else {
+            var typingPatternKey = new RegExp(finder.replace(/^\s+|\s+$/g, ''), "gi");
+            addTableColumnHeaders();
+
+            jQuery.grep(taggedApplicationsList, function (element, index) {
+                jQuery.each(element.tagArray, function( index, value ) {
+                     if (value.tagKey.match(typingPatternKey) != null) {
+                         addTableRow(element);
+                     }
+                });
+            });
+        }
+        if ($("#item_list").children().length <= 1) {
+            if(finderKey != null){
+                $("#item_list").append($('<div class="col-centered col-md-4 ">' +
+                                            '<div class="cloud-new-content">' +
+                                                '<h3>No applications found with tag' +
+                                                        ' key : ' + finderKey +
+                                                        ', and value : '  + finderVal +
+                                                '.</h3>' +
+                                            '</div>' +
+                                         '</div>'));
+            } else {
+                $("#item_list").append($('<div class="col-centered col-md-4 ">' +
+                                            '<div class="cloud-new-content">' +
+                                                '<h3>No applications found with tag' +
+                                                        ' key : ' + finder +
+                                                '.</h3>' +
+                                            '</div>' +
+                                         '</div>'));
+            }
+        }
     }
 
     </script>
