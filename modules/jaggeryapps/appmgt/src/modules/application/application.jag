@@ -1653,11 +1653,13 @@ var getAllowedContainerSpecificationsForRuntime = function(runtimeID) {
              applicationObject.appTypeIcon = appTypesProperties[application.applicationType].icon;
              applicationObject.appTypeTitle = appTypesProperties[application.applicationType].displayName;
 
-             for (var j = 0; j < application.versions.get(0).tags.size(); j++) {
-                 var tagObject = {};
-                 tagObject.tagKey = application.versions.get(0).tags.get(j).tagName;
-                 tagObject.tagValue = application.versions.get(0).tags.get(j).tagValue;
-                 tagArray.push(tagObject);
+             if(application.versions != null && application.versions.get(0) != null & application.versions.get(0).tags != null){
+                 for (var j = 0; j < application.versions.get(0).tags.size(); j++) {
+                     var tagObject = {};
+                     tagObject.tagKey = application.versions.get(0).tags.get(j).tagName;
+                     tagObject.tagValue = application.versions.get(0).tags.get(j).tagValue;
+                     tagArray.push(tagObject);
+                 }
              }
              applicationObject.tagArray = tagArray;
              applicationArray.push(applicationObject);

@@ -1979,7 +1979,6 @@ public class ApplicationDAO {
     public List<Application> getTaggedApplicationsList(Connection dbConnection, int tenantId) throws AppCloudException {
         PreparedStatement preparedStatement = null;
         List<Application> taggedApplicationsList = new ArrayList<>();
-        Application application;
         ResultSet resultSet = null;
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_APPLICATIONS_LIST_WITH_TAG);
@@ -1990,19 +1989,21 @@ public class ApplicationDAO {
                 Tag tag;
                 applicationAddedtoList = false;
                 //Iterating the existing tagged application list to check whether the application is already added into the list
-                for (Application applicationTemp : taggedApplicationsList) {
+                for (Application application : taggedApplicationsList) {
                     String hashId = resultSet.getString(SQLQueryConstants.HASH_ID);
-                    if (applicationTemp.getHashId().equals(hashId)) {
+                    if (application.getHashId().equals(hashId)) {
                         applicationAddedtoList = true;
                         tag = new Tag();
                         tag.setTagName(resultSet.getString(SQLQueryConstants.TAG_KEY));
                         tag.setTagValue(resultSet.getString(SQLQueryConstants.TAG_VALUE));
-                        applicationTemp.getVersions().get(0).getTags().add(tag);
+                        if(application.getVersions() != null && application.getVersions().get(0) != null) {
+                            application.getVersions().get(0).getTags().add(tag);
+                        }
                     }
                 }
                 //Adding a new application if it is not already in the tagged application list
                 if (!applicationAddedtoList) {
-                    application = new Application();
+                    Application application = new Application();
                     application.setApplicationName(resultSet.getString(SQLQueryConstants.APPLICATION_NAME));
                     application.setApplicationType(resultSet.getString(SQLQueryConstants.APPLICATION_TYPE_NAME));
                     application.setHashId(resultSet.getString(SQLQueryConstants.HASH_ID));
@@ -2020,7 +2021,6 @@ public class ApplicationDAO {
             }
         } catch (SQLException e) {
             String msg = "Error while retrieving application list from database for tenant : " + tenantId;
-            log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
