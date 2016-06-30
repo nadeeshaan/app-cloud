@@ -52,7 +52,7 @@ var Arrays = Packages.java.util.Arrays;
  */
 var addApplication = function (applicationName, versionName, applicationDescription, replicas,runtimeId, appTypeName,
                                runtimePropertiesArray, tagArray, appIcon, uploadedFileName, isNewVersion, conSpecMemory,
-                               conSpecCpu, artifactUrl, appCreationMethod, oldHashId) {
+                               conSpecCpu, artifactUrl, appCreationMethod, oldHashId, applicationContext) {
 
     log.info("Started creating App => name : " + applicationName + " Version : " + versionName + " Description " +
              ": " + applicationDescription + " runtimeId : " + runtimeId + " apptype : " + appTypeName );
@@ -75,9 +75,12 @@ var addApplication = function (applicationName, versionName, applicationDescript
     var tagName = applicationRuntime.getTag() +"-"+ versionHashId;
     var DockerClient = Packages.org.wso2.appcloud.core.docker.DockerClient;
     var dockerClient = new DockerClient(modManager.getPropertyValue("DockerClientURL"));
-     var runtimeProperties = generateRuntimePropsList(runtimePropertiesArray);
+    var runtimeProperties = generateRuntimePropsList(runtimePropertiesArray);
     var hostName = constructAppLaunchURL(applicationName, versionName);
-
+    if (applicationContext != null || applicationContext != "") {
+        var versionID = ApplicationManager.getVersionId(versionHashId);
+        ApplicationManager.addApplicationContext(versionID, applicationContext);
+    }
 
     if(oldHashId){
         renameDirectory(oldHashId, versionHashId, uploadedFileName);
@@ -858,7 +861,8 @@ var generateVersionList = function (versions, applicationName, defaultVersionNam
                 versionObject.customtUrl = getCustomUrl(version.hashId);
             }
 
-            var deploymentUrl = getDeploymentURL(applicationName, version.versionName);
+            var versionID = ApplicationManager.getVersionId(version.hashId);
+            var deploymentUrl = getDeploymentURL(applicationName, version.versionName, versionID);
             versionObject.versionName = version.versionName;
             versionObject.hashId = version.hashId;
             versionObject.runtimeId = version.runtimeId;
@@ -1104,11 +1108,19 @@ var getVersionListOfApplication = function(applicationHashId){
     return revisionArray;
 };
 
-var getDeploymentURL = function (applicationName, versionName){
+var getDeploymentURL = function (applicationName, versionName, versionID){
 
     var urlScheme = CloudUtil.getPropertyValue("DeploymentUrlScheme");
     var baseURL = constructAppLaunchURL(applicationName, versionName);
     var applicationLaunchURL = urlScheme + "://" + baseURL;
+
+    var applicationContextList = ApplicationManager.getApplicationContexts(versionID);
+    if (applicationContextList != null && applicationContextList.get(0) != null){
+        if(!applicationContextList.get(0).startsWith("/")){
+            applicationLaunchURL = applicationLaunchURL + "/";
+        }
+        applicationLaunchURL = applicationLaunchURL + applicationContextList.get(0);
+    }
     if (log.isDebugEnabled()) {
         log.debug("Deployment URL: " + applicationLaunchURL);
     }

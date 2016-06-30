@@ -375,6 +375,15 @@ CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_WHITE_LISTED_TENANTS` (
   PRIMARY KEY (`id`, `tenant_id`))
 ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_APPLICAION_CONTEXTS` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `tenant_id` INT NOT NULL,
+  `version_id` INT NOT NULL,
+  `context` VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE (`version_id`))
+ENGINE = InnoDB;
+
 -- -----------------------------------------------------
 -- Populate Data to `AppCloudDB`.`ApplicationRuntime`
 -- -----------------------------------------------------

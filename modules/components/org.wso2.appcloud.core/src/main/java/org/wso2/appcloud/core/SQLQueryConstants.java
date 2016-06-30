@@ -56,6 +56,7 @@ public class SQLQueryConstants {
     public static final String MAX_DATABASE_COUNT = "max_database_count";
     public static final String TAG_KEY = "tag_key";
     public static final String TAG_VALUE = "tag_value";
+    public static final String CONTEXT = "context";
 
 
 
@@ -107,6 +108,10 @@ public class SQLQueryConstants {
             "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count) values (?, ?) ON DUPLICATE KEY UPDATE "
                     + "max_app_count=?";
 
+    public static final String ADD_APPLICATION_CONTEXT_FOR_APPLICATION =
+            "INSERT INTO AC_APPLICAION_CONTEXTS (tenant_id, version_id, context) values (?,?,?)";
+
+    public static final String INSERT_APPLICATION_ICON = "INSERT INTO AC_APP_ICON (icon, application_id) VALUES (?, ?)";
 
     /*Select Queries*/
 
@@ -203,14 +208,15 @@ public class SQLQueryConstants {
             "JOIN AC_TAG tag ON version.id = tag.version_id " +
             "WHERE app.tenant_id=?";
 
-    /* Update Queries */
+    public static final String GET_APPLICATION_CONTEXT =
+            "SELECT * FROM AC_APPLICAION_CONTEXTS WHERE tenant_id=? AND version_id=?";
 
-    public static final String INSERT_APPLICATION_ICON = "INSERT INTO AC_APP_ICON (icon, application_id) VALUES (?, ?)";
+    public static final String GET_APPLICATION_ICON = "SELECT id FROM AC_APP_ICON WHERE application_id=?";
+
+    /* Update Queries */
 
     public static final String UPDATE_APPLICATION_ICON = "INSERT INTO AC_APP_ICON (icon, application_id) VALUES (?, ?) ON" +
             " DUPLICATE KEY UPDATE icon= VALUES(icon)";
-
-    public static final String GET_APPLICATION_ICON = "SELECT id FROM AC_APP_ICON WHERE application_id=?";
 
     public static final String UPDATE_RUNTIME_PROPERTIES =
             "UPDATE AC_RUNTIME_PROPERTY SET name=?, value=? WHERE version_id=(SELECT id FROM AC_VERSION WHERE hash_id=?)" +
