@@ -111,10 +111,19 @@ function initData(selectedRevision, isFirstRequest){
             }, function(result) {
                 result = result.trim();
                 var revisionStatus = result;
-                if (revisionStatus == "stopped") {
+                if (revisionStatus == APPLICATION_STOPPED) {
                     clearInterval(timerId);
                     jagg.message({
                         content: "Application is currently stopped, logs will be available after restarting.",
+                        type: 'information',
+                        id: 'view_log',
+                        timeout: '20000'
+                    });
+                    setLogArea("Application is stopped, Since logs are currently not available.", true);
+                } else if (revisionStatus == APPLICATION_INACTIVE) {
+                    clearInterval(timerId);
+                    jagg.message({
+                        content: "Application is currently stopped due to inactivity, logs will be available after restarting.",
                         type: 'information',
                         id: 'view_log',
                         timeout: '20000'
