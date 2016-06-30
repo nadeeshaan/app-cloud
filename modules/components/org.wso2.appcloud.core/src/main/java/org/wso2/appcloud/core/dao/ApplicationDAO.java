@@ -2029,4 +2029,45 @@ public class ApplicationDAO {
         return taggedApplicationsList;
     }
 
+    public List<String> getApplicationContexts(Connection dbConnection, int tenantId, int versionId)
+            throws AppCloudException {
+        List<String> applicationContextList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_APPLICATION_CONTEXT);
+            preparedStatement.setInt(1, tenantId);
+            preparedStatement.setInt(2, versionId);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                applicationContextList.add(resultSet.getString(SQLQueryConstants.CONTEXT));
+            }
+        } catch (SQLException e) {
+            String msg = "Get application contexts failed for version id :  " + versionId + ", tenant id : " + tenantId;
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeResultSet(resultSet);
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
+        return applicationContextList;
+    }
+
+    public void addApplicationContext(Connection dbConnection, int tenantId, int versionId, String applicationContext)
+            throws AppCloudException {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.ADD_APPLICATION_CONTEXT_FOR_APPLICATION);
+            preparedStatement.setInt(1, tenantId);
+            preparedStatement.setInt(2, versionId);
+            preparedStatement.setString(3, applicationContext);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            String msg = "Adding application context failed for tenant id : " + tenantId + ", versionId : " + versionId
+                         + ", applicationContext : " + applicationContext;
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
+    }
+
 }
