@@ -39,6 +39,9 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
     var applicationKey = "<%=applicationKey%>";
     var selectedRevision = "<%=selectedRevision%>";
     var revisionsList = jQuery.parseJSON('<%=revisionsList%>');
+    var APPLICATION_STOPPED = "<%=APPLICATION_STOPPED%>";
+    var APPLICATION_RUNNING = "<%=APPLICATION_RUNNING%>";
+    var APPLICATION_INACTIVE = "<%=APPLICATION_INACTIVE%>";
 </script>
 
 

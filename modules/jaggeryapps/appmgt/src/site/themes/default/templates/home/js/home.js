@@ -11,7 +11,7 @@ $(document).ready(function() {
                                     + encodedEnvs + "&newVersion=true&nextVersion=" + nextVersion + "&conSpecCpu=" + conSpecCpu + "&conSpecMemory=" + conSpecMemory;
     $('#upload-revision').attr("href", uploadRevisionUrl);
 
-    if(selectedApplicationRevision.status=='inactive'){
+    if(selectedApplicationRevision.status==APPLICATION_INACTIVE){
         displayApplicationInactiveMessage();
     }
 });
@@ -28,9 +28,32 @@ function initPageView() {
     });
 
     $('body').on('click', '#btn-launchApp', function() {
-        var appUrl = $('#btn-launchApp').attr("url");
-        var newWindow = window.open('','_blank');
-        newWindow.location = appUrl;
+        if(selectedApplicationRevision.status == APPLICATION_RUNNING){
+            var appUrl = $('#btn-launchApp').attr("url");
+            var newWindow = window.open('','_blank');
+            newWindow.location = appUrl;
+        } else if(selectedApplicationRevision.status == APPLICATION_STOPPED) {
+            jagg.message({
+                             modalStatus: true,
+                             type: 'warning',
+                             timeout: 3000,
+                             content: "<b>Application has been stopped. Start the application before launch.</b>"
+                         });
+        } else if(selectedApplicationRevision.status == APPLICATION_INACTIVE) {
+            jagg.message({
+                             modalStatus: true,
+                             type: 'warning',
+                             timeout: 3000,
+                             content: "<b>Application has been stopped due to inactivity. Start the application before launch.</b>"
+                         });
+        } else {
+            jagg.message({
+                             modalStatus: true,
+                             type: 'error',
+                             timeout: 3000,
+                             content: "<b>Error has occurred while application creation. If the problem persists please contact system administrator.</b>"
+                         });
+        }
     });
 
     $('#btn-dashboard').click(function() {
@@ -40,6 +63,7 @@ function initPageView() {
     });
 
     listTags();
+    listEnvs();
 }
 /**
  * This function is to display a message to user to inform that the application is stopped due to
@@ -85,6 +109,27 @@ function listTags(){
     }
 
     $('#tag-list').html(tagString);
+}
+
+function listEnvs(){
+    var envs = selectedApplicationRevision.runtimeProperties;
+    var envListLength;
+    if(envs) {
+        envListLength = envs.length;
+    }
+    var envString = '';
+    for(var i = 0; i < envListLength; i++){
+        if(i >= 3){
+            break;
+        }
+        envString += envs[i].propertyName + " : " + envs[i].propertyValue + "</br>";
+    }
+    if(envListLength > 3) {
+        envString += "</br><a class='view-tag' href='/appmgt/site/pages/envs.jag?applicationKey=" + applicationKey
+                             + "&versionKey=" + selectedApplicationRevision.hashId + "'>View All envs</a>";
+    }
+
+    $('#env-list').html(envString);
 }
 
 // Icon initialization
@@ -146,9 +191,10 @@ function changeSelectedRevision(newRevision){
     $("#tagSetAdd").attr('href',"/appmgt/site/pages/tags.jag?applicationKey=" + applicationKey + "&versionKey=" + selectedApplicationRevision.hashId);
     $("#tagCount").text(selectedApplicationRevision.tags.length.toString());
     listTags();
+    listEnvs();
 
     // Change version status in UI
-    if(selectedApplicationRevision.status == 'running'){
+    if(selectedApplicationRevision.status == APPLICATION_RUNNING){
 
         $('#version-app-launch-block').empty();
         $('#version-app-launch-block').html('<button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"' +
@@ -170,11 +216,11 @@ function changeSelectedRevision(newRevision){
                                  'data-toggle="tooltip" title="Adding replicas to your application will not support in this release."></i>' +
                                  '</span></figcaption></figure></div>');
 
-    } else if(selectedApplicationRevision.status == 'stopped' || selectedApplicationRevision.status == 'inactive'){
+    } else if(selectedApplicationRevision.status == APPLICATION_STOPPED || selectedApplicationRevision.status == APPLICATION_INACTIVE){
 
         $('#version-app-launch-block').empty();
         $('#version-app-launch-block').html('<button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"' +
-                       'url="' + deploymentURL + '" disabled>Launch App</button>' +
+                       'url="' + deploymentURL + '">Launch App</button>' +
                        '<div class="btn-group ctrl-edit-button btn-edit-code"><a type="button" ' +
                        'class="btn cu-btn cu-btn-md cu-btn-blue" onclick="startApplication();">Start</a></div>');
 
@@ -190,10 +236,9 @@ function changeSelectedRevision(newRevision){
     } else {
 
         $('#version-app-launch-block').empty();
-        $('#version-app-launch-block').html('<button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp" ' +
-                       'url="' + deploymentURL + '" disabled>Launch App</button>' +
-                       '<div class="btn-group ctrl-edit-button btn-edit-code"><a type="button" ' +
-                       'class="btn cu-btn cu-btn-md cu-btn-red" href="#yourlink">Error has occurred.</a></div>');
+        $('#version-app-launch-block').html('<div class="btn-group ctrl-edit-button btn-edit-code">' +
+                                            '<a type="button" class="btn cu-btn cu-btn-md cu-btn-red" ' +
+                                            'href="#yourlink">Error has occurred.</a></div>');
 
     }
 
