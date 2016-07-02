@@ -578,7 +578,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
         }
 
         function validateApplicationNameChar(value) {
-            var patternNonAlphaNumExceptHyphen = /[^\w -]/g;
+            var patternNonAlphaNumExceptHyphen = /[^\w-]/g;
             var isPatternMatch = patternNonAlphaNumExceptHyphen.test(value);
             validationFailErrorMsg = "Application Name has invalid characters. Valid characters are a-z A-Z 0-9 -";
 
