@@ -40,6 +40,8 @@ var POD_DELETE_TIMEOUT = "Pod.Delete.Timeout";
 var POD_DELETE_WAIT = "Pod.Delete.Wait";
 var MAX_CONTAINER_SPEC_MEMORY = "Max.ContainerSpec.Memory";
 var MAX_CONTAINER_SPEC_CPU = "Max.ContainerSpec.CPU";
+var GOOGLE_ANALYTICS_ENABLED = "Google.Analytics.Enabled";
+var GOOGLE_TRACKING_ID = "Google.Tracking.Id";
 
 //events related constants
 var DATABASE_ADD = "Adding application to database";

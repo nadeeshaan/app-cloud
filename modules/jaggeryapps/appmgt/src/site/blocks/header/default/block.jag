@@ -24,12 +24,17 @@ jagg.block("header/default", {
         var docUrl = manager.getPropertyValue(DOCUMENTATION_REDIRECTION_URL);
         var supportUrl = manager.getPropertyValue(SUPPORT_REDIRECTION_URL);
 
+        var isGoogleAnalyticsEnabled = manager.getPropertyValue(GOOGLE_ANALYTICS_ENABLED);
+        var googleTrackingId = manager.getPropertyValue(GOOGLE_TRACKING_ID);
+
         return {
             "user": user,
             "loggedInUserName": loggedInUserName,
             "tenantDomain": tenantDomain,
             "docUrl": docUrl,
-            "supportUrl": supportUrl
+            "supportUrl": supportUrl,
+            "isGoogleAnalyticsEnabled" : isGoogleAnalyticsEnabled,
+            "googleTrackingId" : googleTrackingId
         };
     }
 });
