@@ -11,7 +11,7 @@ sed -i "/port=\"9443\"/a  \\\t\t   proxyPort=\"443\"" $CARBON_HOME_PATH/reposito
 #Changing admin password
 if [ -z ${ADMIN_PASSWORD+x} ]; then
     echo "ADMIN_PASSWORD is not set.";
-    echo "Genarating admin password.";
+    echo "Generating admin password.";
     ADMIN_PASSWORD=${ADMIN_PASS:-$(pwgen -s 12 1)}
     echo "========================================================================="
     echo "Credentials for the instance:"
