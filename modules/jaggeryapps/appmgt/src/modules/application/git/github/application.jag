@@ -44,7 +44,8 @@ var Util = Packages.org.wso2.appcloud.core.Util;
 
 var addApplicationViaGitHub = function (applicationName, versionName, applicationDescription, replicas,
                                         runtimeId, appTypeName, runtimePropertiesArray, tagArray, appIcon, gitHubRepoUrl,
-                                        gitHubRepoBranch, projectRoot, token, isNewVersion, conSpecMemory, conSpecCpu, appCreationMethod) {
+                                        gitHubRepoBranch, projectRoot, token, isNewVersion, conSpecMemory, conSpecCpu,
+                                        appCreationMethod, applicationContext) {
 
     log.info("Started creating App => name : " + applicationName + " Version : " + versionName + " Description " +
              ": " + applicationDescription + " runtimeId : " + runtimeId + " apptype : " + appTypeName + " GitHub url: "
@@ -70,6 +71,11 @@ var addApplicationViaGitHub = function (applicationName, versionName, applicatio
     var DockerClient = Packages.org.wso2.appcloud.core.docker.DockerClient;
     var dockerClient = new DockerClient(modManager.getPropertyValue("DockerClientURL"));
 
+    if (applicationContext != null || applicationContext != "") {
+        var versionID = ApplicationManager.getVersionId(versionHashId);
+        ApplicationManager.addApplicationContext(versionID, applicationContext);
+    }
+
     var runtimeProperties = version.getRuntimeProperties();
     var absFileUploadedPath =  createDockerFileForGitHub(applicationName, versionName, runtimeId, gitHubRepoUrl,
                                                          gitHubRepoBranch, projectRoot, versionHashId, dockerClient, appCreationMethod, runtimePropertiesArray, conSpecMemory);
@@ -77,7 +83,7 @@ var addApplicationViaGitHub = function (applicationName, versionName, applicatio
                                 versionHashId, dockerClient);
     appManager.pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient);
     appManager.triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName,
-                                           runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
+                                            appTypeName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
 };
 
 
