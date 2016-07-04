@@ -1208,7 +1208,25 @@ var uploadExistingArchive = function (uploadedArtifact, appTypeName, application
         log.info(uploadApplicationTmpPath);
     }
 
-    uploadedArtifact.move(uploadApplicationTmpPath);
+    var fileSuccessfullyUploaded = false;
+    if (uploadApplicationTmpPath != null) {
+        uploadedArtifact.move(uploadApplicationTmpPath);
+
+        var file = new File(uploadApplicationTmpPath);
+        var waitCounter = 0;
+        var fileUploadTimeout = modManager.getPropertyValue(FILE_UPLOAD_TIMEOUT);
+
+        //Wait until file is completely moved
+        while (waitCounter < fileUploadTimeout) {
+            if (file.isExists()) {
+                fileSuccessfullyUploaded = true;
+                log.info("File: " + uploadedFileName + " successfully moved to " + uploadApplicationTmpPath);
+                break;
+            }
+            waitCounter++;
+        }
+    }
+    return fileSuccessfullyUploaded;
 };
 
 var renameDirectory = function (oldHashId, newHashId) {
