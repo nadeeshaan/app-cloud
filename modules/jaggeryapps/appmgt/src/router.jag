@@ -36,6 +36,7 @@ if (uriMatcher.match(PAGE_URL)) {
         context.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
         context.getThreadLocalCarbonContext().setUsername(jagg.getUser());
         include(args.suffix);
+        // filtered out get actions
         if (action != null && !(action.substring(0,3) == 'get')) {
             audit.info("User : " + jagg.getUser() + ", Action : " + action);
         }
