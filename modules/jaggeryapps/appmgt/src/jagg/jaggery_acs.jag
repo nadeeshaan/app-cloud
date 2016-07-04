@@ -22,6 +22,7 @@
         include("/jagg/jagg.jag");
         include("/jagg/constants.jag");
         var log = new Log();
+        var audit = org.wso2.carbon.CarbonConstants.AUDIT_LOG;
 (function () {
 
     var samlResponse = request.getParameter("SAMLResponse");
@@ -67,6 +68,7 @@
                 var email = modManager.getEmailAddressForUser(userName);
                 modManager.setUserEmailAddress(email);
                 session.put("LOGGED_IN_USER", ssoRelyingParty.getLoggedInUser(sessionId));
+                audit.info("User : " + jagg.getUser() + ", Action : login");
                 response.sendRedirect("/appmgt/site/pages/index.jag");
             } else {
                 response.sendRedirect("/appmgt/site/pages/error-pages/401.html");
@@ -76,6 +78,7 @@
             // if the saml response is log out request from IDP, we log out from web app.
             ssoRelyingParty.invalidateSessionBySessionId(sessionId);
             session.invalidate();
+            audit.info("User : " + jagg.getUser() + ", Action : logout");
             response.sendRedirect("../");
             return;
         }
@@ -88,6 +91,7 @@
         if (Boolean(isLogoutRequest)) {
             ssoRelyingParty.invalidateSessionBySAMLResponse(samlRequest);
             session.invalidate();
+            audit.info("User : " + jagg.getUser() + ", Action : logout");
         }
     }
 
