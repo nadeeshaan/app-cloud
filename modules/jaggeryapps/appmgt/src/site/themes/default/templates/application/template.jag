@@ -85,7 +85,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var containerSpecNamesJson = [];
     var versionHashIdAtFileUpload;
     var progress;
-
+    var fileMoved = false;
     $(document).ready(function(){
 
             if (newVersion == "true") {
@@ -305,6 +305,24 @@ jagg.template("application", function (inputs, outputs, jagg) {
                             appTypeName: appTypeName,
                             applicationName: $("#applicationName").val(),
                             applicationRevision: $("#applicationRevision").val()
+                        },
+                        data.complete = function(jqXHR, textStatus, errorThrown) {
+                            var status = jqXHR.status;
+                            if (status == 200) {
+                                fileMoved = true;
+                                if (progress == 100) getVersionHashId();
+                            } else {
+                                progress = 0;
+                                $('#progress .progress-bar').css(
+                                    'width',
+                                    progress + '%'
+                                );
+                                jagg.message({
+                                    content: jqXHR.responseText,
+                                    type: 'error',
+                                    id: 'view_log'
+                                });
+                            }
                         }
                 },
                 progressall: function(e, data) {
@@ -314,18 +332,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         'width',
                         progress + '%'
                     );
-                    if (progress == 100) {
-                        jagg.post("../blocks/application/application.jag", {
-                            action:"getVersionHashId",
-                            applicationName:$("#applicationName").val(),
-                            applicationRevision:$("#applicationRevision").val()
-                        },function (result) {
-                            result = result.replace(/\r?\n|\r/g, " ").trim();
-                            versionHashIdAtFileUpload = result;
-                            activateCreateApplication();
-                        },function (jqXHR, textStatus, errorThrown) {
-                            jagg.message({content: "Error occurred while getting version hash.", type: 'error', id:'view_log'});
-                        });
+                    if (progress == 100 && fileMoved) {
+                        getVersionHashId();
                     }
                 },
                 change: function(e, data) {
@@ -337,6 +345,24 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     $('#progress .progress-bar').replaceWith("<div class=\"progress-bar progress-bar-success\" style=\"width: 0%;\"></div>");
                 }
             });
+
+        function getVersionHashId() {
+            jagg.post("../blocks/application/application.jag", {
+                action: "getVersionHashId",
+                applicationName: $("#applicationName").val(),
+                applicationRevision: $("#applicationRevision").val()
+            }, function(result) {
+                result = result.replace(/\r?\n|\r/g, " ").trim();
+                versionHashIdAtFileUpload = result;
+                activateCreateApplication();
+            }, function(jqXHR, textStatus, errorThrown) {
+                jagg.message({
+                    content: "Error occurred while getting version hash.",
+                    type: 'error',
+                    id: 'view_log'
+                });
+            });
+        }
 
         function drawProgressWindow(){
             $('#app_creation_progress_modal').modal({ backdrop: 'static', keyboard: false});

@@ -35,9 +35,17 @@ var log = new Log();
         var applicationName = request.getParameter("applicationName");
         var appTypeName = request.getParameter("appTypeName");
         var applicationRevision = request.getParameter("applicationRevision");
-        applicationModule.uploadExistingArchive(uploadedArtifact, appTypeName, applicationName, applicationRevision);
-        response.status = 200;
-        response.content = "Artifact is successfully uploaded!";
+        var fileSuccessfullyUploaded = applicationModule.
+                            uploadExistingArchive(uploadedArtifact, appTypeName, applicationName, applicationRevision);
+        if (fileSuccessfullyUploaded) {
+            response.status = 200;
+            response.content = "Artifact is successfully uploaded!";
+        } else {
+            var msg = "Error while uploading file: " + uploadedArtifact.getName();
+            log.error(msg);
+            response.status = 504;
+            response.content = msg + ". Please retry uploading";
+        }
 
     } else if (action == "createApplication") {
         var applicationDescription = request.getParameter("applicationDescription");
@@ -118,8 +126,15 @@ var log = new Log();
                 //Check for the memory and cpu values of the application creation request
                 if ((conSpecMemory <= maxConSpecMemory) && (conSpecCpu <= maxConSpecCPU)) {
                     if (isFileAttached) {
-                        applicationModule.uploadExistingArchive(uploadedArtifact, appTypeName, applicationName,
-                                applicationRevision);
+                        var fileSuccessfullyUploaded = applicationModule.
+                            uploadExistingArchive(uploadedArtifact, appTypeName, applicationName, applicationRevision);
+                        if (!fileSuccessfullyUploaded) {
+                            var msg = "Error while uploading file: " + uploadedArtifact.getName();
+                            log.error(msg);
+                            response.status = 504;
+                            response.content = msg + ". Please retry uploading";
+                            return ;
+                        }
                     }
                     if (uploadedFileName) {
                         applicationModule.addApplication(applicationName, applicationRevision, applicationDescription,
