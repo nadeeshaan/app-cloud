@@ -46,7 +46,7 @@ var dbName = request.getParameter("dbName");
  <div class="container-fluid app-content-section">
         <div class="row">
           <div class="col-md-12 msg-issues">
-           Given here are the users of the database. You can connect to the database as these users.
+           Given here are the users of the database using which you can connect to the database.
           </div>
         </div>
         <div class="row">
