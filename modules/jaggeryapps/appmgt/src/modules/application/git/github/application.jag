@@ -71,7 +71,7 @@ var addApplicationViaGitHub = function (applicationName, versionName, applicatio
     var DockerClient = Packages.org.wso2.appcloud.core.docker.DockerClient;
     var dockerClient = new DockerClient(modManager.getPropertyValue("DockerClientURL"));
 
-    if (applicationContext != null || applicationContext != "") {
+    if (applicationContext != null) {
         var versionID = ApplicationManager.getVersionId(versionHashId);
         ApplicationManager.addApplicationContext(versionID, applicationContext);
     }

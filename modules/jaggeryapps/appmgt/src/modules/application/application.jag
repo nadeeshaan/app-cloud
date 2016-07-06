@@ -1115,7 +1115,7 @@ var getDeploymentURL = function (applicationName, versionName, versionID){
     var applicationLaunchURL = urlScheme + "://" + baseURL;
 
     var applicationContextList = ApplicationManager.getApplicationContexts(versionID);
-    if (applicationContextList != null && applicationContextList.get(0) != null){
+    if (applicationContextList != null && applicationContextList.size() > 0 && applicationContextList.get(0) != null){
         if(!applicationContextList.get(0).startsWith("/")){
             applicationLaunchURL = applicationLaunchURL + "/";
         }
