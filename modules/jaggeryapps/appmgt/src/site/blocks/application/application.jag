@@ -80,7 +80,10 @@ var log = new Log();
         var artifactUrl = request.getParameter("artifactUrl");
         var appCreationMethod = request.getParameter("appCreationMethod");
         var oldHashId = request.getParameter("oldHashId");
-        var applicationContext = request.getParameter("applicationContext").toString();
+        var applicationContext = request.getParameter("applicationContext");
+        if (applicationContext == "/"){
+            applicationContext = null;
+        }
 
         // checking whether an application with same name and same version, already exists or not
         var versionHashId = applicationModule.getVersionHashId(applicationName, applicationRevision);
