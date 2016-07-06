@@ -195,7 +195,9 @@ public class SQLQueryConstants {
 
 
     public static final String GET_ALL_APP_VERSIONS_CREATED_BEFORE_X_DAYS_AND_NOT_WHITE_LISTED =
-            "SELECT * FROM AC_VERSION WHERE is_white_listed=0 AND status='running' AND timestamp <  timestampadd(HOUR, -?, now());";
+            "SELECT * FROM AC_VERSION WHERE is_white_listed=0 AND status='running' " +
+            "AND timestamp <  timestampadd(HOUR, -?, now()) " +
+            "AND tenant_id NOT IN (SELECT tenant_id FROM AC_WHITE_LISTED_TENANTS)";
 
 	public static final String GET_WHITE_LISTED_TENANT_DETAILS = "SELECT * FROM AC_WHITE_LISTED_TENANTS WHERE tenant_id=?";
 
