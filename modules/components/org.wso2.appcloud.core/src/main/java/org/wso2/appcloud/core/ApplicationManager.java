@@ -1126,9 +1126,9 @@ public class ApplicationManager {
     public static Application[] getTaggedApplicationsList() throws AppCloudException {
         Connection dbConnection = DBUtil.getDBConnection();
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        List<Application> applications;
         try {
-            applications = ApplicationDAO.getInstance().getTaggedApplicationsList(dbConnection, tenantId);
+            List<Application> applications = ApplicationDAO.getInstance().getTaggedApplicationsList(dbConnection, tenantId);
+            return applications.toArray(new Application[applications.size()]);
         } catch (AppCloudException e){
             String msg = "Error while retrieving tagged applications for tenant : " + tenantId;
             log.error(msg, e);
@@ -1137,7 +1137,6 @@ public class ApplicationManager {
         finally {
             DBUtil.closeConnection(dbConnection);
         }
-        return applications.toArray(new Application[applications.size()]);
     }
 
     public static int getVersionId(String versionHashId) throws AppCloudException{
@@ -1150,6 +1149,8 @@ public class ApplicationManager {
                          + " and tenant_id : " + tenantId;
             log.error(msg, e);
             throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
         }
     }
 
@@ -1163,6 +1164,8 @@ public class ApplicationManager {
                          + " and tenant_id : " + tenantId;
             log.error(msg, e);
             throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
         }
     }
 

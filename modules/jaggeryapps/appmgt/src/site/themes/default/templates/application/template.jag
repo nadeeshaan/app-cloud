@@ -1073,7 +1073,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
 
 			<div class="form-group">
                 <label for="applicationContext">Application Context: </label>
-                <input id="applicationContext" name="applicationContext" type="text" class="form-control" placeholder="Enter Application Context to Launch the application" />
+                <input id="applicationContext" name="applicationContext" type="text" class="form-control" value="<%=appType.defaultContext%>" />
             </div>
 
             <div class="form-group">

@@ -77,7 +77,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
     var dockerClient = new DockerClient(modManager.getPropertyValue("DockerClientURL"));
     var runtimeProperties = generateRuntimePropsList(runtimePropertiesArray);
     var hostName = constructAppLaunchURL(applicationName, versionName);
-    if (applicationContext != null || applicationContext != "") {
+    if (applicationContext != null) {
         var versionID = ApplicationManager.getVersionId(versionHashId);
         ApplicationManager.addApplicationContext(versionID, applicationContext);
     }
@@ -90,7 +90,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
     buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerClient);
     pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient);
 
-    triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName, appTypeName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
+//    triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName, appTypeName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
     putSelectedRevisionToSession(applicationHashId, versionName);
 };
 
