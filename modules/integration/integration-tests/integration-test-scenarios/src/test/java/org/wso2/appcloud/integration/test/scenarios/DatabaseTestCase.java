@@ -61,8 +61,6 @@ public class DatabaseTestCase {
         tenantDomain = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants
                                                                              .DEFAULT_TENANT_TENANT_DOMAIN);
         dbNameWithTenantName = dbName + AppCloudIntegrationTestConstants.PARAM_UNDERSCORE + tenantDomain;
-        //dbUserNameWithTenantHash = dbUserName + AppCloudIntegrationTestConstants.PARAM_UNDERSCORE;
-        //dbUserName2WithTenantHash = dbUserName + AppCloudIntegrationTestConstants.PARAM_UNDERSCORE;
         databaseClient = new DatabaseClient(serverUrl, defaultAdmin, defaultAdminPassword);
 
     }

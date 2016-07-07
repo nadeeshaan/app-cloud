@@ -62,6 +62,12 @@ public class AppCloudIntegrationTestConstants {
 	public static final String PHP_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='php']";
 	public static final String JAGGERY_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='jaggery']";
 	public static final String DSS_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='wso2dataservice']";
+	public static final String JAGGERY_APPLICATION_CONTEXT = "//appCloudProperties/application/applicationContexts/context[@key='jaggery']";
+	public static final String PHP_APPLICATION_CONTEXT = "//appCloudProperties/application/applicationContexts/context[@key='php']";
+	public static final String MSS_APPLICATION_CONTEXT = "//appCloudProperties/application/applicationContexts/context[@key='msf4j']";
+	public static final String DSS_APPLICATION_CONTEXT = "//appCloudProperties/application/applicationContexts/context[@key='wso2dataservice']";
+	public static final String TOMCAT_APPLICATION_CONTEXT = "//appCloudProperties/application/applicationContexts/context[@key='war']";
+
 
 	public static final String APP_PROPERTIES_KEY = "//appCloudProperties/application/properties/property";
 	public static final String APP_NEW_PROPERTIES_KEY = "//appCloudProperties/application/newProperties/property";
@@ -92,6 +98,7 @@ public class AppCloudIntegrationTestConstants {
 	public static final String STATUS_STOPPED = "stopped";
 	public static final String PROPERTY_STATUS_NAME = "status";
 	public static final String PROPERTY_VERSIONS_NAME = "versions";
+	public static final String PROPERTY_APPLICATION_NAME = "applicationName";
 	public static final String TRUE_STRING = "true";
 	public static final String PROPERTY_DEPLOYMENT_URL = "deploymentURL";
 	public static final String PARAM_UNDERSCORE = "_";
