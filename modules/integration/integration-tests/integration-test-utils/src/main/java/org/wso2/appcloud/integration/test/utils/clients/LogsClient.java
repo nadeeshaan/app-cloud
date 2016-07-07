@@ -19,9 +19,9 @@
 
 package org.wso2.appcloud.integration.test.utils.clients;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -36,13 +36,13 @@ import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestConstants
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestException;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestUtils;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LogsClient extends BaseClient{
 	private static final Log log = LogFactory.getLog(LogsClient.class);
-	protected static final String GET_SNAPSHOT_LOGS_ACTION = "getSnapshotLogs";
 	protected static final String PARAM_NAME_APPLICATION_HASH_ID = "applicationKey";
 	protected static final String PARAM_NAME_APPLICATION_REVISION = "selectedRevision";
 	public static final String UTF_8_ENCODING = "UTF-8";
@@ -64,7 +64,7 @@ public class LogsClient extends BaseClient{
 	                    + AppCloudIntegrationTestConstants.REST_LOGS_ENDPOINT;
     }
 
-    public String getSnapshotLogs(String applicationKey, String applicationRevision)
+    public String[] getSnapshotLogs(String applicationKey, String applicationRevision)
             throws AppCloudIntegrationTestException {
         HttpClient httpclient = null;
         org.apache.http.HttpResponse response = null;
@@ -82,8 +82,10 @@ public class LogsClient extends BaseClient{
             httppost.setEntity(new UrlEncodedFormEntity(params, UTF_8_ENCODING));
             httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));
             response = httpclient.execute(httppost);
-            org.junit.Assert.assertEquals("Retrieving logs failed. Cannot connect to pod.",response.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
-            return EntityUtils.toString(response.getEntity());
+            String[] resultArray = new String[2];
+            resultArray[0] = String.valueOf(response.getStatusLine().getStatusCode());
+            resultArray[1] = EntityUtils.toString(response.getEntity());
+            return resultArray;
         } catch (IOException e) {
             log.error("Failed to invoke app icon update API.", e);
             throw new AppCloudIntegrationTestException("Failed to invoke app icon update API.", e);

@@ -316,8 +316,8 @@
                 <runtimeStartTimeout key="tomcat">120000</runtimeStartTimeout>
                 <runtimeStartTimeout key="msf4j">60000</runtimeStartTimeout>
                 <runtimeStartTimeout key="php">60000</runtimeStartTimeout>
-                <runtimeStartTimeout key="wso2dataservice">400000</runtimeStartTimeout>
-                <runtimeStartTimeout key="jaggery">400000</runtimeStartTimeout>
+                <runtimeStartTimeout key="wso2dataservice">130000</runtimeStartTimeout>
+                <runtimeStartTimeout key="jaggery">130000</runtimeStartTimeout>
             </runtimeStartTimeouts>
             <sampleAppContents>
                 <sampleAppContent key="tomcat">Hello</sampleAppContent>
@@ -334,6 +334,13 @@
                 <file type="wso2dataservice">CSVSampleService.car</file>
                 <file type="jaggery">hellojaggery.zip</file>
             </files>
+            <applicationContexts>
+                <context key="war">/</context>
+                <context key="msf4j">/hello/wso2</context>
+                <context key="php">/</context>
+                <context key="wso2dataservice">/</context>
+                <context key="jaggery">/hellojaggery</context>
+            </applicationContexts>
             <properties>
                 <property key="key1">value1</property>
                 <property key="key2">value2</property>
@@ -365,7 +372,7 @@
 
         <timeOutSetting>
               <period>150000</period>
-              <retryCount>5</retryCount>
+              <retryCount>250</retryCount>
         </timeOutSetting>
         <containerSpecifications>
             <cpuValues>
