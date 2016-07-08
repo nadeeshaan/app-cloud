@@ -87,11 +87,13 @@ var addApplication = function (applicationName, versionName, applicationDescript
     }
     var absFileUploadedPath =  createDockerFile(applicationName, versionName, runtimeId, uploadedFileName,
             versionHashId, dockerClient, artifactUrl, hostName, appCreationMethod, runtimeProperties, conSpecMemory);
-    buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerClient);
-    pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient);
+    var buildDockerImageStatus = buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerClient);
+    if (buildDockerImageStatus) {
+        pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient);
 
-    triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName, appTypeName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
-    putSelectedRevisionToSession(applicationHashId, versionName);
+        triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName, appTypeName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
+        putSelectedRevisionToSession(applicationHashId, versionName);
+    }
 };
 
 var stopOtherVersions = function(applicationHashId, selectedRevision) {
@@ -172,7 +174,7 @@ var buildDockerImage = function (applicationName, versionName, runtimeId, absFil
 
         var dockerRegTenantSpace = modManager.getTenantDomain().replace(".","-");
         dockerClient.buildDockerImage(modManager.getPropertyValue(PROPERTY_DOCKER_REGISTRY_URL) ,applicationRuntime.getImageName(), tagName, absFileUploadedPath);
-
+        return true;
     } catch (e){
 
         // Retrying to fix thread interrupted error temporarily. Has to find a proper fix from fabric8
@@ -184,7 +186,7 @@ var buildDockerImage = function (applicationName, versionName, runtimeId, absFil
                 //Adding docker build success event
                 var msg = "Docker image build successfully built";
                 addEvent(DOCKER_IMAGE_BUILD, EVENT_SUCCEEDED, msg, versionHashId);
-                return;
+                return true;
             } catch (e){
                 log.error("Error occured while building image, Hence retrying...");
             }
