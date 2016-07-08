@@ -79,11 +79,13 @@ var addApplicationViaGitHub = function (applicationName, versionName, applicatio
     var runtimeProperties = version.getRuntimeProperties();
     var absFileUploadedPath =  createDockerFileForGitHub(applicationName, versionName, runtimeId, gitHubRepoUrl,
                                                          gitHubRepoBranch, projectRoot, versionHashId, dockerClient, appCreationMethod, runtimePropertiesArray, conSpecMemory);
-    appManager.buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName,
+    var buildDockerImageStatus = appManager.buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName,
                                 versionHashId, dockerClient);
-    appManager.pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient);
-    appManager.triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName,
-                                            appTypeName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
+    if (buildDockerImageStatus) {
+        appManager.pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient);
+        appManager.triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName,
+                appTypeName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
+    }
 };
 
 
