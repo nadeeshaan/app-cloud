@@ -52,7 +52,7 @@ var log = new Log();
         var applicationDescription = request.getParameter("applicationDescription");
         var replicas = 1;
         var runtimeId = request.getParameter("runtime");
-        if (validateRequired("runtime", runtimeId)) {return;}
+        if (validateRuntimeSelection("runtime", runtimeId)) {return;}
 
         var isNewVersion = request.getParameter("isNewVersion");
         if (!isNewVersion || isNewVersion == "false") {
@@ -72,10 +72,10 @@ var log = new Log();
         }
 
         var applicationName = request.getParameter("applicationName");
-        if (validateRequired("applicationName", applicationName)) {return;}
+        if (validateApplicationName("applicationName", applicationName)) {return;}
 
         var applicationRevision = request.getParameter("applicationRevision");
-        if (validateRequired("applicationRevision", applicationRevision)) {return;}
+        if (validationApplicationRevision("applicationRevision", applicationRevision)) {return;}
 
         var appTypeName = request.getParameter("appTypeName");
         if (validateRequired("appTypeName", appTypeName)) {return;}
@@ -530,6 +530,62 @@ function validateRequired(field, value) {
         response.content = "Bad request : " + field + " is required!";
         return true;
     }
+    return false;
+}
+
+function validateApplicationName(field, value) {
+    if (validateRequired(field, value)) {
+        return true;
+    }
+
+    if (!isNaN(value)) {
+        response.status = 400;
+        response.content = "Bad request : Non-alphanumeric characters are not allowed for " + field;
+        return true;
+    }
+
+    var patternNonAlphaNumExceptHyphen = /[^\w-]/g;
+    if (patternNonAlphaNumExceptHyphen.test(value)) {
+        response.status = 400;
+        response.content = "Bad request : Application Name has invalid characters. Valid characters are a-z A-Z 0-9 -";
+        return true;
+    }
+
+    return false;
+}
+
+function validationApplicationRevision(field, value) {
+    if (validateRequired(field, value)) {
+        return true;
+    }
+
+    if (!isNaN(value)) {
+        response.status = 400;
+        response.content = "Bad request : Invalid version number - Provide version number in format major.minor.patch";
+        return true;
+    }
+
+    var patternNonAlphaNum = /^(?:(\d{1,2})\.)?(?:(\d{1,2})\.)?(\*|\d{1,2})$/g;
+    if (!patternNonAlphaNum.test(value)) {
+        response.status = 400;
+        response.content = "Bad request : Invalid version number - Provide version number in format major.minor.patch";
+        return true;
+    }
+
+    return false;
+}
+
+function validateRuntimeSelection(field, value) {
+    if (validateRequired(field, value)) {
+        return true;
+    }
+
+    if (isNaN(value) || value <= 0) {
+        response.status = 400;
+        response.content = "Bad request : runtime should be a number more than 0";
+        return true;
+    }
+
     return false;
 }
 %>
