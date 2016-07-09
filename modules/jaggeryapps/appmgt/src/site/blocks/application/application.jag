@@ -48,9 +48,12 @@ var log = new Log();
         }
 
     } else if (action == "createApplication") {
+        var logMessage = '';
         var applicationDescription = request.getParameter("applicationDescription");
         var replicas = 1;
         var runtimeId = request.getParameter("runtime");
+        if (validateRequired("runtime", runtimeId)) {return;}
+
         var isNewVersion = request.getParameter("isNewVersion");
         if (!isNewVersion || isNewVersion == "false") {
             isNewVersion = false;
@@ -69,16 +72,39 @@ var log = new Log();
         }
 
         var applicationName = request.getParameter("applicationName");
+        if (validateRequired("applicationName", applicationName)) {return;}
+
         var applicationRevision = request.getParameter("applicationRevision");
+        if (validateRequired("applicationRevision", applicationRevision)) {return;}
+
         var appTypeName = request.getParameter("appTypeName");
+        if (validateRequired("appTypeName", appTypeName)) {return;}
+
         var uploadedFileName = request.getParameter("uploadedFileName");
+        if (validateRequired("uploadedFileName", uploadedFileName)) {return;}
+
         var appIcon = request.getFile("appIcon");
         var uploadedArtifact = request.getFile("fileupload");
+
         var isFileAttached = request.getParameter("isFileAttached");
+        if (isFileAttached == 'true') {
+            if (uploadedArtifact == null) {
+                response.status = 400;
+                response.content = "Bad request : fileupload is required!";
+                return;
+            }
+        }
+
         var conSpecMemory = request.getParameter("conSpecMemory");
+        if (validateRequired("conSpecMemory", conSpecMemory)) {return;}
+
         var conSpecCpu = request.getParameter("conSpecCpu");
+        if (validateRequired("conSpecCpu", conSpecCpu)) {return;}
+
         var artifactUrl = request.getParameter("artifactUrl");
         var appCreationMethod = request.getParameter("appCreationMethod");
+        if (validateRequired("appCreationMethod", appCreationMethod)) {return;}
+
         var oldHashId = request.getParameter("oldHashId");
         var applicationContext = request.getParameter("applicationContext");
         if (applicationContext == "/"){
@@ -88,8 +114,11 @@ var log = new Log();
         // checking whether an application with same name and same version, already exists or not
         var versionHashId = applicationModule.getVersionHashId(applicationName, applicationRevision);
         if (applicationModule.isAplicationVersionExist(versionHashId)) {
-            response.status = 400; // bad request
-            response.content = "Application with same name and version already exists!";
+            logMessage = "Application with same name and version already exists!";
+            log.warn(logMessage);
+            response.status = 200;
+            response.content = logMessage;
+            return;
         } else {
             var isAppCountLowerThanMax = false;
 
@@ -98,15 +127,24 @@ var log = new Log();
             //before creating the new application version
             if (isNewVersion) {
                 //Check if valid argument given for isNewVersion
-                if (isNewVersion == "true") {
-                    if (applicationModule.getApplicationHashIdByName(applicationName) != null) {
+                if (isNewVersion == 'true') {
+                    if (applicationModule.getApplicationHashIdByName(applicationName) != null &&
+                            applicationModule.getApplication(applicationHashId) == null) {
                         isAppCountLowerThanMax = true;
                     } else {
-                        log.warn("Application creation request not accepted because no application with application name " +
-                                applicationName + " exists.");
+                        logMessage = "Application creation request not accepted because no application with application name " +
+                                applicationName + " exists.";
+                        log.warn(logMessage);
+                        response.status = 200;
+                        response.content = logMessage;
+                        return;
                     }
                 } else {
-                    log.warn("Application creation request not accepted because invalid argument for isNewVersion");
+                    logMessage = "Application creation request not accepted because invalid argument for isNewVersion";
+                    log.warn(logMessage);
+                    response.status = 200;
+                    response.content = logMessage;
+                    return;
                 }
             } else {
                 //Since the user is trying to create a new application we check if the existing application count is
@@ -116,8 +154,12 @@ var log = new Log();
                 if (applicationCount < maxAppCount) {
                     isAppCountLowerThanMax = true;
                 } else {
-                    log.warn("Application creation request not accepted because the application count has " +
-                            "reached maximum limit of " + maxAppCount);
+                    logMessage = "Application creation request not accepted because the application count has " +
+                            "reached maximum limit of " + maxAppCount;
+                    log.warn(logMessage);
+                    response.status = 200;
+                    response.content = logMessage;
+                    return;
                 }
             }
 
@@ -128,14 +170,14 @@ var log = new Log();
 
                 //Check for the memory and cpu values of the application creation request
                 if ((conSpecMemory <= maxConSpecMemory) && (conSpecCpu <= maxConSpecCPU)) {
-                    if (isFileAttached) {
+                    if (isFileAttached == 'true') {
                         var fileSuccessfullyUploaded = applicationModule.
                             uploadExistingArchive(uploadedArtifact, appTypeName, applicationName, applicationRevision);
                         if (!fileSuccessfullyUploaded) {
-                            var msg = "Error while uploading file: " + uploadedArtifact.getName();
-                            log.error(msg);
+                            logMessage = "Error while uploading file: " + uploadedArtifact.getName();
+                            log.error(logMessage);
                             response.status = 504;
-                            response.content = msg + ". Please retry uploading";
+                            response.content = logMessage + ". Please retry uploading";
                             return ;
                         }
                     }
@@ -155,24 +197,42 @@ var log = new Log();
                                 appIcon, gitRepoUrl, gitRepoBranch, projectRoot, token,
                                 isNewVersion, conSpecMemory, conSpecCpu, appCreationMethod, applicationContext);
                     }
+                    logMessage = "Application creation is successfully submitted";
+                    log.info(logMessage);
                     response.status = 200;
-                    response.content = "Application creation is successfully submitted";
+                    response.content = logMessage;
+                    return;
                 } else {
                     if (conSpecMemory > maxConSpecMemory) {
-                        log.warn("Application creation request not accepted because the maximum memory limit of " +
-                                "container specification is " + maxConSpecMemory + ".");
+                        logMessage = "Application creation request not accepted because the maximum memory limit of " +
+                                "container specification is " + maxConSpecMemory + "."
+                        log.warn(logMessage);
+                        response.status = 200;
+                        response.content = logMessage;
+                        return;
+
                     }
                     if (conSpecCpu > maxConSpecCPU) {
-                        log.warn("Application creation request not accepted because the maximum cpu limit of container "
-                                + "specification is " + maxConSpecCPU + ".");
+                        logMessage = "Application creation request not accepted because the maximum cpu limit of container "
+                                + "specification is " + maxConSpecCPU + ".";
+                        log.warn(logMessage);
+                        response.status = 200;
+                        response.content = logMessage;
+                        return;
                     }
-                    response.status = 400; //bad request
-                    response.content = "Maximum limit of conSpecMemory is " + maxConSpecMemory + " and conSpecCpu is " +
+                    logMessage = "Maximum limit of conSpecMemory is " + maxConSpecMemory + " and conSpecCpu is " +
                             maxConSpecCPU + ".";
+                    log.warn(logMessage);
+                    response.status = 200;
+                    response.content = logMessage;
+                    return;
                 }
             } else {
-                response.status = 400; //bad request
-                response.content = "Maximum number of applications that you can create is " + maxAppCount;
+                logMessage = "Maximum number of applications that you can create is " + maxAppCount;
+                log.warn(logMessage)
+                response.status = 200;
+                response.content = logMessage;
+                return;
             }
         }
     }else if(action == "stopApplication"){
@@ -463,4 +523,13 @@ var log = new Log();
     }
 }());
 
+
+function validateRequired(field, value) {
+    if (value == null || value.trim().length == 0) {
+        response.status = 400;
+        response.content = "Bad request : " + field + " is required!";
+        return true;
+    }
+    return false;
+}
 %>
