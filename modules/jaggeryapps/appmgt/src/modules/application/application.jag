@@ -174,7 +174,7 @@ var buildDockerImage = function (applicationName, versionName, runtimeId, absFil
 
         var dockerRegTenantSpace = modManager.getTenantDomain().replace(".","-");
         dockerClient.buildDockerImage(modManager.getPropertyValue(PROPERTY_DOCKER_REGISTRY_URL) ,applicationRuntime.getImageName(), tagName, absFileUploadedPath);
-        return true;
+
     } catch (e){
 
         // Retrying to fix thread interrupted error temporarily. Has to find a proper fix from fabric8
@@ -216,6 +216,7 @@ var buildDockerImage = function (applicationName, versionName, runtimeId, absFil
     //Adding docker build success event
     var msg = "Docker image build successfully built";
     addEvent(DOCKER_IMAGE_BUILD, EVENT_SUCCEEDED, msg, versionHashId);
+    return true;
 }
 
 var createAppInDataBase = function(applicationName, versionName, applicationDescription, replicas, runtimeId,

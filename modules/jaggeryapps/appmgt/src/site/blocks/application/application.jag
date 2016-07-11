@@ -80,6 +80,23 @@ var log = new Log();
         var appTypeName = request.getParameter("appTypeName");
         if (validateRequired("appTypeName", appTypeName)) {return;}
 
+        var runtimes = applicationModule.getAllRuntimes(appTypeName);
+        var isValid = false;
+        var validRuntimes = '';
+        for (var i = 0; i < runtimes.length; i++) {
+            validRuntimes += runtimes[i].id + ", ";
+            if (runtimes[i].id == runtimeId) {
+                isValid = true;
+                break;
+            }
+        }
+
+        if (!isValid) {
+            response.status = 400;
+            response.content = "Bad request : Valid runtimes for the apptype " + appTypeName + " are " + validRuntimes;
+            return;
+        }
+
         var uploadedFileName = request.getParameter("uploadedFileName");
         if (validateRequired("uploadedFileName", uploadedFileName)) {return;}
 
