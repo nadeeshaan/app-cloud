@@ -33,7 +33,8 @@ jagg.block("page/master", {
         return {
             title:null,
             pagePath:null,
-            body:null
+            body:null,
+            leftMenu:null
         };
     },
 
@@ -43,7 +44,8 @@ jagg.block("page/master", {
 
     getInputBlocks:function () {
         return [
-            "body"
+            "body",
+            "leftMenu"
         ];
     }
 
