@@ -246,17 +246,3 @@ function saveTextAsFile(textToWrite) {
     $("#log_download_progress_modal").hide();
     downloadLink.click();
 }
-
-$('.side-pane-trigger').click(function(){
-    var rightPane = $('.right-pane');
-    var leftPane = $('.left-pane');
-    if (rightPane.hasClass('visible')){
-        rightPane.animate({"left":"0em"}, "slow").removeClass('visible');
-        leftPane.animate({"left":"-18em"}, "slow");
-        $(this).find('i').removeClass('fa-arrow-left').addClass('fa-reorder');
-    } else {
-        rightPane.animate({"left":"18em"}, "slow").addClass('visible');
-        leftPane.animate({"left":"0em"}, "slow");
-        $(this).find('i').removeClass('fa-reorder').addClass('fa-arrow-left');
-    }
-});

@@ -52,6 +52,15 @@ var site = require("/site/conf/site.json");
                                     "selectedRevision" : selectedRevision
                                 }
                             }
+                        ],
+                        "leftMenu":[
+                            {
+                                "name":"leftMenu",
+                                "inputs":{
+                                    "applicationKey":applicationKey,
+                                    "pageName":"customUrl"
+                                }
+                            }
                         ]
                     }
                 }

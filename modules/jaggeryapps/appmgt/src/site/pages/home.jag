@@ -49,6 +49,15 @@ include("/jagg/jagg.jag");
                                     "pageName":"home"
                                 }
                             }
+                        ],
+                        "leftMenu":[
+                            {
+                                "name":"leftMenu",
+                                "inputs":{
+                                    "applicationKey":applicationKey,
+                                    "pageName":"overview"
+                                }
+                            }
                         ]
                     }
                 }

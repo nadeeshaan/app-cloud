@@ -54,6 +54,17 @@
                                  "pageName":"logs"
                              }
                              }
+                         ],
+                         "leftMenu": [
+                             {
+                                 "name": "leftMenu",
+                                 "inputs": {
+                                     "applicationKey": applicationKey,
+                                     "versionKey": versionKey,
+                                     selectedRevision: selectedRevision,
+                                     "pageName": "runtimeLogs"
+                                 }
+                             }
                          ]
                      }
                  }
