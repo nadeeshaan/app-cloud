@@ -146,7 +146,7 @@ var log = new Log();
                 //Check if valid argument given for isNewVersion
                 if (isNewVersion == 'true') {
                     if (applicationModule.getApplicationHashIdByName(applicationName) != null &&
-                            applicationModule.getApplication(applicationHashId) == null) {
+                            applicationModule.getApplication(applicationHashId) != null) {
                         isAppCountLowerThanMax = true;
                     } else {
                         logMessage = "Application creation request not accepted because no application with application name " +
