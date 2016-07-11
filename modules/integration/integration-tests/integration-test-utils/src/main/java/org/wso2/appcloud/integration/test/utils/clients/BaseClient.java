@@ -170,12 +170,17 @@ public class BaseClient {
                         + PARAM_EQUALIZER + userName + PARAM_SEPARATOR + PARAM_NAME_PASSWORD + PARAM_EQUALIZER
                         + password, getRequestHeaders());
 
-		if (response.getResponseCode() == HttpStatus.SC_OK && response.getData().equals("true")) {
-			String session = getSession(response.getHeaders());
-			if (session == null) {
-				throw new AppCloudIntegrationTestException("No session cookie found with response");
+		if (response.getResponseCode() == HttpStatus.SC_OK) {
+			JSONObject jsonObject = new JSONObject(response.getData());
+			if (jsonObject.get("error").equals("false")) {
+				String session = getSession(response.getHeaders());
+				if (session == null) {
+					throw new AppCloudIntegrationTestException("No session cookie found with response");
+				}
+				setSession(session);
+			} else {
+				throw new AppCloudIntegrationTestException("Login failed " + response.getData());
 			}
-			setSession(session);
 		} else {
 			throw new AppCloudIntegrationTestException("Login failed " + response.getData());
 		}
