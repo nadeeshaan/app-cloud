@@ -191,4 +191,13 @@ public interface RuntimeProvisioningService {
 	 * @throws RuntimeProvisioningException
 	 */
 	Map<String, String> getPodRestartCounts() throws RuntimeProvisioningException;
+
+    /**
+     * Delete kubernetes kind by name from the deployment
+     *
+     * @param k8sKind kubernetes kind
+     * @param name    unique name refer in Kubernetes
+     * @throws RuntimeProvisioningException
+     */
+    void deleteK8sKindByName(String k8sKind, String name) throws RuntimeProvisioningException;
 }

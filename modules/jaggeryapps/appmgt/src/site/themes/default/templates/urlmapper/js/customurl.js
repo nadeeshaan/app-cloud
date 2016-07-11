@@ -20,20 +20,15 @@
 
 // page initialization
 $(document).ready(function () {
-    if (defaultVersionName == "null") {
-        jagg.message({
-            content: "Please set the default URL from the application home page",
-            type: 'error',
-            id: 'view_log'
-        });
-        $("#defaultVersion").text("Please set default version first");
-        showUpdateButton();
-        uiElementStateChange(true, true, true, true);
-    } else {
-        $("#defaultVersion").text(stripedUrl(defaultVersion.deploymentURL));
+    $("#defaultVersion").text(defaultHostName);
+    if(customURL != "null"){
+        $('#productionCustom').val(stripedUrl(customURL));
+        uiElementStateChange(true, true, true);
+        showEditButton();
+    }else {
+        $('#updateCustomUrl').prop('disabled', true);
         showUpdateButton();
     }
-    setExistingCustomUrl();
 });
 
 function setExistingCustomUrl() {
@@ -48,8 +43,8 @@ function setExistingCustomUrl() {
 }
 
 function verifyCustomUrl() {
-    var pointedUrl = stripedUrl(defaultVersion.deploymentURL).trim();
-    var customUrl = $('#productionCustom').val();
+    var pointedUrl = defaultHostName;
+    var customUrl = $('#productionCustom').val().trim();
     jagg.post("../blocks/urlmapper/urlmapper.jag", {
             action: "verifyCustomDomain",
             customUrl: customUrl,
@@ -90,12 +85,11 @@ function showEditButton() {
 }
 
 function updateCustomUrl() {
-    var customUrl = $('#productionCustom').val();
+    var customUrl = $('#productionCustom').val().trim();
     jagg.post("../blocks/urlmapper/urlmapper.jag", {
         action: "updateCustomUrl",
         customUrl: customUrl,
-        applicationName: applicationName,
-        versionName: defaultVersionName
+        applicationName: applicationName
     }, function (result) {
         jagg.message({content: "Custom domain successfully updated.", type: 'success', id: 'view_log'});
         showEditButton();

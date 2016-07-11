@@ -954,6 +954,45 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
     /**
      * {@inheritDoc}
      */
+    @Override public void deleteK8sKindByName(String k8sKind, String name) throws RuntimeProvisioningException {
+        KubernetesClient kubernetesClient = KubernetesProvisioningUtils.getFabric8KubernetesClient();
+        String namespace = this.namespace.getMetadata().getName();
+
+        try {
+            switch (k8sKind) {
+            case KubernetesPovisioningConstants.KIND_REPLICATION_CONTROLLER:
+                kubernetesClient.replicationControllers().inNamespace(namespace).withName(name).delete();
+                break;
+            case KubernetesPovisioningConstants.KIND_DEPLOYMENT:
+                kubernetesClient.extensions().deployments().inNamespace(namespace).withName(name).delete();
+                break;
+            case KubernetesPovisioningConstants.KIND_POD:
+                kubernetesClient.pods().inNamespace(namespace).withName(name).delete();
+                break;
+            case KubernetesPovisioningConstants.KIND_INGRESS:
+                kubernetesClient.extensions().ingress().inNamespace(namespace).withName(name).delete();
+                break;
+            case KubernetesPovisioningConstants.KIND_SECRETS:
+                kubernetesClient.secrets().inNamespace(namespace).withName(name).delete();
+                break;
+            case KubernetesPovisioningConstants.KIND_SERVICE:
+                kubernetesClient.services().inNamespace(namespace).withName(name).delete();
+                break;
+            default:
+                String message = "The kubernetes kind : " + k8sKind + " deletion is not supported";
+                throw new IllegalArgumentException(message);
+            }
+        } catch (KubernetesClientException e) {
+            String message = "Error while deleting kubernetes kind : " + k8sKind + " with name : " + name +
+                    " from deployment";
+            log.error(message, e);
+            throw new RuntimeProvisioningException(message, e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createService(ServiceProxy serviceProxy) throws RuntimeProvisioningException {
         Service service = getService(serviceProxy);

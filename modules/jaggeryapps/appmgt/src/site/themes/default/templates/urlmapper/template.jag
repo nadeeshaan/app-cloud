@@ -21,20 +21,18 @@ jagg.template("urlmapper", function (inputs, outputs, jagg) { %>
 <%
     var application = outputs.application;
     var versions = application.versions;
-    var defaultVersionName = application.defaultVersionName;
-    if (versions[defaultVersionName] != undefined) {
-        var defaultVersion = versions[defaultVersionName];
-    }
+    var defaultVersionName = application.defaultVersion;
     var applicationKey = application.hashId;
-    var customUrl = application.customUrl;
+    var customURL = application.customURL;
+    var defaultHostName = outputs.defaultHostName;
 %>
 
 <!-- start of setting global javascript variable values from jaggery side -->
 <script type="text/javascript" charset="utf-8">
     var applicationName = "<%=application.applicationName%>";
     var defaultVersionName = "<%=defaultVersionName%>";
-    var defaultVersion = jQuery.parseJSON('<%=defaultVersion%>');
-    var customUrl = "<%=customUrl%>";
+    var customURL = "<%=customURL%>";
+    var defaultHostName = "<%=defaultHostName%>";
 </script><!-- end of setting global javascript variable -->
 
 <!-- BOF App factory menu actionbar -->
@@ -60,12 +58,12 @@ jagg.template("urlmapper", function (inputs, outputs, jagg) { %>
  <div name="customUrlForm" id="customUrlForm">
      <div class="col-md-5 forms">
          <div class="form-group" for="productionVersion">
-             <label for="production-Version">Default version</label>
+             <label for="production-Version">Pointed To: </label>
              <label id="defaultVersion" type="text" class="form-control mygroup" name="productionCustom">
          </div>
 
          <div class="form-group" for="productionCustom">
-            <label for="production-Custom">Custom URL: </label>
+            <label for="production-Custom">Custom Domain: </label>
 
              <div class="input-group" >
                  <input type="text" class="form-control mygroup" id="productionCustom" name="productionCustom"
@@ -89,7 +87,7 @@ jagg.template("urlmapper", function (inputs, outputs, jagg) { %>
              <button class="cu-btn cu-btn-sm cu-btn-blue" id="editCustomUrl" onclick="editCustomUrl()">
              <span class="fw-stack fw-lg btn-action-ico">
                  <i class="fw fw-circle-outline fw-stack-2x"></i>
-                 <i class="fw fw-circle-outline fw-stack-1x"></i>
+                 <i class="fw fw-add fw-stack-1x"></i>
              </span>
                  Edit
              </button>

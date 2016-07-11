@@ -52,7 +52,7 @@ var Arrays = Packages.java.util.Arrays;
  */
 var addApplication = function (applicationName, versionName, applicationDescription, replicas,runtimeId, appTypeName,
                                runtimePropertiesArray, tagArray, appIcon, uploadedFileName, isNewVersion, conSpecMemory,
-                               conSpecCpu, artifactUrl, appCreationMethod, oldHashId) {
+                               conSpecCpu, artifactUrl, appCreationMethod, oldHashId, setDefaultVersion) {
 
     log.info("Started creating App => name : " + applicationName + " Version : " + versionName + " Description " +
              ": " + applicationDescription + " runtimeId : " + runtimeId + " apptype : " + appTypeName );
@@ -89,6 +89,16 @@ var addApplication = function (applicationName, versionName, applicationDescript
 
     triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName, appTypeName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
     putSelectedRevisionToSession(applicationHashId, versionName);
+
+    if (isNewVersion == 'true') {
+        var isSet = parse(setDefaultVersion);
+        if (isSet) {
+            changeMappedDomain(applicationName, versionName);
+        }
+    } else {
+        setDefaultDomain(applicationName, versionName, applicationHashId);
+        ApplicationManager.updateDefaultVersion(applicationHashId, versionName);
+    }
 };
 
 var stopOtherVersions = function(applicationHashId, selectedRevision) {
@@ -532,6 +542,10 @@ var redeployApplication = function(applicationName, versionName, versionHashId, 
     var deploymentConfig = buildDeploymentConfigFromDB(versionHashId, applicationName, versionName);
 
     deployApplication(applicationName, versionName, appTypeName, deploymentConfig, true, versionHashId, "redeploy", conSpecMemory, conSpecCpu);
+
+    if (getDefaultVersion(applicationName) == versionName) {
+        redeployMappedDomain(applicationName, versionName);
+    }
 };
 var persistDeploymentConfig = function(deploymentConfig, versionHashId){
 
@@ -589,9 +603,6 @@ var buildDeploymentConfigFromDB = function(versionHashId, applicationName, versi
                 + ", versionHashId : " + versionHashId);
     }
     var containerIterator = deploymentContainers.iterator();
-    var applicationHashId = generateApplicationHashId(applicationName);
-    var application = ApplicationManager.getApplicationByHashId(applicationHashId);
-    var defaultVersion = application.defaultVersion;
     while(containerIterator.hasNext()){
         var deploymentContainer = containerIterator.next();
         var provisioningContainer = new Packages.org.wso2.appcloud.provisioning.runtime.beans.Container();
@@ -607,21 +618,13 @@ var buildDeploymentConfigFromDB = function(versionHashId, applicationName, versi
         var deploymentProxies = deploymentContainer.getServiceProxies();
         var provisioningProxyList = new java.util.ArrayList();
         var proxyIterator = deploymentProxies.iterator();
+        var hostURL = constructAppLaunchURL(applicationName, versionName);
+
         while(proxyIterator.hasNext()){
             var deploymentProxy = proxyIterator.next();
             var provisioningProxy = new Packages.org.wso2.appcloud.provisioning.runtime.beans.ServiceProxy();
             provisioningProxy.setServiceName(deploymentProxy.getServiceName());
-            var appHostUrl;
-            if (defaultVersion == versionName) {
-                if (isCustomUrlExist(versionName, applicationName)) {
-                    appHostUrl = getCustomHost(versionHashId);
-                } else {
-                    appHostUrl = constructDefaultAppLaunchURL(applicationName);
-                }
-            } else {
-                appHostUrl = constructAppLaunchURL(applicationName, versionName);
-            }
-            provisioningProxy.setAppHostURL(appHostUrl);
+            provisioningProxy.setAppHostURL(hostURL);
             provisioningProxy.setServiceName(deploymentProxy.getServiceName());
             provisioningProxy.setServiceProtocol(deploymentProxy.getServiceProtocol());
             provisioningProxy.setServicePort(deploymentProxy.getServicePort());
@@ -840,24 +843,17 @@ var getApplication = function(applicationHashId){
         applicationObject.applicationName = application.applicationName;
         applicationObject.hashId = application.hashId;
         applicationObject.description = application.description;
+        applicationObject.defaultVersion = application.defaultVersion;
         if (application.versions != null) {
-            applicationObject.versions = generateVersionList(application.versions, application.applicationName,
-                    application.defaultVersion);
-            if (applicationObject.versions != null && application.versions.get(0) != null) {
-                applicationObject.defaultVersion = application.versions.get(0).versionName;
-            }
+            applicationObject.versions = generateVersionList(application.versions, application.applicationName);
         }
         applicationObject.applicationType = application.applicationType;
         applicationObject.icon = getApplicationIconAsBase64String(application);
-        applicationObject.defaultVersionName = application.defaultVersion;
-        applicationObject.versions = generateVersionList(application.versions, application.applicationName, application.defaultVersion);
-        if (applicationObject.versions[applicationObject.defaultVersion] !== undefined) {
-            var defaultVersionHashId = applicationObject.versions[applicationObject.defaultVersion].hashId;
-            var urlScheme = CloudUtil.getPropertyValue("DeploymentUrlScheme");
-            if(getCustomHost(defaultVersionHashId) != null) {
-                var customAppLaunchUrl = urlScheme + "://" + getCustomHost(defaultVersionHashId);
-            }
-            applicationObject.customUrl = customAppLaunchUrl;
+        var urlScheme = CloudUtil.getPropertyValue("DeploymentUrlScheme");
+        if (isCustomDomainExist(applicationObject.applicationName)) {
+            applicationObject.customURL = urlScheme + "://" + getCustomDomain(applicationObject.applicationName);
+        } else {
+            applicationObject.defaultURL = urlScheme + "://" + constructDefaultAppLaunchURL(applicationObject.applicationName);
         }
     } catch(e){
         log.error("Error while getting the application");
@@ -867,23 +863,15 @@ var getApplication = function(applicationHashId){
     return applicationObject;
 }
 
-var generateVersionList = function (versions, applicationName, defaultVersionName){
+var generateVersionList = function (versions, applicationName){
     var versionList = {};
     try {
         for (var i = 0; i < versions.size(); i++) {
             var versionObject = {};
             var version = versions.get(i);
 
-            if (version.versionName == defaultVersionName) {
-                var urlScheme = CloudUtil.getPropertyValue("DeploymentUrlScheme");
-                var baseURL = constructDefaultAppLaunchURL(applicationName);
-                var defaultAppLaunchURL = urlScheme + "://" + baseURL;
-                versionObject.deploymentURL = defaultAppLaunchURL;
-            } else {
-                var deploymentUrl = getDeploymentURL(applicationName, version.versionName);
-                versionObject.deploymentURL = deploymentUrl;
-            }
-
+            var deploymentUrl = getDeploymentURL(applicationName, version.versionName);
+            versionObject.deploymentURL = deploymentUrl;
             versionObject.versionName = version.versionName;
             versionObject.hashId = version.hashId;
             versionObject.runtimeId = version.runtimeId;
@@ -1422,45 +1410,13 @@ var getApplicationCount = function(){
     }
 };
 
-var addCustomUrl = function (customUrl, applicationName, versionName) {
-    var tenantId = modManager.getTenantId();
-    var versionHashId = Util.getVersionHashId(applicationName, versionName, tenantId);
-    var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
-    createServiceWithHostName(applicationName, versionName, applicationHashId, versionHashId, customUrl);
-    var versionList = getVersionListOfApplication(applicationHashId);
-    for (var i = 0; i < versionList.length; i++) {
-        var hashId = Util.getVersionHashId(applicationName, versionList[i], tenantId);
-        ApplicationManager.updateContainerServiceProxyService(hashId, customUrl);
-    }
-};
-
-var setPreviousVersionUrl = function (applicationName, versionName) {
-    var versionHashId = getVersionHashId(applicationName, versionName);
-    var KubernetesRuntimeProvisioningService =
-            Packages.org.wso2.appcloud.provisioning.runtime.KubernetesRuntimeProvisioningService;
+var addCustomDomain = function (applicationName, customDomain) {
+    var defaultVersion = getDefaultVersion(applicationName);
+    deleteService(applicationName, defaultVersion);
+    createServiceWithHostName(applicationName, defaultVersion, customDomain);
     var tenantId = modManager.getTenantId();
     var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
-    var appType = getApplication(applicationHashId).applicationType;
-    var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(
-            applicationName, versionName, appType, modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
-    var kubernetesRuntimeProvisioningService = new KubernetesRuntimeProvisioningService(applicationCtx);
-    var ServiceProxy = Packages.org.wso2.appcloud.provisioning.runtime.beans.ServiceProxy();
-    var containerServiceProxies = getContainerServiceProxies(versionHashId);
-
-    var k8sKindService = Packages.org.wso2.appcloud.provisioning.runtime.KubernetesPovisioningConstants.KIND_SERVICE;
-    kubernetesRuntimeProvisioningService.deleteK8sKind(k8sKindService);
-    if (containerServiceProxies != null) {
-        for (var i = 0; i < containerServiceProxies.size(); i++) {
-            var containerServiceProxy = containerServiceProxies.get(i);
-            ServiceProxy.setServiceName(containerServiceProxy.getServiceName());
-            ServiceProxy.setServiceProtocol(containerServiceProxy.getServiceProtocol());
-            ServiceProxy.setServicePort(parseInt(containerServiceProxy.getServicePort()));
-            ServiceProxy.setServiceBackendPort(parseInt(containerServiceProxy.getServiceBackendPort()));
-            var appHostUrl = constructAppLaunchURL(applicationName, versionName);
-            ServiceProxy.setAppHostURL(appHostUrl);
-            kubernetesRuntimeProvisioningService.createService(ServiceProxy);
-        }
-    }
+    ApplicationManager.updateCustomDomain(applicationHashId, customDomain);
 };
 
 var getContainerServiceProxies = function (versionHashId) {
@@ -1475,103 +1431,114 @@ var getContainerServiceProxies = function (versionHashId) {
     return containerServiceProxy;
 };
 
-var getCustomHost = function (versionHashId) {
-    //get custom url from database and show in home page
-    var containerServiceProxy = getContainerServiceProxies(versionHashId);
-    var customHost;
-    if (containerServiceProxy.get(0) != "null" && containerServiceProxy.get(0).hostURL != "undefined") {
-        customHost = containerServiceProxy.get(0).hostURL;
-    }
-
-    return customHost;
-};
-
-
-var setDefaultVersion = function (applicationName, versionName, set) {
-    var isSet = parse(set);
-
+var getCustomDomain = function (applicationName) {
     var tenantId = modManager.getTenantId();
     var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
-    var previousDefaultVersion = ApplicationManager.getApplicationByHashId(applicationHashId).defaultVersion;
-    var versionHashId = getVersionHashId(applicationName, versionName);
+    return ApplicationManager.getCustomDomain(applicationHashId);
+};
+
+var getDefaultVersion = function (applicationName) {
+    var tenantId = modManager.getTenantId();
     var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
-    if (isCustomUrlExist(previousDefaultVersion, applicationName)) {
-        changeCustomUrl(isSet, applicationName, previousDefaultVersion, versionName, versionHashId, applicationHashId);
-    } else {
-        changeDefaultUrl(isSet, applicationName, previousDefaultVersion, versionName, versionHashId, applicationHashId);
-    }
+    return ApplicationManager.getDefaultVersion(applicationHashId);
 };
 
-var changeCustomUrl = function (isSet, applicationName, previousDefaultVersion, versionName, versionHashId, applicationHashId) {
-    if (isSet) {
-        var previousVersionHashId = getVersionHashId(applicationName, previousDefaultVersion);
-        var customUrl = getCustomHost(previousVersionHashId);
-        createServiceWithHostName(applicationName, versionName, applicationHashId, versionHashId, customUrl);
-        setPreviousVersionUrl(applicationName, previousDefaultVersion);
+var redeployMappedDomain = function (applicationName, versionName) {
+    var tenantId = modManager.getTenantId();
+    var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
+    var versionHashId = getVersionHashId(applicationName, versionName);
+
+    if (isCustomDomainExist(applicationName)) {
+        deleteService(applicationName, versionName);
+        setCustomDomain(applicationName, versionName, versionHashId, applicationHashId);
+    } else {
+        deleteService(applicationName, versionName);
+        setDefaultDomain(applicationName, versionName, applicationHashId);
+    }
+}
+
+var changeMappedDomain = function (applicationName, versionName) {
+    var tenantId = modManager.getTenantId();
+    var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
+    var versionHashId = getVersionHashId(applicationName, versionName);
+
+    if (isCustomDomainExist(applicationName)) {
+        deleteService(applicationName, versionName);
+        setCustomDomain(applicationName, versionName, versionHashId, applicationHashId);
         ApplicationManager.updateDefaultVersion(applicationHashId, versionName);
     } else {
-        setPreviousVersionUrl(applicationName, previousDefaultVersion);
-        ApplicationManager.updateDefaultVersion(applicationHashId, null);
-        var versionList = getVersionListOfApplication(applicationHashId);
-        var tenantId = modManager.getTenantId();
-
-        for (var i = 0; i < versionList.length; i++) {
-            var hashId = Util.getVersionHashId(applicationName, versionList[i], tenantId);
-            ApplicationManager.updateContainerServiceProxyService(hashId, null);
-        }
-    }
-};
-
-var changeDefaultUrl = function (isSet, applicationName, previousDefaultVersion, versionName, versionHashId, applicationHashId) {
-    if (isSet) {
-        var hostURL = constructDefaultAppLaunchURL(applicationName);
-        createServiceWithHostName(applicationName, versionName, applicationHashId, versionHashId, hostURL);
-        setPreviousVersionUrl(applicationName, previousDefaultVersion);
+        deleteService(applicationName, versionName);
+        setDefaultDomain(applicationName, versionName, applicationHashId);
         ApplicationManager.updateDefaultVersion(applicationHashId, versionName);
-    } else {
-        setPreviousVersionUrl(applicationName, previousDefaultVersion);
-        ApplicationManager.updateDefaultVersion(applicationHashId, null);
     }
 };
 
-var isCustomUrlExist = function (previousDefaultVersion, applicationName) {
-    if (previousDefaultVersion != null) {
-        var previousVersionHashId = getVersionHashId(applicationName, previousDefaultVersion);
-        var customUrl = getCustomHost(previousVersionHashId);
-        if (customUrl != null) {
-            return true;
-        }
+var setCustomDomain = function (applicationName, versionName) {
+    var hostName = getCustomDomain(applicationName);
+    createServiceWithHostName(applicationName, versionName, hostName);
+};
+
+var setDefaultDomain = function (applicationName, versionName) {
+    var hostName = constructDefaultAppLaunchURL(applicationName);
+    createServiceWithHostName(applicationName, versionName, hostName);
+};
+
+var isCustomDomainExist = function (applicationName) {
+    var customDomain = getCustomDomain(applicationName);
+
+    if (customDomain != null) {
+        return true;
     }
     return false;
 };
 
-var createServiceWithHostName = function (applicationName, versionName, applicationHashId, versionHashId, hostName) {
-    var KubernetesRuntimeProvisioningService =
-            Packages.org.wso2.appcloud.provisioning.runtime.KubernetesRuntimeProvisioningService;
+var createServiceWithHostName = function (applicationName, versionName, hostName) {
+    var tenantId = modManager.getTenantId();
+    var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
     var appType = getApplication(applicationHashId).applicationType;
+    var versionHashId = getVersionHashId(applicationName, versionName);
+
     var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(
             applicationName, versionName, appType, modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
+    var KubernetesRuntimeProvisioningService =
+            Packages.org.wso2.appcloud.provisioning.runtime.KubernetesRuntimeProvisioningService;
     var kubernetesRuntimeProvisioningService = new KubernetesRuntimeProvisioningService(applicationCtx);
 
-    //delete version specific service from K8s
-    var k8sKindService = Packages.org.wso2.appcloud.provisioning.runtime.KubernetesPovisioningConstants.KIND_SERVICE;
-    kubernetesRuntimeProvisioningService.deleteK8sKind(k8sKindService);
-
-    //create service for custom url in K8s
-    var ServiceProxy = Packages.org.wso2.appcloud.provisioning.runtime.beans.ServiceProxy();
     var containerServiceProxies = getContainerServiceProxies(versionHashId);
+
     if (containerServiceProxies != null) {
         for (var i = 0; i < containerServiceProxies.size(); i++) {
             var containerServiceProxy = containerServiceProxies.get(i);
-            ServiceProxy.setServiceName(containerServiceProxy.getServiceName());
+            var serviceName = containerServiceProxy.getServiceName();
+            var ServiceProxy = Packages.org.wso2.appcloud.provisioning.runtime.beans.ServiceProxy();
+            //For custom domain or default domain create service name with ServicePrefix-ApplicationHashId
+            var customServiceName = serviceName.substring(0, serviceName.lastIndexOf('-') + 1) + applicationHashId;
+            ServiceProxy.setServiceName(customServiceName);
             ServiceProxy.setServiceProtocol(containerServiceProxy.getServiceProtocol());
             ServiceProxy.setServicePort(parseInt(containerServiceProxy.getServicePort()));
             ServiceProxy.setServiceBackendPort(parseInt(containerServiceProxy.getServiceBackendPort()));
             ServiceProxy.setAppHostURL(hostName);
+            //create a service in k8s
             kubernetesRuntimeProvisioningService.createService(ServiceProxy);
         }
     }
 };
+
+var deleteService = function (applicationName, versionName) {
+    var KubernetesRuntimeProvisioningService =
+            Packages.org.wso2.appcloud.provisioning.runtime.KubernetesRuntimeProvisioningService;
+    var tenantId = modManager.getTenantId();
+    var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
+    var appType = getApplication(applicationHashId).applicationType;
+    var versionHashId = getVersionHashId(applicationName, versionName);
+    var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(
+            applicationName, versionName, appType, modManager.getTenantId(), modManager.getTenantDomain(), versionHashId);
+    var kubernetesRuntimeProvisioningService = new KubernetesRuntimeProvisioningService(applicationCtx);
+    //delete version specific service from K8s
+    var k8sKindService = Packages.org.wso2.appcloud.provisioning.runtime.KubernetesPovisioningConstants.KIND_SERVICE;
+    kubernetesRuntimeProvisioningService.deleteK8sKindByName(k8sKindService, "htp-" + applicationHashId);
+    kubernetesRuntimeProvisioningService.deleteK8sKindByName(k8sKindService, "hts-" + applicationHashId);
+}
 
 var constructDefaultAppLaunchURL = function (applicationName) {
     applicationName = Util.getRuntimeValidAppName(applicationName);

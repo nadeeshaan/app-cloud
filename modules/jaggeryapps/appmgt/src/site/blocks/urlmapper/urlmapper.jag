@@ -54,9 +54,8 @@ var mod = jagg.module("application");
     } else if (action == "updateCustomUrl") {
         var customUrl = request.getParameter("customUrl");
         var applicationName = request.getParameter("applicationName");
-        var versionName = request.getParameter("versionName");
         try {
-            mod.addCustomUrl(customUrl, applicationName, versionName);
+            mod.addCustomDomain(applicationName, customUrl);
         } catch (e) {
             var message = "Error while updating custom url : " + customUrl;
             log.error(message);

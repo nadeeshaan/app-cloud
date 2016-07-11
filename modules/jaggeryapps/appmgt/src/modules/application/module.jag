@@ -194,8 +194,8 @@ jagg.module("application", {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").verifyCustomUrl.apply(this, arguments);
     },
 
-    addCustomUrl: function () {
-        return jagg.require(jagg.getModulesDir() + "application/application.jag").addCustomUrl.apply(this, arguments);
+    addCustomDomain: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").addCustomDomain.apply(this, arguments);
     },
 
     isAplicationVersionExist: function () {
@@ -238,6 +238,12 @@ jagg.module("application", {
     },
     setDefaultVersion: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").setDefaultVersion.apply(this, arguments);
+    },
+    changeMappedDomain: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").changeMappedDomain.apply(this, arguments);
+    },
+    constructDefaultAppLaunchURL: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").constructDefaultAppLaunchURL.apply(this, arguments);
     }
 });
 %>
