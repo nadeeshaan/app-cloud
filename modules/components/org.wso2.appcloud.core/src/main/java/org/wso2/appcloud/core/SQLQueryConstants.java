@@ -54,6 +54,9 @@ public class SQLQueryConstants {
     public static final String CON_SPEC_MEMORY = "con_spec_memory";
     public static final String IS_WHITE_LISTED = "is_white_listed";
     public static final String MAX_DATABASE_COUNT = "max_database_count";
+    public static final String TAG_KEY = "tag_key";
+    public static final String TAG_VALUE = "tag_value";
+    public static final String CONTEXT = "context";
 
 
 
@@ -105,6 +108,10 @@ public class SQLQueryConstants {
             "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count) values (?, ?) ON DUPLICATE KEY UPDATE "
                     + "max_app_count=?";
 
+    public static final String ADD_APPLICATION_CONTEXT_FOR_APPLICATION =
+            "INSERT INTO AC_APPLICAION_CONTEXTS (tenant_id, version_id, context) values (?,?,?)";
+
+    public static final String INSERT_APPLICATION_ICON = "INSERT INTO AC_APP_ICON (icon, application_id) VALUES (?, ?)";
 
     /*Select Queries*/
 
@@ -187,7 +194,9 @@ public class SQLQueryConstants {
 
 
     public static final String GET_ALL_APP_VERSIONS_CREATED_BEFORE_X_DAYS_AND_NOT_WHITE_LISTED =
-            "SELECT * FROM AC_VERSION WHERE is_white_listed=0 AND status='running' AND timestamp <  timestampadd(HOUR, -?, now());";
+            "SELECT * FROM AC_VERSION WHERE is_white_listed=0 AND status='running' " +
+            "AND timestamp <  timestampadd(HOUR, -?, now()) " +
+            "AND tenant_id NOT IN (SELECT tenant_id FROM AC_WHITE_LISTED_TENANTS)";
 
 	public static final String GET_WHITE_LISTED_TENANT_DETAILS = "SELECT * FROM AC_WHITE_LISTED_TENANTS WHERE tenant_id=?";
 
@@ -198,13 +207,24 @@ public class SQLQueryConstants {
             "WHERE hash_id=? AND AC_APPLICATION.tenant_id=?";
 
     /* Update Queries */
+    public static final String GET_ALL_APPLICATIONS_LIST_WITH_TAG =
+            "SELECT app.name as application_name, app.hash_id as hash_id, type.name as app_type_name, " +
+            "icon.icon as icon, tag.name as tag_key, tag.value as tag_value FROM AC_APPLICATION app " +
+            "JOIN AC_APP_TYPE type ON app.app_type_id = type.id " +
+            "LEFT OUTER JOIN AC_APP_ICON icon ON app.id = icon.application_id " +
+            "JOIN AC_VERSION version ON app.id = version.application_id " +
+            "JOIN AC_TAG tag ON version.id = tag.version_id " +
+            "WHERE app.tenant_id=?";
 
-    public static final String INSERT_APPLICATION_ICON = "INSERT INTO AC_APP_ICON (icon, application_id) VALUES (?, ?)";
+    public static final String GET_APPLICATION_CONTEXT =
+            "SELECT * FROM AC_APPLICAION_CONTEXTS WHERE tenant_id=? AND version_id=?";
+
+    public static final String GET_APPLICATION_ICON = "SELECT id FROM AC_APP_ICON WHERE application_id=?";
+
+    /* Update Queries */
 
     public static final String UPDATE_APPLICATION_ICON = "INSERT INTO AC_APP_ICON (icon, application_id) VALUES (?, ?) ON" +
             " DUPLICATE KEY UPDATE icon= VALUES(icon)";
-
-    public static final String GET_APPLICATION_ICON = "SELECT id FROM AC_APP_ICON WHERE application_id=?";
 
     public static final String UPDATE_RUNTIME_PROPERTIES =
             "UPDATE AC_RUNTIME_PROPERTY SET name=?, value=? WHERE version_id=(SELECT id FROM AC_VERSION WHERE hash_id=?)" +

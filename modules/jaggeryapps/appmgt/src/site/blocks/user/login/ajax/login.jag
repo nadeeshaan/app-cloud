@@ -31,21 +31,24 @@ var log=new Log();
         	mod = jagg.module("user");
         	var userName = request.getParameter("userName");
         	var password = request.getParameter("password");
-            if(!(userName && password)){
-                print('false');
-                return;
-            }
+               var finalResult = {};
+               if(!(userName && password)){
+                   finalResult.error = "true";
+                   finalResult.message = "Please provide userName & password";
+                   print(finalResult);
+                   return;
+               }
         	try {
         		result=mod.login(userName,password);
-                log.info(result);
         		var parsedJSON = eval('('+result+')');
         		var errorStatus=parsedJSON.error;
-        		//   print('\nerrorStatus:'+errorStatus);
         		if(errorStatus === 'false'){
-        			print('true');
+                            log.info(result);
+                            print(result);
         		}
         		else{
-        			print('false');
+                            log.warn(result);
+                            print(result);
         		}
         	} catch (e) {
         		log.error("Error while login user : "+userName+"\n");

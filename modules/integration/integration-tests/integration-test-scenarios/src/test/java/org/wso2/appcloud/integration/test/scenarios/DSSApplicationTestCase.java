@@ -19,7 +19,7 @@ package org.wso2.appcloud.integration.test.scenarios;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestConstants;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestUtils;
 
@@ -36,14 +36,15 @@ public class DSSApplicationTestCase extends AppCloudIntegrationBaseTestCase {
                         DSS_APP_CONTENT), Long.parseLong(AppCloudIntegrationTestUtils
                         .getPropertyValue(AppCloudIntegrationTestConstants.DSS_RUNTIME_START_TIMEOUT)),
                 AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_CPU),
-                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_MEMORY));
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_MEMORY),
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DSS_APPLICATION_CONTEXT));
     }
 
-	@Override
-	protected void assertLogContent(String logContent) {
-        Assert.assertTrue("Received log:" + logContent + " but expected line: " + DSS_SERVER_STARTED_MESSAGE,
-                logContent.contains(DSS_SERVER_STARTED_MESSAGE));
-	}
+    @Override
+    protected void assertLogContent(String logContent) {
+        Assert.assertTrue(logContent.contains(DSS_SERVER_STARTED_MESSAGE),
+                          "Received log:" + logContent + " but expected line: " + DSS_SERVER_STARTED_MESSAGE);
+    }
 
     @Override
     public void testLaunchApplication() throws Exception {
@@ -58,7 +59,7 @@ public class DSSApplicationTestCase extends AppCloudIntegrationBaseTestCase {
         //make the launch url http
         launchURL = launchURL.replace("https", "http");
         Boolean isLaunchSuccessfull = applicationClient.launchApplication(launchURL, sampleAppContent);
-        Assert.assertTrue("Application launch failed!", isLaunchSuccessfull);
+        Assert.assertTrue(isLaunchSuccessfull, "Application launch failed!");
 
     }
 

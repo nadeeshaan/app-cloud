@@ -38,6 +38,22 @@ function login(userName, password){
 	var context=multitenancy.getPrivilegedCarbonContext();
  	var tenantManager= multitenancy.getTenantManager();
 	var finalResult={};
+
+       // check whether given tenant domain is valid
+       try {
+           if (tenantManager.getTenantId(tenantDomain) == -1) {
+               finalResult.error = "true";
+               finalResult.message = "Authorization Failed.";
+               finalResult.username = userName;
+	        return stringify(finalResult);
+           }
+       } catch (e) {
+	    log.error("Error while get tenant Id user : " + userName);
+	    log.error(e);
+	    throw e;
+       }
+
+
 	try{
         context.startTenantFlow();
         context.getThreadLocalCarbonContext().setTenantId(tenantManager.getTenantId(tenantDomain));
@@ -54,11 +70,13 @@ function login(userName, password){
                 finalResult.username=userName;
 			} else {
 			    finalResult.error="true";
-                finalResult.message="Authorization Failed.";
+                           finalResult.message="Authorization Failed.";
+                           finalResult.username=userName;
 			}
 		}else{
 			finalResult.error="true";
 			finalResult.message="Authenitcation Failed.";
+                       finalResult.username=userName;
 		}
 		return stringify(finalResult);
 	} catch(e){

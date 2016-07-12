@@ -23,13 +23,18 @@ jagg.template("tags", function(inputs, outputs, jagg) {
     var applicationKey = request.getParameter("applicationKey");
     var versionKey = request.getParameter("versionKey");
     var applicationRevision = request.getParameter("revision");
-%>
+    var selectedRevision = outputs.selectedRevision;
+
+    %>
      <!-- Bootstrap -->
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/bootstrap-3.2.0/bootstrap.min.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/font-wso2-1.0.0/css/font-wso2.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/font-awesome-4.2.0/font-awesome.min.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/web-fonts/Roboto.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/styles.css'))%>">
+
+ <!-- right pane wrapper -->
+ <div class="right-pane">
 
     <div class="action-bar">
         <a href="/appmgt/site/pages/home.jag?applicationKey=<%=applicationKey%>" class="btn-action" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
@@ -54,7 +59,8 @@ jagg.template("tags", function(inputs, outputs, jagg) {
         <div class="tag-list">
         </div>
     </div>
-
+    </div>
+</div>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -204,9 +210,6 @@ $(document).ready(function () {
             tr.remove();
         });
     }
-
-
-});
 
 $(document).on('click', '.panel-heading a', function (e) {
     var $this = $(this);

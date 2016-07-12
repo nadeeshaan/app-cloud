@@ -22,6 +22,7 @@ include("/jagg/jagg.jag");
 jagg.template("envs", function(inputs, outputs, jagg) {
     var versionKey = request.getParameter("versionKey");
     var applicationKey = request.getParameter("applicationKey");
+    var selectedRevision = outputs.selectedRevision;
 
     %>
      <!-- Bootstrap -->
@@ -32,6 +33,10 @@ jagg.template("envs", function(inputs, outputs, jagg) {
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/select2-4.0.0/select2.min.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/styles.css'))%>">
 
+
+ <!-- right pane wrapper -->
+ <div class="right-pane">
+    <!-- BOF App factory menu actionbar -->
     <div class="action-bar">
         <a href="/appmgt/site/pages/home.jag?applicationKey=<%=applicationKey%>" class="btn-action" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
                 <span class="fw-stack fw-lg btn-action-ico">
@@ -63,7 +68,9 @@ jagg.template("envs", function(inputs, outputs, jagg) {
 
         </div>
  </div>
+ </div>
 
+</div>
 <script >
 $(document).ready(function() {
     var prevKey, prevValue;
@@ -316,8 +323,6 @@ function displayAppRedeployNotification() {
         type: 'info'
     });
 }
-
-
 </script >
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

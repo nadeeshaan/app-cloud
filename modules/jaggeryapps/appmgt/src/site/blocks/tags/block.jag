@@ -27,8 +27,13 @@ jagg.block("tags", {
     },
 
     getOutputs:function (inputs) {
+        var applicationModule = jagg.module("application");
+        var selectedRevision = applicationModule.getSelectedRevisionFromSession(inputs.applicationKey);
+        if (!selectedRevision && application.defaultVersion) {
+            selectedRevision = application.defaultVersion;
+        }
         return {
-
+            "selectedRevision": selectedRevision
         };
     }
 

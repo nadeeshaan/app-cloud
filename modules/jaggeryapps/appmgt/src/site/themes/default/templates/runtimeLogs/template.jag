@@ -21,6 +21,7 @@ include("/jagg/jagg.jag");
 
 jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
     var applicationKey = outputs.applicationKey;
+    var versionKey = outputs.versionKey;
 
     // revision list of the application
     // ex: ["1.0.0" , "2.0.0"]
@@ -38,7 +39,13 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
     var applicationKey = "<%=applicationKey%>";
     var selectedRevision = "<%=selectedRevision%>";
     var revisionsList = jQuery.parseJSON('<%=revisionsList%>');
+    var APPLICATION_STOPPED = "<%=APPLICATION_STOPPED%>";
+    var APPLICATION_RUNNING = "<%=APPLICATION_RUNNING%>";
+    var APPLICATION_INACTIVE = "<%=APPLICATION_INACTIVE%>";
 </script>
+
+   <!-- right pane wrapper -->
+ <div class="right-pane">
 
         <!-- BOF App factory menu actionbar -->
         <div class="action-bar">
@@ -119,6 +126,8 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
                 </div>
             </div>
         </div><!-- /.container -->
+
+ </div></div>
     <!-- --------------------------------------- Overlay ----------------------------------------- -->
     <div class="modal fade build-logs-modal" id="log_download_progress_modal">
         <div class="modal-dialog modal-dialog-margin-top-md ">
@@ -132,7 +141,6 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
             </div><!-- /.modal-content -->
         </div>
      </div><!-- /.modal -->
-
 <!-- include codemirror functions -->
 <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/CodeMirror-5.7.0/lib/codemirror.js'))%>"></script>
 <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/CodeMirror-5.7.0/addon/selection/active-line.js'))%>"></script>

@@ -73,7 +73,8 @@ public class DockerClient {
     }
 
     /**
-     * Create a docker file according to given details
+     * Create a docker file according to given details. This will get docker template file and replace the parameters
+     * with the given customized values in the dockerFilePropertyMap
      * @param dockerFilePath
      * @param runtimeId - application runtime id
      * @param dockerTemplateFilePath
@@ -90,6 +91,9 @@ public class DockerClient {
         customDockerFileProperties.keySet().removeAll(dockerFilePropertyMap.keySet());
         dockerFilePropertyMap.putAll(customDockerFileProperties);
 
+        // Get docker template file
+        // A sample docker file can be found at
+        // https://github.com/wso2/app-cloud/blob/master/modules/resources/dockerfiles/wso2as/default/Dockerfile.wso2as.6.0.0-m1
         String dockerFileTemplatePath = DockerUtil
                 .getDockerFileTemplatePath(runtimeId, dockerTemplateFilePath, dockerFileCategory);
         List<String> dockerFileConfigs = new ArrayList<>();
@@ -101,12 +105,11 @@ public class DockerClient {
                 //Search if line contains keyword to replace with the value
                 while (stringTokenizer.hasMoreElements()) {
                     String element = stringTokenizer.nextElement().toString().trim();
-                    String value = null;
                     if (dockerFilePropertyMap.containsKey(element)) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Dockerfile placeholder : " + element + " and the value : " + value);
+                            log.debug("Dockerfile placeholder : " + element);
                         }
-                        value = dockerFilePropertyMap.get(element);
+                        String value = dockerFilePropertyMap.get(element);
                         line = line.replace(element, value);
                     }
                 }
@@ -139,7 +142,7 @@ public class DockerClient {
 
         String dockerImage = repoUrl + "/" + imageName + ":" + tag;
         final boolean[] dockerStatusCheck = new boolean[1];
-	    dockerStatusCheck[0] = true;
+	    dockerStatusCheck[0] = true; //this is to check docker build status, whether it was successful or failed
         try {
             handle = dockerClient.image().build()
                                  .withRepositoryName(dockerImage)
@@ -173,9 +176,9 @@ public class DockerClient {
             try {
                 handle.close();
             } catch (IOException e) {
-                String msg = "Error occurred while closing output handle after building docker image " + imageName +
-                             " with tag : " + tag + " of docker file : " + dockerFileUrl;
-                throw new AppCloudException(msg, e);
+                log.warn("Error occurred while closing output handle after building docker image " + imageName +
+                         " with tag : " + tag + " of docker file : " + dockerFileUrl);
+
             }
         }
 
@@ -201,28 +204,29 @@ public class DockerClient {
             throws AppCloudException {
 
         final boolean[] dockerStatusCheck = new boolean[1];
-	    dockerStatusCheck[0] = true;
+        dockerStatusCheck[0] = true;
         String dockerImageName = repoUrl + "/" + imageName;
         try {
-            handle = dockerClient.image().withName(dockerImageName).push().usingListener(new EventListener() {
-                @Override
-                public void onSuccess(String message) {
-                    log.info("Push Success:" + message);
-                    pushDone.countDown();
-                }
+            handle = dockerClient.image().withName(dockerImageName).push()
+                                 .usingListener(new EventListener() {
+                                     @Override
+                                     public void onSuccess(String message) {
+                                         log.info("Push Success:" + message);
+                                         pushDone.countDown();
+                                     }
 
-                @Override
-                public void onError(String message) {
-                    log.error("Push Failure:" + message);
-                    pushDone.countDown();
-                    dockerStatusCheck[0] = false;
-                }
+                                     @Override
+                                     public void onError(String message) {
+                                         log.error("Push Failure:" + message);
+                                         pushDone.countDown();
+                                         dockerStatusCheck[0] = false;
+                                     }
 
-                @Override
-                public void onEvent(String event) {
-                    log.info(event);
-                }
-            }).withTag(tag).toRegistry();
+                                     @Override
+                                     public void onEvent(String event) {
+                                         log.info(event);
+                                     }
+                                 }).withTag(tag).toRegistry();
             pushDone.await();
 
         } catch (InterruptedException e) {
@@ -234,9 +238,8 @@ public class DockerClient {
             try {
                 handle.close();
             } catch (IOException e) {
-                String msg = "Error occurred while closing output handle after pushing docker image " + imageName +
-                             " with tag : " + tag + " to docker registry : " + repoUrl;
-                throw new AppCloudException(msg, e);
+                log.warn("Error occurred while closing output handle after pushing docker image " + imageName +
+                         " with tag : " + tag + " to docker registry : " + repoUrl);
             }
         }
 

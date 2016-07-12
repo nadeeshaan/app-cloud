@@ -30,7 +30,7 @@ var site = require("/site/conf/site.json");
         return;
     }
 
-
+    var applicationKey = request.getParameter('applicationKey');
     jagg.render({
         "name":"page/master",
         "inputs":{
@@ -47,7 +47,19 @@ var site = require("/site/conf/site.json");
                         "title":"WSO2 App Cloud",
                         "middle":[
                             {
-                            	"name":"envs"
+                                "name": "envs",
+                                "inputs": {
+                                    "applicationKey": applicationKey
+                                }
+                            }
+                        ],
+                        "leftMenu":[
+                            {
+                                "name":"leftMenu",
+                                "inputs":{
+                                    "applicationKey":applicationKey,
+                                    "pageName":"envs"
+                                }
                             }
                         ]
                     }

@@ -52,7 +52,7 @@ var Arrays = Packages.java.util.Arrays;
  */
 var addApplication = function (applicationName, versionName, applicationDescription, replicas,runtimeId, appTypeName,
                                runtimePropertiesArray, tagArray, appIcon, uploadedFileName, isNewVersion, conSpecMemory,
-                               conSpecCpu, artifactUrl, appCreationMethod, oldHashId, setDefaultVersion) {
+                               conSpecCpu, artifactUrl, appCreationMethod, oldHashId, applicationContext, setDefaultVersion) {
 
     log.info("Started creating App => name : " + applicationName + " Version : " + versionName + " Description " +
              ": " + applicationDescription + " runtimeId : " + runtimeId + " apptype : " + appTypeName );
@@ -75,20 +75,26 @@ var addApplication = function (applicationName, versionName, applicationDescript
     var tagName = applicationRuntime.getTag() +"-"+ versionHashId;
     var DockerClient = Packages.org.wso2.appcloud.core.docker.DockerClient;
     var dockerClient = new DockerClient(modManager.getPropertyValue("DockerClientURL"));
-     var runtimeProperties = generateRuntimePropsList(runtimePropertiesArray);
+    var runtimeProperties = generateRuntimePropsList(runtimePropertiesArray);
     var hostName = constructAppLaunchURL(applicationName, versionName);
-
+    if (applicationContext != null) {
+        var versionID = ApplicationManager.getVersionId(versionHashId);
+        ApplicationManager.addApplicationContext(versionID, applicationContext);
+    }
 
     if(oldHashId){
         renameDirectory(oldHashId, versionHashId, uploadedFileName);
     }
     var absFileUploadedPath =  createDockerFile(applicationName, versionName, runtimeId, uploadedFileName,
             versionHashId, dockerClient, artifactUrl, hostName, appCreationMethod, runtimeProperties, conSpecMemory);
-    buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerClient);
-    pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient);
+    var buildDockerImageStatus = buildDockerImage(applicationName, versionName, runtimeId, absFileUploadedPath, applicationRuntime, tagName, versionHashId, dockerClient);
+    if (buildDockerImageStatus) {
+        pushDockerImage(applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient);
 
     triggerKubernetesDeployment(runtimeProperties, applicationRuntime, tagName, applicationName, versionName, appTypeName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu);
     putSelectedRevisionToSession(applicationHashId, versionName);
+
+    }
 
     if (isNewVersion == 'true') {
         var isSet = parse(setDefaultVersion);
@@ -191,7 +197,7 @@ var buildDockerImage = function (applicationName, versionName, runtimeId, absFil
                 //Adding docker build success event
                 var msg = "Docker image build successfully built";
                 addEvent(DOCKER_IMAGE_BUILD, EVENT_SUCCEEDED, msg, versionHashId);
-                return;
+                return true;
             } catch (e){
                 log.error("Error occured while building image, Hence retrying...");
             }
@@ -221,6 +227,7 @@ var buildDockerImage = function (applicationName, versionName, runtimeId, absFil
     //Adding docker build success event
     var msg = "Docker image build successfully built";
     addEvent(DOCKER_IMAGE_BUILD, EVENT_SUCCEEDED, msg, versionHashId);
+    return true;
 }
 
 var createAppInDataBase = function(applicationName, versionName, applicationDescription, replicas, runtimeId,
@@ -804,7 +811,7 @@ var generateApplicationHashId = function(applicationName){
 var getApplicationHashIdByName = function(applicationName){
     try {
         var tenantId = modManager.getTenantId();
-        var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
+        var applicationHashId = Util.getApplicationHashId(applicationName.toLowerCase(), tenantId);
         return applicationHashId;
     } catch (e){
         var msg = "Error while getting application hash id for application : " + applicationName;
@@ -852,7 +859,7 @@ var getApplication = function(applicationHashId){
         var urlScheme = CloudUtil.getPropertyValue("DeploymentUrlScheme");
         if (isCustomDomainExist(applicationObject.applicationName)) {
             applicationObject.customURL = urlScheme + "://" + getCustomDomain(applicationObject.applicationName);
-        } else {
+        } else if (application.defaultVersion != null) {
             applicationObject.defaultURL = urlScheme + "://" + constructDefaultAppLaunchURL(applicationObject.applicationName);
         }
     } catch(e){
@@ -870,7 +877,8 @@ var generateVersionList = function (versions, applicationName){
             var versionObject = {};
             var version = versions.get(i);
 
-            var deploymentUrl = getDeploymentURL(applicationName, version.versionName);
+            var versionID = ApplicationManager.getVersionId(version.hashId);
+            var deploymentUrl = getDeploymentURL(applicationName, version.versionName, versionID);
             versionObject.deploymentURL = deploymentUrl;
             versionObject.versionName = version.versionName;
             versionObject.hashId = version.hashId;
@@ -1116,11 +1124,19 @@ var getVersionListOfApplication = function(applicationHashId){
     return revisionArray;
 };
 
-var getDeploymentURL = function (applicationName, versionName){
+var getDeploymentURL = function (applicationName, versionName, versionID){
 
     var urlScheme = CloudUtil.getPropertyValue("DeploymentUrlScheme");
     var baseURL = constructAppLaunchURL(applicationName, versionName);
     var applicationLaunchURL = urlScheme + "://" + baseURL;
+
+    var applicationContextList = ApplicationManager.getApplicationContexts(versionID);
+    if (applicationContextList != null && applicationContextList.size() > 0 && applicationContextList.get(0) != null){
+        if(!applicationContextList.get(0).startsWith("/")){
+            applicationLaunchURL = applicationLaunchURL + "/";
+        }
+        applicationLaunchURL = applicationLaunchURL + applicationContextList.get(0);
+    }
     if (log.isDebugEnabled()) {
         log.debug("Deployment URL: " + applicationLaunchURL);
     }
@@ -1208,7 +1224,25 @@ var uploadExistingArchive = function (uploadedArtifact, appTypeName, application
         log.info(uploadApplicationTmpPath);
     }
 
-    uploadedArtifact.move(uploadApplicationTmpPath);
+    var fileSuccessfullyUploaded = false;
+    if (uploadApplicationTmpPath != null) {
+        uploadedArtifact.move(uploadApplicationTmpPath);
+
+        var file = new File(uploadApplicationTmpPath);
+        var waitCounter = 0;
+        var fileUploadTimeout = modManager.getPropertyValue(FILE_UPLOAD_TIMEOUT);
+
+        //Wait until file is completely moved
+        while (waitCounter < fileUploadTimeout) {
+            if (file.isExists()) {
+                fileSuccessfullyUploaded = true;
+                log.info("File: " + uploadedFileName + " successfully moved to " + uploadApplicationTmpPath);
+                break;
+            }
+            waitCounter++;
+        }
+    }
+    return fileSuccessfullyUploaded;
 };
 
 var renameDirectory = function (oldHashId, newHashId) {
@@ -1681,5 +1715,46 @@ var getAllowedContainerSpecificationsForRuntime = function(runtimeID) {
         throw e;
     }
 }
+
+/**
+  * Get the application summary with tags of all the tagggeds applications
+  */
+ var getTaggedApplicationsList = function () {
+     var applicationArray = [];
+     try {
+         var applications = ApplicationManager.getTaggedApplicationsList();
+         var appTypePropertyConfPath = jagg.getAppTypePropertyConfFilePath();
+         var parsedObject = parse(appTypePropertyConfPath);
+         var appTypesProperties = require(parsedObject);
+
+         for (var i = 0; i < applications.length; i++) {
+             var application = applications[i];
+             var applicationObject = {};
+             var tagArray = [];
+             applicationObject.applicationName = application.applicationName;
+             applicationObject.hashId = application.hashId;
+             applicationObject.applicationType = application.applicationType;
+             applicationObject.icon = getApplicationIconAsBase64String(application);
+             applicationObject.appTypeIcon = appTypesProperties[application.applicationType].icon;
+             applicationObject.appTypeTitle = appTypesProperties[application.applicationType].displayName;
+
+             if(application.versions != null && application.versions.get(0) != null & application.versions.get(0).tags != null){
+                 for (var j = 0; j < application.versions.get(0).tags.size(); j++) {
+                     var tagObject = {};
+                     tagObject.tagKey = application.versions.get(0).tags.get(j).tagName;
+                     tagObject.tagValue = application.versions.get(0).tags.get(j).tagValue;
+                     tagArray.push(tagObject);
+                 }
+             }
+             applicationObject.tagArray = tagArray;
+             applicationArray.push(applicationObject);
+         }
+     } catch (e) {
+         log.error("Error while getting the tagged application list");
+         log.error(e);
+         throw e;
+     }
+     return applicationArray;
+ }
 
 %>

@@ -3,9 +3,12 @@ package org.wso2.appcloud.integration.test.scenarios;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -47,19 +50,27 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	protected String tags;
 	private String containerSpecMemory;
 	private String containerSpecCpu;
+	String applicationContext;
 
-	public AppCloudIntegrationBaseTestCase(String runtimeID, String fileName, String applicationType, String sampleAppContent, long runtimeStartTimeout , String containerSpecCpu, String containerSpecMemory){
+
+	public AppCloudIntegrationBaseTestCase(String runtimeID, String fileName, String applicationType,
+	                                       String sampleAppContent, long runtimeStartTimeout, String containerSpecCpu,
+	                                       String containerSpecMemory, String applicationContext) {
 		this.runtimeID = runtimeID;
 		this.fileName = fileName;
 		this.sampleAppContent = sampleAppContent;
-        this.runtimeStartTimeout = runtimeStartTimeout;
+		this.runtimeStartTimeout = runtimeStartTimeout;
 		this.containerSpecCpu = containerSpecCpu;
 		this.containerSpecMemory = containerSpecMemory;
+		this.applicationContext = applicationContext;
 		//Application details
-		this.applicationName = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.APP_NAME_KEY);
+		this.applicationName = AppCloudIntegrationTestUtils
+				.getPropertyValue(AppCloudIntegrationTestConstants.APP_NAME_KEY);
 		this.applicationType = applicationType;
-		this.applicationRevision  = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.APP_REVISION_KEY);
-		this.applicationDescription = AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.APP_DESC_KEY);
+		this.applicationRevision = AppCloudIntegrationTestUtils
+				.getPropertyValue(AppCloudIntegrationTestConstants.APP_REVISION_KEY);
+		this.applicationDescription = AppCloudIntegrationTestUtils
+				.getPropertyValue(AppCloudIntegrationTestConstants.APP_DESC_KEY);
 		this.properties = AppCloudIntegrationTestUtils.getKeyValuePairAsJsonFromConfig(
 				AppCloudIntegrationTestUtils.getPropertyNodes(AppCloudIntegrationTestConstants.APP_PROPERTIES_KEY));
 		this.tags = AppCloudIntegrationTestUtils.getKeyValuePairAsJsonFromConfig(
@@ -85,8 +96,8 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		//Application creation
 		File uploadArtifact = new File(TestConfigurationProvider.getResourceLocation() + fileName);
 		applicationClient.createNewApplication(applicationName, this.runtimeID, applicationType, applicationRevision,
-		                                       applicationDescription, this.fileName, properties, tags,
-		                                       uploadArtifact, false, containerSpecMemory, containerSpecCpu);
+		                                       applicationDescription, this.fileName, properties, tags, uploadArtifact,
+		                                       false, containerSpecMemory, containerSpecCpu, applicationContext);
 
 		//Wait until creation finished
 		log.info("Waiting until application comes to running state...");
@@ -96,7 +107,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	@SetEnvironment(executionEnvironments = {ExecutionEnvironment.PLATFORM})
 	@Test(description = "Testing application launch")
 	public void testLaunchApplication() throws Exception {
-		log.info("Waiting "+runtimeStartTimeout+"milliseconds before trying application launch...");
+		log.info("Waiting " + runtimeStartTimeout + "milliseconds before trying application launch...");
 		Thread.sleep(runtimeStartTimeout);
 		JSONObject applicationBean = applicationClient.getApplicationBean(applicationName);
 		String launchURL = ((JSONObject) ((JSONObject) applicationBean
@@ -105,8 +116,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
         //make the launch url http
 		launchURL = launchURL.replace("https", "http");
 		Boolean isLaunchSuccessfull = applicationClient.launchApplication(launchURL, sampleAppContent);
-		Assert.assertTrue("Application launch failed!", isLaunchSuccessfull);
-
+		Assert.assertTrue(isLaunchSuccessfull, "Application launch failed!");
 	}
 
 	@SetEnvironment(executionEnvironments = {ExecutionEnvironment.PLATFORM})
@@ -119,7 +129,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		JSONObject applicationBean = applicationClient.getApplicationBean(applicationName);
         boolean isIconNull = (null == applicationBean.get(AppCloudIntegrationTestConstants.PARAM_ICON));
         // applicationBean.get("icon") should be NOT null, therefore isIconNull variable should be false,
-        Assert.assertFalse("Application icon change has been failed!", isIconNull);
+        Assert.assertFalse(isIconNull, "Application icon change has been failed!");
 
 	}
 
@@ -162,11 +172,11 @@ public abstract class AppCloudIntegrationBaseTestCase {
 			JSONObject jsonObject = (JSONObject)object;
 			if(properties.containsKey(jsonObject.getString(PARAM_NAME_KEY))){
 				i++;
-				Assert.assertEquals("Value of the property doesn't match.", properties.get(jsonObject.getString(PARAM_NAME_KEY)),
-				                    jsonObject.getString(PARAM_NAME_VALUE));
+				Assert.assertEquals(jsonObject.getString(PARAM_NAME_VALUE), properties
+						.get(jsonObject.getString(PARAM_NAME_KEY)), "Value of the property doesn't match.");
 			}
 		}
-		Assert.assertTrue("One or more Properties are not added.", i == properties.size());
+		Assert.assertTrue(i == properties.size(), "One or more Properties are not added.");
 	}
 
 	@SetEnvironment(executionEnvironments = { ExecutionEnvironment.PLATFORM})
@@ -185,10 +195,10 @@ public abstract class AppCloudIntegrationBaseTestCase {
 			JSONObject jsonOBJ = (JSONObject)object;
 			if(newKey.equals(jsonOBJ.getString(PARAM_NAME_KEY))){
 				containsNewKey = true;
-				Assert.assertEquals("Value of the property doesn't match.", newValue, jsonOBJ.getString(PARAM_NAME_VALUE));
+				Assert.assertEquals(jsonOBJ.getString(PARAM_NAME_VALUE), newValue, "Property value doesn't match.");
 			}
 		}
-		Assert.assertTrue("Property is not updated.", containsNewKey);
+		Assert.assertTrue(containsNewKey, "Property is not updated.");
 	}
 
 	@SetEnvironment(executionEnvironments = { ExecutionEnvironment.PLATFORM})
@@ -225,11 +235,11 @@ public abstract class AppCloudIntegrationBaseTestCase {
 			JSONObject jsonObject = (JSONObject)object;
 			if(properties.containsKey(jsonObject.getString(PARAM_NAME_KEY))){
 				i++;
-				Assert.assertEquals("Value of the property doesn't match.", properties.get(jsonObject.getString(PARAM_NAME_KEY)),
-				                    jsonObject.getString(PARAM_NAME_VALUE));
+				Assert.assertEquals(jsonObject.getString(PARAM_NAME_VALUE), properties
+						.get(jsonObject.getString(PARAM_NAME_KEY)), "Value of the property doesn't match.");
 			}
 		}
-		Assert.assertTrue("One or more Properties are not added.", i == properties.size());
+		Assert.assertTrue(i == properties.size(), "One or more Properties are not added.");
 	}
 
 	@SetEnvironment(executionEnvironments = { ExecutionEnvironment.PLATFORM})
@@ -248,10 +258,10 @@ public abstract class AppCloudIntegrationBaseTestCase {
 			JSONObject jsonOBJ = (JSONObject)object;
 			if(newKey.equals(jsonOBJ.getString(PARAM_NAME_KEY))){
 				containsNewKey = true;
-				Assert.assertEquals("Value of the property doesn't match.", newValue, jsonOBJ.getString(PARAM_NAME_VALUE));
+				Assert.assertEquals(jsonOBJ.getString(PARAM_NAME_VALUE), newValue, "Property value doesn't match.");
 			}
 		}
-		Assert.assertTrue("Property is not updated.", containsNewKey);
+		Assert.assertTrue(containsNewKey, "Property is not updated.");
 	}
 
 	@SetEnvironment(executionEnvironments = { ExecutionEnvironment.PLATFORM})
@@ -281,7 +291,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		File uploadArtifact = new File(TestConfigurationProvider.getResourceLocation() + fileName);
         applicationClient.createNewApplication(applicationName, this.runtimeID, applicationType, applicationRevision,
                                                applicationDescription, this.fileName, properties, tags, uploadArtifact,
-                                               true, containerSpecMemory, containerSpecCpu);
+                                               true, containerSpecMemory, containerSpecCpu, applicationContext);
 
 		//Wait until creation finished
 		log.info("Waiting until new version comes to running state");
@@ -292,13 +302,16 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	@SetEnvironment(executionEnvironments = { ExecutionEnvironment.PLATFORM})
 	@Test(description = "Testing get logs", dependsOnMethods = {"testCreateVersion"})
 	public void testGetLogs() throws Exception {
-        log.info("Waiting "+runtimeStartTimeout+"milliseconds till runtime is started.");
+		log.info("Waiting " + runtimeStartTimeout + "milliseconds till runtime is started.");
 		Thread.sleep(runtimeStartTimeout);
 		String applicationHash = applicationClient.getApplicationHash(applicationName);
 		String applicationRevision =
 				AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.APP_NEW_REVISION_KEY);
-		String result = logsClient.getSnapshotLogs(applicationHash, applicationRevision);
-		assertLogContent(result);
+		// this array contains two elements , 0th element is response code , 1st is log
+		String[] responseArray = logsClient.getSnapshotLogs(applicationHash, applicationRevision);
+		Assert.assertEquals(responseArray[0], String.valueOf(HttpStatus.SC_OK), "Retrieving logs failed. " +
+		                                                                        "Cannot connect to pod.");
+		assertLogContent(responseArray[1]);
 	}
 
 	@SetEnvironment(executionEnvironments = { ExecutionEnvironment.PLATFORM})
@@ -314,7 +327,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 				isDeleted = false;
 			}
 		}
-		Assert.assertTrue("Version Deletion Failed", isDeleted);
+		Assert.assertTrue(isDeleted, "Version Deletion Failed");
 	}
 
 
@@ -322,10 +335,21 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	public void cleanEnvironment() throws Exception {
 		String applicationHash = applicationClient.getApplicationHash(applicationName);
 		boolean isDeleted = applicationClient.deleteApplication(applicationHash);
-		Assert.assertEquals("Application deletion failed", isDeleted, true);
-		long timeOutPeriod = AppCloudIntegrationTestUtils.getTimeOutPeriod();
-        log.info("Waiting "+timeOutPeriod+"milliseconds till application is deleted.");
-        Thread.sleep(timeOutPeriod);
+		Assert.assertTrue(isDeleted, "Application deletion failed");
+		long timeOutPeriod = AppCloudIntegrationTestUtils.getTimeOutPeriod() / 5;
+		log.info("Waiting " + timeOutPeriod + "milliseconds till application is deleted.");
+		JSONObject applicationObj;
+		int round = 1;
+		int retryCount = AppCloudIntegrationTestUtils.getTimeOutRetryCount();
+		while (round <= retryCount) {
+			applicationObj = applicationClient.getApplicationBean(applicationName);
+			if (!applicationObj.get(AppCloudIntegrationTestConstants.PROPERTY_APPLICATION_NAME).equals(null)) {
+				Thread.sleep(timeOutPeriod);
+				round++;
+				continue;
+			}
+			break;
+		}
 	}
 
 	/**
@@ -337,27 +361,28 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	 */
 	private void RetryApplicationActions(String applicationRevision, String expectedStatus, String action)
 			throws Exception {
-		long timeOutPeriod = AppCloudIntegrationTestUtils.getTimeOutPeriod();
+		long timeOutPeriod = AppCloudIntegrationTestUtils.getTimeOutPeriod() / 5;
 		int retryCount = AppCloudIntegrationTestUtils.getTimeOutRetryCount();
+		log.info("Time out period is set to - " + timeOutPeriod + " and retry count is set to - " + retryCount);
 		int round = 1;
 		String actualStatus = null;
 		while (round <= retryCount) {
-			log.info("RetryApplicationActions round : " + round);
-
+			log.info("RetryApplicationActions round : " + round + " for application : " + this.applicationName + " and"
+			         + " application revision : " + applicationRevision);
 			JSONObject result = applicationClient.getApplicationBean(applicationName);
 			actualStatus = ((JSONObject) ((JSONObject) result
 					.get(AppCloudIntegrationTestConstants.PROPERTY_VERSIONS_NAME))
 					.get(applicationRevision)).getString(AppCloudIntegrationTestConstants.PROPERTY_STATUS_NAME);
-			log.info("Application current status is : " + actualStatus);
-			if(!expectedStatus.equals(actualStatus)){
-                log.info("Waiting "+timeOutPeriod+"milliseconds till "+action+ " is completed.");
+			log.info("Application " + this.applicationName + " is : " + actualStatus);
+			if (!expectedStatus.equals(actualStatus)) {
+				log.info("Waiting " + timeOutPeriod + "milliseconds till " + action + " is completed.");
 				Thread.sleep(timeOutPeriod);
 				round++;
 				continue;
 			}
 			break;
 		}
-		Assert.assertEquals(action + " failed", expectedStatus, actualStatus);
+		Assert.assertTrue(expectedStatus.equals(actualStatus), action + " failed");
 	}
 
 	protected abstract void assertLogContent(String logContent);

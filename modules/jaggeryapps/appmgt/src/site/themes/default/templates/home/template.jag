@@ -58,51 +58,12 @@ jagg.template("home", function(inputs, outputs, jagg) {
     var dashboardBaseUrl = "<%=dashboardBaseUrl%>";
     var encodedLabels = "<%=encodedLabels%>";
     var encodedEnvs = "<%=encodedEnvs%>";
-
+    var APPLICATION_STOPPED = "<%=APPLICATION_STOPPED%>";
+    var APPLICATION_RUNNING = "<%=APPLICATION_RUNNING%>";
+    var APPLICATION_INACTIVE = "<%=APPLICATION_INACTIVE%>";
 
 </script>
-    <div class="navbar navbar-secondary">
-    <div class="container-fliud">
-        <div class="row">
-             <div class="side-pane-trigger">
-                <i class="fa fa-reorder"></i>
-            </div>
-            <div class="col-md-3 breadcrumb-secondary">
-                <a href="/appmgt/site/pages/index.jag"><i class="fa fa-cubes visible-xs visible-lg"></i></a>
-                <span class="hidden-xs"><a href="/appmgt/site/pages/index.jag">Application Cloud</a></span>
-            </div>
-        </div>
-    </div>
-    </div>
-    <div class="inner-wrapper">
-   <!-- left pane wrapper -->
-    <div class="left-pane ">
-        <ul>
-            <li class="selected">
-                <a href="#"><i class="fa fa-laptop"></i> Overview</a>
-            </li>
-            <li>
-                <a id="leftMenuEnvVars" href="/appmgt/site/pages/envs.jag?versionKey=<%=selectedApplicationRevision.hashId%>&applicationKey=<%=applicationKey%>"><i class="fa fa-wrench"></i> Env Variables</a>
-            </li>
-            <li>
-                <a id="leftMenuTagSet" href="/appmgt/site/pages/tags.jag?applicationKey=<%=applicationKey%>&versionKey=<%=selectedApplicationRevision.hashId%>"><i class="fa fa-tag"></i> Tags</a>
-            </li>
-            <li>
-                <a href="/appmgt/site/pages/runtimeLogs.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>"><i class="fa
-                fa-hdd-o"></i>Runtime Logs</a>
-            </li>
-            <li>
-                <a href="/appmgt/site/pages/customurl.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>"><i class="fa
-                fa-link"></i>Custom URL</a>
-            </li>
-            <li>
-                <a href="/appmgt/site/pages/settings.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>">
-                <i class="fw fw-settings"></i>Settings</a>
-            </li>
-        </ul>
-    </div>
 
-    <!-- left pane wrapper -->
     <div class="right-pane">
     <!-- BOF App factory menu actionbar -->
     <div class="action-bar">
@@ -168,7 +129,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                           </div>
                           <div class="sec" id="version-app-launch-block">
                               <%
-                                if(selectedApplicationRevision.status=='running'){
+                                if(selectedApplicationRevision.status==APPLICATION_RUNNING){
                                 %>
                                     <button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"
                                     url="<%=selectedApplicationRevision.deploymentURL%>">Launch App</button>
@@ -183,16 +144,15 @@ jagg.template("home", function(inputs, outputs, jagg) {
                                       </a>
                                     </div>
                                 <%
-                                }else if(selectedApplicationRevision.status=='stopped' || selectedApplicationRevision.status=='inactive'){
+                                } else if(selectedApplicationRevision.status==APPLICATION_STOPPED || selectedApplicationRevision.status==APPLICATION_INACTIVE){
                                 %>
                                     <button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"
-                                    url="<%=selectedApplicationRevision.deploymentURL%>" disabled>Launch App</button>
+                                    url="<%=selectedApplicationRevision.deploymentURL%>">Launch App</button>
                                     <div class="btn-group ctrl-edit-button btn-edit-code">
                                       <a type="button" class="btn cu-btn cu-btn-md cu-btn-blue" onclick="startApplication();">Start</a>
                                     </div>
                                 <%
-
-                                }else {
+                                } else {
                                 %>
                                     <div class="btn-group ctrl-edit-button btn-edit-code">
                                       <a type="button" class="btn cu-btn cu-btn-md cu-btn-red" href="#yourlink">Error has occurred.</a>
@@ -230,7 +190,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                                             <a href="#" onclick="displayRestartCountMessage();"><span class="view-log">Restart Count : <%=restartCounts.get('0')%></span></a>
                                         <%}%>
 
-                                        <%  if(selectedApplicationRevision.status=='running'){ %>
+                                        <%  if(selectedApplicationRevision.status==APPLICATION_RUNNING){ %>
 
                                                 <svg width="200" height="200">
                                                    <circle class="outer" cx="95" cy="95" r="85" transform="rotate(-90, 95, 95)"></circle>
@@ -280,6 +240,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                   <div class="block-number pull-right">
                    <span id="runtimePropCount"><%=selectedApplicationRevision.runtimeProperties.length.toString()%></span>
                   </div>
+                  <div class="env-list ellipsis" id="env-list"></div>
                   <div class="clearfix"></div>
                 </a>
               </div>
@@ -292,7 +253,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                   <div class="block-number pull-right">
                    <span id="tagCount"><%=selectedApplicationRevision.tags.length.toString()%></span>
                   </div>
-                  <div class="tag-list" id="tag-list"></div>
+                  <div class="tag-list ellipsis" id="tag-list"></div>
                   <div class="clearfix"></div>
                 </a>
               </div>
@@ -301,6 +262,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
     </div><!-- /.container -->
     </div>
 
+</div> <!-- closing tag of inner wrapper div-->
     <!-- --------------------------------------- Overlay ----------------------------------------- -->
     <div class="modal fade build-logs-modal" id="app_creation_progress_modal">
         <div class="modal-dialog modal-dialog-margin-top-md ">
@@ -335,19 +297,6 @@ jagg.template("home", function(inputs, outputs, jagg) {
         return nextVersion;
     }
 
-    $('.side-pane-trigger').click(function(){
-        var rightPane = $('.right-pane');
-        var leftPane = $('.left-pane');
-        if (rightPane.hasClass('visible')){
-            rightPane.animate({"left":"0em"}, "slow").removeClass('visible');
-            leftPane.animate({"left":"-18em"}, "slow");
-            $(this).find('i').removeClass('fa-arrow-left').addClass('fa-reorder');
-        } else {
-            rightPane.animate({"left":"18em"}, "slow").addClass('visible');
-            leftPane.animate({"left":"0em"}, "slow");
-            $(this).find('i').removeClass('fa-reorder').addClass('fa-arrow-left');
-        }
-    });
 
   // stop application
     function redeployApplication(){

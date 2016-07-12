@@ -46,8 +46,7 @@ var isSSRunning = outputs.isSSRunning;
 <div class="container-fluid app-content-section">
         <div class="row">
             <div class="col-md-12 msg-issues">
-            Create new MySQL databases to persist your application data. A new database is created with a default
-            user that has all permissions granted.
+            Create new MySQL databases to store your application data. The default user of the new database has all permissions granted.
             </div>
         </div>
     <%if(!isSSRunning) {%>

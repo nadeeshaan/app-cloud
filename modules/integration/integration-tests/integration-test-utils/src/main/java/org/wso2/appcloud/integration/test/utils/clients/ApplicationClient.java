@@ -47,7 +47,6 @@ import org.wso2.carbon.automation.test.utils.http.client.HttpResponse;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +92,7 @@ public class ApplicationClient extends BaseClient{
 	protected static final String PARAM_NAME_CONTAINER_SPEC_MEMORY = "conSpecMemory";
 	protected static final String PARAM_NAME_CONTAINER_SPEC_CPU = "conSpecCpu";
     public static final String PARAM_NAME_APP_CREATION_METHOD = "appCreationMethod";
+    public static final String PARAM_NAME_APP_CONTEXT = "applicationContext";
     public static final String DEFAULT = "default";
 
 	private String endpoint;
@@ -113,9 +113,10 @@ public class ApplicationClient extends BaseClient{
     }
 
     public void createNewApplication(String applicationName, String runtime, String appTypeName,
-            String applicationRevision, String applicationDescription, String uploadedFileName,
-            String runtimeProperties, String tags, File uploadArtifact, boolean isNewVersion,
-            String containerSpecMemory, String containerSpecCpu) throws AppCloudIntegrationTestException {
+                                     String applicationRevision, String applicationDescription, String uploadedFileName,
+                                     String runtimeProperties, String tags, File uploadArtifact, boolean isNewVersion,
+                                     String containerSpecMemory, String containerSpecCpu, String applicationContext)
+            throws AppCloudIntegrationTestException {
 
         HttpClient httpclient = null;
         org.apache.http.HttpResponse response = null;
@@ -140,6 +141,7 @@ public class ApplicationClient extends BaseClient{
                     new StringBody(applicationDescription, ContentType.TEXT_PLAIN));
             builder.addPart(PARAM_NAME_RUNTIME, new StringBody(runtime, ContentType.TEXT_PLAIN));
             builder.addPart(PARAM_NAME_APP_TYPE_NAME, new StringBody(appTypeName, ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_APP_CONTEXT, new StringBody(applicationContext, ContentType.TEXT_PLAIN));
             builder.addPart(PARAM_NAME_APPLICATION_REVISION,
                     new StringBody(applicationRevision, ContentType.TEXT_PLAIN));
             builder.addPart(PARAM_NAME_UPLOADED_FILE_NAME, new StringBody(uploadedFileName, ContentType.TEXT_PLAIN));

@@ -86,7 +86,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var containerSpecNamesJson = [];
     var versionHashIdAtFileUpload;
     var progress;
-
+    var fileMoved = false;
     $(document).ready(function(){
 
             if (newVersion == "true") {
@@ -308,6 +308,24 @@ jagg.template("application", function (inputs, outputs, jagg) {
                             appTypeName: appTypeName,
                             applicationName: $("#applicationName").val(),
                             applicationRevision: $("#applicationRevision").val()
+                        },
+                        data.complete = function(jqXHR, textStatus, errorThrown) {
+                            var status = jqXHR.status;
+                            if (status == 200) {
+                                fileMoved = true;
+                                if (progress == 100) getVersionHashId();
+                            } else {
+                                progress = 0;
+                                $('#progress .progress-bar').css(
+                                    'width',
+                                    progress + '%'
+                                );
+                                jagg.message({
+                                    content: jqXHR.responseText,
+                                    type: 'error',
+                                    id: 'view_log'
+                                });
+                            }
                         }
                 },
                 progressall: function(e, data) {
@@ -317,18 +335,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         'width',
                         progress + '%'
                     );
-                    if (progress == 100) {
-                        jagg.post("../blocks/application/application.jag", {
-                            action:"getVersionHashId",
-                            applicationName:$("#applicationName").val(),
-                            applicationRevision:$("#applicationRevision").val()
-                        },function (result) {
-                            result = result.replace(/\r?\n|\r/g, " ").trim();
-                            versionHashIdAtFileUpload = result;
-                            activateCreateApplication();
-                        },function (jqXHR, textStatus, errorThrown) {
-                            jagg.message({content: "Error occurred while getting version hash.", type: 'error', id:'view_log'});
-                        });
+                    if (progress == 100 && fileMoved) {
+                        getVersionHashId();
                     }
                 },
                 change: function(e, data) {
@@ -340,6 +348,24 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     $('#progress .progress-bar').replaceWith("<div class=\"progress-bar progress-bar-success\" style=\"width: 0%;\"></div>");
                 }
             });
+
+        function getVersionHashId() {
+            jagg.post("../blocks/application/application.jag", {
+                action: "getVersionHashId",
+                applicationName: $("#applicationName").val(),
+                applicationRevision: $("#applicationRevision").val()
+            }, function(result) {
+                result = result.replace(/\r?\n|\r/g, " ").trim();
+                versionHashIdAtFileUpload = result;
+                activateCreateApplication();
+            }, function(jqXHR, textStatus, errorThrown) {
+                jagg.message({
+                    content: "Error occurred while getting version hash.",
+                    type: 'error',
+                    id: 'view_log'
+                });
+            });
+        }
 
         function drawProgressWindow(){
             $('#app_creation_progress_modal').modal({ backdrop: 'static', keyboard: false});
@@ -581,7 +607,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
         }
 
         function validateApplicationNameChar(value) {
-            var patternNonAlphaNumExceptHyphen = /[^\w -]/g;
+            var patternNonAlphaNumExceptHyphen = /[^\w-]/g;
             var isPatternMatch = patternNonAlphaNumExceptHyphen.test(value);
             validationFailErrorMsg = "Application Name has invalid characters. Valid characters are a-z A-Z 0-9 -";
 
@@ -986,7 +1012,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     <input type="radio" name="fileUploadRadioOptions" id="inlineRadio2" value="upload-from-url"
                            class="custom-radio"> Upload from URL
                 </label>
-		<label class="radio-inline">
+		        <label class="radio-inline">
                     <input type="radio" name="fileUploadRadioOptions" id="inlineRadioSample" value="deploy-sample"
                            class="custom-radio"> Deploy Sample App
                 </label>
@@ -1055,6 +1081,12 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 <label for="container">Container Specification: </label>
                 <select name="container" id="container" class="form-control" ></select>
             </div>
+
+			<div class="form-group">
+                <label for="applicationContext">Application Context: </label>
+                <input id="applicationContext" name="applicationContext" type="text" class="form-control" value="<%=appType.defaultContext%>" />
+            </div>
+
             <div class="form-group">
                 <label for="application-icon">Icon:
                     <i class="fa fa-question-circle help-tips" data-toggle="tooltip" data-placement="left"
@@ -1136,6 +1168,30 @@ jagg.template("application", function (inputs, outputs, jagg) {
                             </div>
                         </div>
                     </div>
+                    <!--div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                    Application Context
+                                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse">
+                            <div class="panel-body " id="context-pane">
+                                <div class="form-inline property-seperator">
+                                    <div class="form-group">
+                                        <label class="sr-only" for="name">Name</label>
+                                        <input id="name" type="text" class="form-control" placeholder="Name">
+                                    </div>
+                                    <div class="form-group custom-context-class-for-demo">
+                                        <label class="sr-only" for="context">Context</label>
+                                        <input id="context" type="text" class="form-control" placeholder="Context">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div-->
             </div>
             <div class="form-group">
                 <button class="cu-btn cu-btn-sm cu-btn-blue cu-btn-position" id="add-application">

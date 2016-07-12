@@ -33,11 +33,11 @@ ENGINE = InnoDB;
 -- Populate Data to `AppCloudDB`.`AC_APP_TYPE`
 -- -----------------------------------------------------
 INSERT INTO `AC_APP_TYPE` (`id`, `name`, `description`) VALUES
-(1, 'war', 'Allows you to create dynamic websites using Servlets and JSPs, instead of the static HTML webpages and JAX-RS/JAX-WS services.'),
-(2, 'mss', 'WSO2 Microservices Framework for Java (WSO2 MSF4J) offers the best option to create microservices in Java using annotation-based programming model.'),
-(3, 'php', 'Allows you to create dynamic web page content using PHP web applications.'),
-(4, 'jaggery', 'Allows you to create dynamic web page content using Jaggery web applications.'),
-(5, 'wso2dataservice', 'Allows you to deploy WSO2 Data services.');
+(1, 'war', 'Allows you to create dynamic websites using Servlets and JSPs and deploy web services.'),
+(2, 'mss', 'Allows you to create microservices in Java, using an annotation-based programming model. MSF4J stands for Microservices Framework for Java.'),
+(3, 'php', 'Allows you to create dynamic web pages and complete server applications using PHP web applications.'),
+(4, 'jaggery', 'Allows you to write all parts of web applications, services and APIs in a completely JavaScript way.'),
+(5, 'wso2dataservice', 'Allows you to deploy a data service that is supported in WSO2 Data Services Server.');
 
 
 -- -----------------------------------------------------
@@ -373,6 +373,15 @@ CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_WHITE_LISTED_TENANTS` (
   `tenant_id` INT NOT NULL,
   `max_app_count` INT NOT NULL,
   PRIMARY KEY (`id`, `tenant_id`))
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_APPLICAION_CONTEXTS` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `tenant_id` INT NOT NULL,
+  `version_id` INT NOT NULL,
+  `context` VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE (`version_id`))
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------

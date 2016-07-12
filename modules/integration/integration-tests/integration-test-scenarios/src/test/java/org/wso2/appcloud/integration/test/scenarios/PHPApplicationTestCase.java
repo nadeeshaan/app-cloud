@@ -18,7 +18,7 @@ package org.wso2.appcloud.integration.test.scenarios;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestConstants;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestUtils;
 
@@ -35,12 +35,13 @@ public class PHPApplicationTestCase extends AppCloudIntegrationBaseTestCase {
                         PHP_APP_CONTENT), Long.parseLong(AppCloudIntegrationTestUtils
                         .getPropertyValue(AppCloudIntegrationTestConstants.PHP_RUNTIME_START_TIMEOUT)),
                 AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_CPU),
-                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_MEMORY));
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.LARGE_MEMORY),
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.PHP_APPLICATION_CONTEXT));
     }
 
-	@Override
-	protected void assertLogContent(String logContent) {
-        Assert.assertTrue("Received log:" + logContent + " but expected line: " + PHP_SERVER_STARTED_MESSAGE,
-                logContent.contains(PHP_SERVER_STARTED_MESSAGE));
+    @Override
+    protected void assertLogContent(String logContent) {
+        Assert.assertTrue(logContent.contains(PHP_SERVER_STARTED_MESSAGE),
+                          "Received log:" + logContent + " but expected line: " + PHP_SERVER_STARTED_MESSAGE);
     }
 }

@@ -76,6 +76,10 @@ jagg.module("databases", {
 		return jagg.require(jagg.getModulesDir()+"databases/templates/add.jag").createTemplateWithAllPermissions.apply(this,arguments);
 	},
 
+    isDatabasePrivilegeTemplateExist:function(){
+        return jagg.require(jagg.getModulesDir()+"databases/templates/add.jag").isDatabasePrivilegeTemplateExist.apply(this,arguments);
+    },
+
 	editTemplate:function() {
 		return jagg.require(jagg.getModulesDir()+"databases/templates/add.jag").editTemplate.apply(this,arguments);
 	},

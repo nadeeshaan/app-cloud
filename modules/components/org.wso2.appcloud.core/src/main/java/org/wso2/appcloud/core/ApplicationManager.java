@@ -1159,4 +1159,77 @@ public class ApplicationManager {
         }
     }
 
+    /**
+     * Get the list of tagged applications
+     *
+     * @return List of all the tagged applications
+     * @throws AppCloudException
+     */
+    public static Application[] getTaggedApplicationsList() throws AppCloudException {
+        Connection dbConnection = DBUtil.getDBConnection();
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        try {
+            List<Application> applications = ApplicationDAO.getInstance().getTaggedApplicationsList(dbConnection, tenantId);
+            return applications.toArray(new Application[applications.size()]);
+        } catch (AppCloudException e){
+            String msg = "Error while retrieving tagged applications for tenant : " + tenantId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        }
+        finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+    }
+
+    public static int getVersionId(String versionHashId) throws AppCloudException{
+        Connection dbConnection = DBUtil.getDBConnection();
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        try {
+            return ApplicationDAO.getInstance().getVersionId(dbConnection, versionHashId, tenantId);
+        } catch (AppCloudException e){
+            String msg = "Error occured while reteiving version id for version hash id : " + versionHashId
+                         + " and tenant_id : " + tenantId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+    }
+
+    public static List<String> getApplicationContexts(int versionId) throws AppCloudException{
+        Connection dbConnection = DBUtil.getDBConnection();
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        try {
+            return ApplicationDAO.getInstance().getApplicationContexts(dbConnection, tenantId, versionId);
+        } catch (AppCloudException e){
+            String msg = "Error occured while reteiving application context for version id : " + versionId
+                         + " and tenant_id : " + tenantId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+    }
+
+    public static void addApplicationContext(int versionId, String applicationContext) throws AppCloudException{
+        Connection dbConnection = DBUtil.getDBConnection();
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        try {
+            ApplicationDAO.getInstance().addApplicationContext(dbConnection, tenantId, versionId, applicationContext);
+            dbConnection.commit();
+        } catch (AppCloudException e) {
+            String msg = "Error while adding application context for tenant id : " + tenantId + ", versionId : " + versionId
+                         + ", applicationContext : " + applicationContext;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } catch (SQLException e) {
+            String msg = "Error while committing transaction for add application context for tenant id : " + tenantId
+                         + ", versionId : " + versionId + ", applicationContext : " + applicationContext;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+    }
+
 }

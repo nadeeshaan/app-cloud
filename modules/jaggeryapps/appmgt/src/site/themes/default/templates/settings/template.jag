@@ -40,7 +40,6 @@ jagg.template("settings", function (inputs, outputs, jagg) { %>
 <!-- start of setting global javascript variable values from jaggery side -->
 <script type="text/javascript" charset="utf-8">
     var applicationName = "<%=applicationName%>";
-    console.log(applicationName);
 </script><!-- end of setting global javascript variable -->
 
 <!-- BOF App factory menu actionbar -->
