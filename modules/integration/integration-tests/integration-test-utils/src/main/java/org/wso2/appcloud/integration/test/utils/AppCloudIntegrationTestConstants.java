@@ -67,7 +67,11 @@ public class AppCloudIntegrationTestConstants {
 	public static final String MSS_APPLICATION_CONTEXT = "//appCloudProperties/application/applicationContexts/context[@key='msf4j']";
 	public static final String DSS_APPLICATION_CONTEXT = "//appCloudProperties/application/applicationContexts/context[@key='wso2dataservice']";
 	public static final String TOMCAT_APPLICATION_CONTEXT = "//appCloudProperties/application/applicationContexts/context[@key='war']";
-
+	public static final String JAGGERY_CONTAINER_SPEC = "//appCloudProperties/application/containerSpecifications/context[@type='jaggery']";
+	public static final String PHP_CONTAINER_SPEC = "//appCloudProperties/application/containerSpecifications/context[@type='php']";
+	public static final String MSS_CONTAINER_SPEC = "//appCloudProperties/application/containerSpecifications/context[@type='msf4j']";
+	public static final String DSS_CONTAINER_SPEC = "//appCloudProperties/application/containerSpecifications/context[@type='wso2dataservice']";
+	public static final String TOMCAT_CONTAINER_SPEC = "//appCloudProperties/application/containerSpecifications/context[@type='war']";
 
 	public static final String APP_PROPERTIES_KEY = "//appCloudProperties/application/properties/property";
 	public static final String APP_NEW_PROPERTIES_KEY = "//appCloudProperties/application/newProperties/property";

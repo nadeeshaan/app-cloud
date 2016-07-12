@@ -134,7 +134,7 @@ var triggerKubernetesDeployment = function(runtimeProperties, applicationRuntime
     var containers = getContainers(modManager.getPropertyValue(PROPERTY_DOCKER_REGISTRY_URL), applicationRuntime.getImageName(), tagName, versionHashId ,versionHashId, runtimeProperties, runtimeId, appHostURL);
     var deploymentConfig = getDeploymentConfig(containers, versionHashId, replicas);
 
-    deployApplication(applicationName, versionName, appTypeName, deploymentConfig, false, versionHashId, "new", conSpecMemory, conSpecCpu);
+    deployApplication(applicationName, versionName, appTypeName, deploymentConfig, false, versionHashId, "new");
 }
 
 var pushDockerImage = function (applicationName, versionName, applicationRuntime, tagName, versionHashId, dockerClient){
@@ -403,7 +403,19 @@ var createDockerFile = function (applicationName, versionName, runtimeId, upload
     return absFileUploadedPath;
 }
 
-var deployApplication = function(applicationName, versionName, appTypeName, deploymentConfig, isRedeploy, versionHashId, status, conSpecMemory, conSpecCpu){
+var deployApplication = function(applicationName, versionName, appTypeName, deploymentConfig, isRedeploy, versionHashId, status){
+
+    var tenantId = modManager.getTenantId();
+    var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
+    var application = getApplication(applicationHashId);
+
+    if (application.versions) {
+        if (application.versions[versionName]) {
+            var versionInfo = application.versions[versionName];
+            conSpecMemory = versionInfo.conSpecMemory;
+            conSpecCpu = versionInfo.conSpecCpu;
+        }
+    }
 
     var resourceQuotaLimit = new ResourceQuotaLimit();
     try{
@@ -522,7 +534,7 @@ var updateApplicationStatus = function(versionHashId, status){
     ApplicationManager.updateVersionStatus(versionHashId, status);
 };
 
-var redeployVersion = function(applicationName, versionName, versionHashId, appTypeName, conSpecMemory, conSpecCpu){
+var redeployVersion = function(applicationName, versionName, versionHashId, appTypeName){
     deleteApplicationFromKubernetes(versionHashId);
     deleteEventsOfAppVersions(versionHashId);
     var msg = "Successfully triggered stopping container";
@@ -531,7 +543,7 @@ var redeployVersion = function(applicationName, versionName, versionHashId, appT
         updateApplicationStatus(versionHashId, APPLICATION_STOPPED);
         msg = "Successfully completed stopping container";
         addEvent(STOP_CONTAINERS, EVENT_SUCCEEDED, msg, versionHashId);
-        redeployApplication(applicationName, versionName, versionHashId, appTypeName, conSpecMemory, conSpecCpu);
+        redeployApplication(applicationName, versionName, versionHashId, appTypeName);
         return true;
     } else {
         msg = "Stopping container failed ";
@@ -545,10 +557,10 @@ var deleteEventsOfAppVersions = function(versionHashId){
     eventsManager.deleteAllEventsofAppVersion(versionHashId);
 }
 
-var redeployApplication = function(applicationName, versionName, versionHashId, appTypeName, conSpecMemory, conSpecCpu){
+var redeployApplication = function(applicationName, versionName, versionHashId, appTypeName){
     var deploymentConfig = buildDeploymentConfigFromDB(versionHashId, applicationName, versionName);
 
-    deployApplication(applicationName, versionName, appTypeName, deploymentConfig, true, versionHashId, "redeploy", conSpecMemory, conSpecCpu);
+    deployApplication(applicationName, versionName, appTypeName, deploymentConfig, true, versionHashId, "redeploy");
 
     if (getDefaultVersion(applicationName) == versionName) {
         redeployMappedDomain(applicationName, versionName);

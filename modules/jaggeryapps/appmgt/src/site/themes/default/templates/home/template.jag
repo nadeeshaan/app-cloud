@@ -306,9 +306,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
             action: "redeployApplication",
             applicationName: applicationName,
             applicationRevision: selectedRevision,
-            versionKey: selectedApplicationRevision.hashId,
-            conSpecCpu: conSpecCpu,
-            conSpecMemory: conSpecMemory
+            versionKey: selectedApplicationRevision.hashId
         }, function(result) {
             setTimeout(reloadAppHome, 2000);
             jagg.message({
