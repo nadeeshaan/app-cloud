@@ -52,7 +52,7 @@ var log = new Log();
         var applicationDescription = request.getParameter("applicationDescription");
         var replicas = 1;
         var runtimeId = request.getParameter("runtime");
-        if (validateRuntimeSelection("runtime", runtimeId)) {return;}
+        if (validateRequiredAndNumber("runtime", runtimeId)) {return;}
 
         var isNewVersion = request.getParameter("isNewVersion");
         if (!isNewVersion || isNewVersion == "false") {
@@ -80,6 +80,7 @@ var log = new Log();
         var appTypeName = request.getParameter("appTypeName");
         if (validateRequired("appTypeName", appTypeName)) {return;}
 
+        // validate allowed runtimes
         var runtimes = applicationModule.getAllRuntimes(appTypeName);
         var isValid = false;
         var validRuntimes = '';
@@ -112,11 +113,32 @@ var log = new Log();
             }
         }
 
-        var conSpecMemory = request.getParameter("conSpecMemory");
-        if (validateRequired("conSpecMemory", conSpecMemory)) {return;}
+        var conSpecId = request.getParameter("conSpec");
+        if (validateRequiredAndNumber("conSpec", conSpecId)) {return;}
 
-        var conSpecCpu = request.getParameter("conSpecCpu");
-        if (validateRequired("conSpecCpu", conSpecCpu)) {return;}
+        // validate allowed spec
+        var allowedSpecsJSON = applicationModule.getAllowedContainerSpecificationsForRuntime(runtimeId);
+
+        var validConSpecs = '';
+        var isValidSpec = false;
+        var conSpecMemory = '';
+        var conSpecCpu = '';
+        for (var j = 0; j < allowedSpecsJSON.data.length; j++) {
+            var allowedSpecId = JSON.parse(allowedSpecsJSON.data[j].id);
+            validConSpecs += allowedSpecId + ",";
+            if (conSpecId == allowedSpecId) {
+                conSpecMemory = stringify(JSON.parse(allowedSpecsJSON.data[j].memory));
+                conSpecCpu = JSON.parse(allowedSpecsJSON.data[j].cpu);
+                isValidSpec = true;
+                break;
+            }
+        }
+
+        if (!isValidSpec) {
+            response.status = 400;
+            response.content = "Bad request : Valid conSpecs for the runtime " + runtimeId + " are " + validConSpecs;
+            return;
+        }
 
         var artifactUrl = request.getParameter("artifactUrl");
         var appCreationMethod = request.getParameter("appCreationMethod");
@@ -181,69 +203,38 @@ var log = new Log();
             }
 
             if (isAppCountLowerThanMax) {
-
-                var maxConSpecMemory = parseInt(modManager.getPropertyValue(MAX_CONTAINER_SPEC_MEMORY));
-                var maxConSpecCPU = parseInt(modManager.getPropertyValue(MAX_CONTAINER_SPEC_CPU));
-
-                //Check for the memory and cpu values of the application creation request
-                if ((conSpecMemory <= maxConSpecMemory) && (conSpecCpu <= maxConSpecCPU)) {
-                    if (isFileAttached == 'true') {
-                        var fileSuccessfullyUploaded = applicationModule.
-                            uploadExistingArchive(uploadedArtifact, appTypeName, applicationName, applicationRevision);
-                        if (!fileSuccessfullyUploaded) {
-                            logMessage = "Error while uploading file: " + uploadedArtifact.getName();
-                            log.error(logMessage);
-                            response.status = 504;
-                            response.content = logMessage + ". Please retry uploading";
-                            return ;
-                        }
+                if (isFileAttached == 'true') {
+                    var fileSuccessfullyUploaded = applicationModule.
+                        uploadExistingArchive(uploadedArtifact, appTypeName, applicationName, applicationRevision);
+                    if (!fileSuccessfullyUploaded) {
+                        logMessage = "Error while uploading file: " + uploadedArtifact.getName();
+                        log.error(logMessage);
+                        response.status = 504;
+                        response.content = logMessage + ". Please retry uploading";
+                        return ;
                     }
-                    if (uploadedFileName) {
-                        applicationModule.addApplication(applicationName, applicationRevision, applicationDescription,
-                                                         replicas, runtimeId, appTypeName, runtimeProperties, tags,
-                                                         appIcon, uploadedFileName, isNewVersion, conSpecMemory,
-                                                         conSpecCpu, artifactUrl, appCreationMethod, oldHashId,
-                                                         applicationContext);
-                    } else {
-                        var gitRepoUrl = request.getParameter("gitRepoUrl");
-                        var gitRepoBranch = request.getParameter("gitRepoBranch");
-                        var projectRoot = request.getParameter("projectRoot");
-                        var token = request.getParameter("token");
-                        gitHubAppModule.addApplicationViaGitHub(applicationName, applicationRevision, applicationDescription,
-                                replicas, runtimeId, appTypeName, runtimeProperties, tags,
-                                appIcon, gitRepoUrl, gitRepoBranch, projectRoot, token,
-                                isNewVersion, conSpecMemory, conSpecCpu, appCreationMethod, applicationContext);
-                    }
-                    logMessage = "Application creation is successfully submitted";
-                    log.info(logMessage);
-                    response.status = 200;
-                    response.content = logMessage;
-                    return;
-                } else {
-                    if (conSpecMemory > maxConSpecMemory) {
-                        logMessage = "Application creation request not accepted because the maximum memory limit of " +
-                                "container specification is " + maxConSpecMemory + "."
-                        log.warn(logMessage);
-                        response.status = 200;
-                        response.content = logMessage;
-                        return;
-
-                    }
-                    if (conSpecCpu > maxConSpecCPU) {
-                        logMessage = "Application creation request not accepted because the maximum cpu limit of container "
-                                + "specification is " + maxConSpecCPU + ".";
-                        log.warn(logMessage);
-                        response.status = 200;
-                        response.content = logMessage;
-                        return;
-                    }
-                    logMessage = "Maximum limit of conSpecMemory is " + maxConSpecMemory + " and conSpecCpu is " +
-                            maxConSpecCPU + ".";
-                    log.warn(logMessage);
-                    response.status = 200;
-                    response.content = logMessage;
-                    return;
                 }
+                if (uploadedFileName) {
+                    applicationModule.addApplication(applicationName, applicationRevision, applicationDescription,
+                                                     replicas, runtimeId, appTypeName, runtimeProperties, tags,
+                                                     appIcon, uploadedFileName, isNewVersion, conSpecMemory,
+                                                     conSpecCpu, artifactUrl, appCreationMethod, oldHashId,
+                                                     applicationContext);
+                } else {
+                    var gitRepoUrl = request.getParameter("gitRepoUrl");
+                    var gitRepoBranch = request.getParameter("gitRepoBranch");
+                    var projectRoot = request.getParameter("projectRoot");
+                    var token = request.getParameter("token");
+                    gitHubAppModule.addApplicationViaGitHub(applicationName, applicationRevision, applicationDescription,
+                            replicas, runtimeId, appTypeName, runtimeProperties, tags,
+                            appIcon, gitRepoUrl, gitRepoBranch, projectRoot, token,
+                            isNewVersion, conSpecMemory, conSpecCpu, appCreationMethod, applicationContext);
+                }
+                logMessage = "Application creation is successfully submitted";
+                log.info(logMessage);
+                response.status = 200;
+                response.content = logMessage;
+                return;
             } else {
                 logMessage = "Maximum number of applications that you can create is " + maxAppCount;
                 log.warn(logMessage)
@@ -592,14 +583,14 @@ function validationApplicationRevision(field, value) {
     return false;
 }
 
-function validateRuntimeSelection(field, value) {
+function validateRequiredAndNumber(field, value) {
     if (validateRequired(field, value)) {
         return true;
     }
 
     if (isNaN(value) || value <= 0) {
         response.status = 400;
-        response.content = "Bad request : runtime should be a number more than 0";
+        response.content = "Bad request : " + field + " should be a number more than 0";
         return true;
     }
 
