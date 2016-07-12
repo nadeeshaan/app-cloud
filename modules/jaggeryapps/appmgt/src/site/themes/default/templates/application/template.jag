@@ -39,6 +39,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
         var data = null;
         var allowedRuntimeContainerSpecJson = outputs.allowedContainerSpecs;
 		var maxApplications = outputs.maxAppCount;
+        var defaultVersion = outputs.defaultVersion;
     %>
 
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/bootstrap-3.2.0/bootstrap.min.css'))%>">
@@ -258,6 +259,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
                         }
                     }
                     formData.append('tags', JSON.stringify(tags));
+                    var checkedDefaultVersion = $("#default_version").is(":checked");
+                    formData.append('setDefaultVersion', checkedDefaultVersion);
                     $.ajax({
                         url: url,
                         type: 'POST',
@@ -958,7 +961,15 @@ jagg.template("application", function (inputs, outputs, jagg) {
             </label>
             <input id="applicationRevision" name="applicationRevision" type="text" class="form-control" value="<%=nextVersion%>"/>
             </div>
-        <% } else { %>
+            <div class="form-group">
+                    <label>Default version is set to <%=defaultVersion%></label>
+                       <div class="checkbox">
+                          <label>
+                           <input type="checkbox" name="defaultversion" id="default_version" value="deploy-sample" class="custom-checkbox"/>Make this the default version
+                          </label>
+                       </div>
+                    </div>
+                <% } else { %>
             <div class="form-group">
             <label for="application-version">Application Version:
                 <i class="fa fa-question-circle help-tips" data-toggle="tooltip" data-placement="left" title="Set the version in the form of <Major>.<Minor>.<Patch>"></i>

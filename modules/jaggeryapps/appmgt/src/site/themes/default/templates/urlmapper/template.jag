@@ -21,37 +21,19 @@ jagg.template("urlmapper", function (inputs, outputs, jagg) { %>
 <%
     var application = outputs.application;
     var versions = application.versions;
-    var defaultVersionName = application.defaultVersionName;
+    var defaultVersionName = application.defaultVersion;
     var applicationKey = application.hashId;
-    var selectedRevision = outputs.selectedRevision;
-
-    var selectedApplicationRevision = versions[selectedRevision];
-
-
-    if (versions !== null) {
-        var versionString = "";
-        for (var version in versions) {
-            var versionName = versions[version].versionName;
-            var versionUrl = versions[version].deploymentURL;
-            if (defaultVersionName == versionName) {
-                versionString += "<option" + ' value="' + versionUrl + '" ' + " selected>" + versionName + "</option>";
-            } else {
-                versionString += "<option" + ' value="' + versionUrl + '" ' + ">" + versionName + "</option>";
-            }
-
-        }
-    }
-
+    var customURL = application.customURL;
+    var defaultHostName = outputs.defaultHostName;
 %>
 
 <!-- start of setting global javascript variable values from jaggery side -->
 <script type="text/javascript" charset="utf-8">
     var applicationName = "<%=application.applicationName%>";
     var defaultVersionName = "<%=defaultVersionName%>";
-    var versions = jQuery.parseJSON('<%=versions%>');
+    var customURL = "<%=customURL%>";
+    var defaultHostName = "<%=defaultHostName%>";
 </script><!-- end of setting global javascript variable -->
-
-<div class="right-pane">
 
 <!-- BOF App factory menu actionbar -->
 <input type="hidden" maxlength="19" id="defaultDomain" name="defaultDomain" value=""/>
@@ -76,15 +58,12 @@ jagg.template("urlmapper", function (inputs, outputs, jagg) { %>
  <div name="customUrlForm" id="customUrlForm">
      <div class="col-md-5 forms">
          <div class="form-group" for="productionVersion">
-             <label for="production-Version">Mapped Version in Production: </label>
-             <select id="productionVersion" name="productionVersion" class="form-control select2 mygroup"
-             placeholder="Select a state" allowClear="true">
-                <%=versionString%>
-             </select>
+             <label for="production-Version">Pointed To: </label>
+             <label id="defaultVersion" type="text" class="form-control mygroup" name="productionCustom">
          </div>
 
          <div class="form-group" for="productionCustom">
-            <label for="production-Custom">Custom URL: </label>
+            <label for="production-Custom">Custom Domain: </label>
 
              <div class="input-group" >
                  <input type="text" class="form-control mygroup" id="productionCustom" name="productionCustom"
@@ -108,23 +87,17 @@ jagg.template("urlmapper", function (inputs, outputs, jagg) { %>
              <button class="cu-btn cu-btn-sm cu-btn-blue" id="editCustomUrl" onclick="editCustomUrl()">
              <span class="fw-stack fw-lg btn-action-ico">
                  <i class="fw fw-circle-outline fw-stack-2x"></i>
-                 <i class="fw fw-circle-outline fw-stack-1x"></i>
+                 <i class="fw fw-add fw-stack-1x"></i>
              </span>
                  Edit
              </button>
          </div>
      </div>
+</form>
  </div>
 </div><!-- /.container -->
 <div class="clearfix"></div>
 <div id="push"></div>
-</div>
-</div>
-</div>
-<script>
-
-
-</script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/bootstrap-3.2.0/bootstrap.min.js'))%>"></script>
 <!-- include custom js functions -->

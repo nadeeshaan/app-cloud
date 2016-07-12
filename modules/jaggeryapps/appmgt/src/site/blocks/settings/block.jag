@@ -17,7 +17,7 @@
  *   under the License.
  */
 
-jagg.block("urlmapper", {
+jagg.block("settings", {
     initialize: function (data) {
 
     },
@@ -30,11 +30,9 @@ jagg.block("urlmapper", {
     getOutputs: function (inputs) {
         var applicationModule = jagg.module("application");
         var application = applicationModule.getApplication(inputs.applicationKey);
-        var defaultHostName = applicationModule.constructDefaultAppLaunchURL(application.applicationName);
 
         return {
-            "application": application,
-            "defaultHostName": defaultHostName
+            "application": application
         };
     }
 

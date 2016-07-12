@@ -44,6 +44,7 @@ jagg.block("application", {
         var maxAppCount = applicationModule.getMaxInstanceCount();
         var allowedContainerSpecs = applicationModule.
             getAllowedContainerSpecificationsForRuntime(runtimes[0].id);
+        var defaultVersion = applicationModule.getDefaultVersion(inputs.applicationName);
 
         return {
             "runtimes" : runtimes,
@@ -53,7 +54,8 @@ jagg.block("application", {
             "subscriptionPlanBaseURL" : subscriptionPlanBaseURL,
             "notAllowedEnvVariables" : notAllowedEnvVariables,
             "maxAppCount" : maxAppCount,
-            "allowedContainerSpecs" : allowedContainerSpecs
+            "allowedContainerSpecs" : allowedContainerSpecs,
+            "defaultVersion" : defaultVersion
         };
     }
 });

@@ -150,6 +150,7 @@ var log = new Log();
             applicationContext = null;
         }
 
+        var setDefaultVersion = request.getParameter("setDefaultVersion");
         // checking whether an application with same name and same version, already exists or not
         var versionHashId = applicationModule.getVersionHashId(applicationName, applicationRevision);
         if (applicationModule.isAplicationVersionExist(versionHashId)) {
@@ -219,7 +220,7 @@ var log = new Log();
                                                      replicas, runtimeId, appTypeName, runtimeProperties, tags,
                                                      appIcon, uploadedFileName, isNewVersion, conSpecMemory,
                                                      conSpecCpu, artifactUrl, appCreationMethod, oldHashId,
-                                                     applicationContext);
+                                                     applicationContext, setDefaultVersion);
                 } else {
                     var gitRepoUrl = request.getParameter("gitRepoUrl");
                     var gitRepoBranch = request.getParameter("gitRepoBranch");

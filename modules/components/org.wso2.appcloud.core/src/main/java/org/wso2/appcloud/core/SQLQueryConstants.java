@@ -47,7 +47,7 @@ public class SQLQueryConstants {
     public static final String RUNTIME_IMAGE_NAME = "image_name";
     public static final String RUNTIME_TAG = "tag";
     public static final String EVENT_TIMESTAMP = "timestamp";
-    public static final String HOST_URL = "host_url";
+    public static final String CUSTOM_DOMAIN = "custom_domain";
     public static final String TENANT_ID = "tenant_id";
     public static final String MAX_APP_COUNT = "max_app_count";
     public static final String CON_SPEC_CPU = "con_spec_cpu";
@@ -93,8 +93,8 @@ public class SQLQueryConstants {
             "INSERT INTO AC_CONTAINER (name, version, deployment_id, tenant_id) values (?, ?, ?, ?)";
 
     public static final String ADD_CONTAINER_SERVICE_PROXY =
-            "INSERT INTO AC_CONTAINER_SERVICE_PROXY (name, protocol, port, backend_port, container_id, tenant_id, host_url) " +
-                    "values (?, ?, ?, ?, ?, ?, ?)";
+            "INSERT INTO AC_CONTAINER_SERVICE_PROXY (name, protocol, port, backend_port, container_id, tenant_id) " +
+                    "values (?, ?, ?, ?, ?, ?)";
 
     public static final String ADD_WHITE_LISTED_TENANT =
             "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count, max_database_count) values (?, ?, ?) " +
@@ -186,8 +186,7 @@ public class SQLQueryConstants {
             "SELECT * FROM AC_CONTAINER WHERE deployment_id=? AND tenant_id=?";
 
     public static final String GET_CONTAINER_SERVICE_PROXY = "SELECT AC_CONTAINER_SERVICE_PROXY.name, " +
-            "AC_CONTAINER_SERVICE_PROXY.protocol, AC_CONTAINER_SERVICE_PROXY.port, " +
-            "AC_CONTAINER_SERVICE_PROXY.backend_port, AC_CONTAINER_SERVICE_PROXY.host_url " +
+            "AC_CONTAINER_SERVICE_PROXY.protocol, AC_CONTAINER_SERVICE_PROXY.port, AC_CONTAINER_SERVICE_PROXY.backend_port " +
             "FROM AC_CONTAINER_SERVICE_PROXY " +
             "INNER JOIN AC_CONTAINER ON AC_CONTAINER_SERVICE_PROXY.container_id = AC_CONTAINER.id " +
             "INNER JOIN AC_DEPLOYMENT ON AC_CONTAINER.deployment_id = AC_DEPLOYMENT.id " +
@@ -201,6 +200,13 @@ public class SQLQueryConstants {
 
 	public static final String GET_WHITE_LISTED_TENANT_DETAILS = "SELECT * FROM AC_WHITE_LISTED_TENANTS WHERE tenant_id=?";
 
+    public static final String GET_CUSTOM_DOMAIN = "SELECT custom_domain FROM AC_APPLICATION " +
+            "WHERE hash_id=? AND AC_APPLICATION.tenant_id=?";
+
+    public static final String GET_DEFAULT_VERSION = "SELECT default_version FROM AC_APPLICATION " +
+            "WHERE hash_id=? AND AC_APPLICATION.tenant_id=?";
+
+    /* Update Queries */
     public static final String GET_ALL_APPLICATIONS_LIST_WITH_TAG =
             "SELECT app.name as application_name, app.hash_id as hash_id, type.name as app_type_name, " +
             "icon.icon as icon, tag.name as tag_key, tag.value as tag_value FROM AC_APPLICATION app " +
@@ -233,12 +239,8 @@ public class SQLQueryConstants {
     public static final String UPDATE_APPLICATION_STATUS =
             "UPDATE AC_VERSION SET status=? WHERE hash_id=? AND tenant_id=?";
 
-    public static final String UPDATE_CONTAINER_SERVICE_PROXY = "UPDATE AC_CONTAINER_SERVICE_PROXY " +
-            "INNER JOIN AC_CONTAINER ON AC_CONTAINER_SERVICE_PROXY.container_id = AC_CONTAINER.id " +
-            "INNER JOIN AC_DEPLOYMENT ON AC_CONTAINER.deployment_id = AC_DEPLOYMENT.id " +
-            "INNER JOIN AC_VERSION ON AC_DEPLOYMENT.id = AC_VERSION.deployment_id " +
-            "SET AC_CONTAINER_SERVICE_PROXY.host_url=? " +
-            "WHERE AC_VERSION.hash_id=? AND AC_VERSION.tenant_id=?";
+    public static final String UPDATE_CUSTOM_DOMAIN = "UPDATE AC_APPLICATION SET custom_domain=? "
+            + "WHERE hash_id=?  AND AC_APPLICATION.tenant_id=?";
 
     public static final String  UPDATE_APPLICATION_DEFAULT_VERSION = "UPDATE AC_APPLICATION " +
             "SET default_version=? WHERE hash_id=? AND tenant_id=?";

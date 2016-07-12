@@ -241,7 +241,6 @@ function changeSelectedRevision(newRevision){
                                             'href="#yourlink">Error has occurred.</a></div>');
 
     }
-
     // Set upload revision btn
     var uploadRevisionUrl = appCreationPageBaseUrl+"?appTypeName="+application.applicationType + //"&applicationName="+applicationName;
                             "&applicationName="+applicationName + "&encodedLabels="+encodedLabels + "&encodedEnvs="

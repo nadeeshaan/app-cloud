@@ -814,6 +814,48 @@ public class ApplicationManager {
     }
 
     /**
+     * Get custom domain by application hash id.
+     *
+     * @param applicationId hash id of application
+     * @return custom domain
+     * @throws AppCloudException
+     */
+    public static String getCustomDomain(String applicationId) throws AppCloudException {
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        Connection dbConnection = DBUtil.getDBConnection();
+        try {
+            return ApplicationDAO.getInstance().getCustomDomain(dbConnection, applicationId, tenantId);
+        } catch (AppCloudException e) {
+            String msg = "Error while getting custom domain with application hash id : " + applicationId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+    }
+
+    /**
+     * Get default version by application hash id.
+     *
+     * @param applicationId hash id of application
+     * @return default version
+     * @throws AppCloudException
+     */
+    public static String getDefaultVersion(String applicationId) throws AppCloudException {
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        Connection dbConnection = DBUtil.getDBConnection();
+        try {
+            return ApplicationDAO.getInstance().getDefaultVersion(dbConnection, applicationId, tenantId);
+        } catch (AppCloudException e) {
+            String msg = "Error while getting default version with application hash id : " + applicationId;
+            log.error(msg, e);
+            throw new AppCloudException(msg, e);
+        } finally {
+            DBUtil.closeConnection(dbConnection);
+        }
+    }
+
+    /**
      * Get container service proxy by version hash id.
      *
      * @param versionHashId hash id of version
@@ -837,29 +879,29 @@ public class ApplicationManager {
     }
 
     /**
-     * Update container service proxy service by version hash id.
+     * Update custom domain for particular application.
      *
-     * @param versionHashId hash id of version
-     * @param hostUrl       host URL
+     * @param applicationHashId hash id of application
+     * @param customDomain      custom domain
      * @return is container service proxy service update successful or not
      * @throws AppCloudException
      */
-    public static boolean updateContainerServiceProxyService(String versionHashId, String hostUrl)
-            throws AppCloudException {
+    public static boolean updateCustomDomain(String applicationHashId, String customDomain) throws AppCloudException {
         Connection dbConnection = DBUtil.getDBConnection();
         boolean isUpdateSuccess = false;
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+
         try {
             isUpdateSuccess = ApplicationDAO.getInstance().
-                                updateContainerServiceProxy(dbConnection, versionHashId, hostUrl, tenantId);
+                    updateCustomDomain(dbConnection, applicationHashId, customDomain, tenantId);
             dbConnection.commit();
         } catch (AppCloudException e) {
-            String msg = "Error while updating the container service proxy with version hash id : " + versionHashId;
+            String msg = "Error while updating the custom domain with application hash id : " + applicationHashId;
             log.error(msg, e);
             throw new AppCloudException(msg, e);
         } catch (SQLException e) {
-            String msg = "Error while committing transaction for updating the container service proxy with version " +
-                    "hash id : " + versionHashId;
+            String msg = "Error while committing transaction for update custom domain with application hash id : "
+                    + applicationHashId;
             log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {

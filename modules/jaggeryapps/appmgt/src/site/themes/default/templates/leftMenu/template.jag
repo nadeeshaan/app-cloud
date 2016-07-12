@@ -61,6 +61,9 @@ jagg.template("leftMenu", function (inputs, outputs, jagg) {
         <li class="<% if (pageName == "customUrl") { %>selected<%}%>">
                 <a href="/appmgt/site/pages/customurl.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>"><i class="fa fa-link"></i>Custom URL</a>
         </li>
+        <li class="<% if (pageName == "settings") { %>selected<%}%>">
+                <a href="/appmgt/site/pages/settings.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>"><i class="fw fw-settings"></i>Settings</a>
+        </li>
 
     </ul>
  </div>

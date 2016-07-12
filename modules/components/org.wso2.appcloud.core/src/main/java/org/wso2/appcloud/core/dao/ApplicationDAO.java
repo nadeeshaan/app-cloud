@@ -421,7 +421,6 @@ public class ApplicationDAO {
             preparedStatement.setString(4, containerServiceProxy.getServiceBackendPort());
             preparedStatement.setInt(5, containerId);
             preparedStatement.setInt(6, tenantId);
-            preparedStatement.setString(7, containerServiceProxy.getHostURL());
             preparedStatement.execute();
 
         } catch (SQLException e) {
@@ -872,6 +871,7 @@ public class ApplicationDAO {
                 application.setDefaultVersion(resultSet.getString(SQLQueryConstants.DEFAULT_VERSION));
                 application.setApplicationType(resultSet.getString(SQLQueryConstants.APPLICATION_TYPE_NAME));
                 application.setIcon(resultSet.getBlob(SQLQueryConstants.ICON));
+                application.setCustomDomain(resultSet.getString(SQLQueryConstants.CUSTOM_DOMAIN));
                 application.setVersions(getAllVersionsOfApplication(dbConnection, applicationHashId, tenantId));
 
             }
@@ -1344,7 +1344,6 @@ public class ApplicationDAO {
                 containerServiceProxy.setServiceProtocol(resultSet.getString(SQLQueryConstants.PROTOCOL));
                 containerServiceProxy.setServicePort(resultSet.getInt(SQLQueryConstants.PORT));
                 containerServiceProxy.setServiceBackendPort(resultSet.getString(SQLQueryConstants.BACKEND_PORT));
-                containerServiceProxy.setHostURL(resultSet.getString(SQLQueryConstants.HOST_URL));
                 containerServiceProxies.add(containerServiceProxy);
             }
 
@@ -1659,7 +1658,6 @@ public class ApplicationDAO {
                 containerServiceProxy.setServiceProtocol(rs.getString(SQLQueryConstants.PROTOCOL));
                 containerServiceProxy.setServicePort(rs.getInt(SQLQueryConstants.PORT));
                 containerServiceProxy.setServiceBackendPort(rs.getString(SQLQueryConstants.BACKEND_PORT));
-                containerServiceProxy.setHostURL(rs.getString(SQLQueryConstants.HOST_URL));
                 containerServiceProxies.add(containerServiceProxy);
             }
 
@@ -1675,34 +1673,104 @@ public class ApplicationDAO {
     }
 
     /**
-     * Update host url from container service proxy for custom url.
+     * Update custom domain for a particular application
      *
      * @param dbConnection
-     * @param versionHashId
-     * @param hostUrl
-     * @return if container service proxy was successfully updated or not
+     * @param applicationHashId
+     * @param customDomain
+     * @param tenantId
+     * @return if successfully updated cosutom domain
      * @throws AppCloudException
      */
-    public boolean updateContainerServiceProxy(Connection dbConnection, String versionHashId, String hostUrl,
-                                               int tenantId) throws AppCloudException {
+    public boolean updateCustomDomain(Connection dbConnection, String applicationHashId, String customDomain,
+            int tenantId) throws AppCloudException {
         PreparedStatement preparedStatement = null;
-        boolean success = false;
 
         try {
-            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_CONTAINER_SERVICE_PROXY);
-            preparedStatement.setString(1, hostUrl);
-            preparedStatement.setString(2, versionHashId);
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_CUSTOM_DOMAIN);
+            preparedStatement.setString(1, customDomain);
+            preparedStatement.setString(2, applicationHashId);
             preparedStatement.setInt(3, tenantId);
-            success = preparedStatement.execute();
+            return preparedStatement.execute();
         } catch (SQLException e) {
-            String msg =
-                    "Error occurred while updating container service proxy with version hash id : " + versionHashId;
+            String msg = "Error occurred while updating custom domain : " + customDomain +
+                    " with application hash id : " + applicationHashId;
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
         }
+    }
 
-        return success;
+    /**
+     * Get custom domain for particular application
+     *
+     * @param dbConnection
+     * @param applicationHashId
+     * @param tenantId
+     * @return if custom domain exist
+     * @throws AppCloudException
+     */
+    public String getCustomDomain(Connection dbConnection, String applicationHashId, int tenantId)
+            throws AppCloudException {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String customDomain = null;
+
+        try {
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_CUSTOM_DOMAIN);
+            preparedStatement.setString(1, applicationHashId);
+            preparedStatement.setInt(2, tenantId);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                customDomain = resultSet.getString(SQLQueryConstants.CUSTOM_DOMAIN);
+            }
+            dbConnection.commit();
+        } catch (SQLException e) {
+            String message = "Error while getting custom domain for application hash id : " + applicationHashId +
+                    "in tenant id : " + tenantId;
+            throw new AppCloudException(message, e);
+        } finally {
+            DBUtil.closeResultSet(resultSet);
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
+
+        return customDomain;
+    }
+
+    /**
+     * Get default version for particular application
+     *
+     * @param dbConnection
+     * @param applicationHashId
+     * @param tenantId
+     * @return if default version exist
+     * @throws AppCloudException
+     */
+    public String getDefaultVersion(Connection dbConnection, String applicationHashId, int tenantId)
+            throws AppCloudException {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String defaultVersion = null;
+
+        try {
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_DEFAULT_VERSION);
+            preparedStatement.setString(1, applicationHashId);
+            preparedStatement.setInt(2, tenantId);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                defaultVersion = resultSet.getString(SQLQueryConstants.DEFAULT_VERSION);
+            }
+            dbConnection.commit();
+        } catch (SQLException e) {
+            String message = "Error while getting default version for application hash id : " + applicationHashId +
+                    "in tenant id : " + tenantId;
+            throw new AppCloudException(message, e);
+        } finally {
+            DBUtil.closeResultSet(resultSet);
+            DBUtil.closePreparedStatement(preparedStatement);
+        }
+
+        return defaultVersion;
     }
 
     /**
@@ -1713,24 +1781,21 @@ public class ApplicationDAO {
      * @throws AppCloudException
      */
     public boolean updateDefaultVersion(Connection dbConnection, String applicationHashId, String defaultVersionName,
-                                        int tenantId) throws AppCloudException {
+            int tenantId) throws AppCloudException {
         PreparedStatement preparedStatement = null;
-        boolean updated = false;
 
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.UPDATE_APPLICATION_DEFAULT_VERSION);
             preparedStatement.setString(1, defaultVersionName);
             preparedStatement.setString(2, applicationHashId);
             preparedStatement.setInt(3, tenantId);
-            updated = preparedStatement.execute();
+            return preparedStatement.execute();
         } catch (SQLException e) {
             String message = "Error while updating default version with application hash id : " + applicationHashId;
             throw new AppCloudException(message, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
         }
-
-        return updated;
     }
 
     /**
