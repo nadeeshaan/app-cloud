@@ -341,6 +341,13 @@
                 <context key="wso2dataservice">/</context>
                 <context key="jaggery">/hellojaggery</context>
             </applicationContexts>
+            <containerSpecifications>
+                <spec type="war">3</spec>
+                <spec type="msf4j">1</spec>
+                <spec type="php">1</spec>
+                <spec type="wso2dataservice">3</spec>
+                <spec type="jaggery">3</spec>
+            </containerSpecifications>
             <properties>
                 <property key="key1">value1</property>
                 <property key="key2">value2</property>

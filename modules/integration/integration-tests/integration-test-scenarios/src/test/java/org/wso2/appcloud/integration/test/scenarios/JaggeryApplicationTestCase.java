@@ -37,10 +37,9 @@ public class JaggeryApplicationTestCase extends AppCloudIntegrationBaseTestCase 
               AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_APP_CONTENT),
               Long.parseLong(AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.
                                                                                    JAGGERY_RUNTIME_START_TIMEOUT)),
-              AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.EXTRA_LARGE_CPU),
-              AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.EXTRA_LARGE_MEMORY),
               AppCloudIntegrationTestUtils
-                      .getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_APPLICATION_CONTEXT));
+                      .getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_APPLICATION_CONTEXT),
+              AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_CONTAINER_SPEC));
     }
 
     @Override

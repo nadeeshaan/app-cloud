@@ -48,20 +48,17 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	protected String applicationDescription;
 	protected String properties;
 	protected String tags;
-	private String containerSpecMemory;
-	private String containerSpecCpu;
-	String applicationContext;
+	private String applicationContext;
+	private String conSpec;
 
 
 	public AppCloudIntegrationBaseTestCase(String runtimeID, String fileName, String applicationType,
-	                                       String sampleAppContent, long runtimeStartTimeout, String containerSpecCpu,
-	                                       String containerSpecMemory, String applicationContext) {
+	                                       String sampleAppContent, long runtimeStartTimeout, String applicationContext,
+	                                       String conSpec) {
 		this.runtimeID = runtimeID;
 		this.fileName = fileName;
 		this.sampleAppContent = sampleAppContent;
 		this.runtimeStartTimeout = runtimeStartTimeout;
-		this.containerSpecCpu = containerSpecCpu;
-		this.containerSpecMemory = containerSpecMemory;
 		this.applicationContext = applicationContext;
 		//Application details
 		this.applicationName = AppCloudIntegrationTestUtils
@@ -75,6 +72,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 				AppCloudIntegrationTestUtils.getPropertyNodes(AppCloudIntegrationTestConstants.APP_PROPERTIES_KEY));
 		this.tags = AppCloudIntegrationTestUtils.getKeyValuePairAsJsonFromConfig(
 				AppCloudIntegrationTestUtils.getPropertyNodes(AppCloudIntegrationTestConstants.APP_TAGS_KEY));
+		this.conSpec = conSpec;
 	}
 
 	@BeforeClass(alwaysRun = true)
@@ -97,7 +95,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		File uploadArtifact = new File(TestConfigurationProvider.getResourceLocation() + fileName);
 		applicationClient.createNewApplication(applicationName, this.runtimeID, applicationType, applicationRevision,
 		                                       applicationDescription, this.fileName, properties, tags, uploadArtifact,
-		                                       false, containerSpecMemory, containerSpecCpu, applicationContext);
+		                                       false, applicationContext, conSpec);
 
 		//Wait until creation finished
 		log.info("Waiting until application comes to running state...");
@@ -148,8 +146,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	@Test(description = "Testing start application action", dependsOnMethods = {"testStopApplication"})
 	public void testStartApplication() throws Exception {
 		String versionHash = applicationClient.getVersionHash(applicationName, applicationRevision);
-        applicationClient.startApplicationRevision(applicationName, applicationRevision, versionHash,
-                                                   containerSpecMemory, containerSpecCpu);
+        applicationClient.startApplicationRevision(applicationName, applicationRevision, versionHash);
 
 		//Wait until start application finished
 		log.info("Waiting until application comes to running state...");
@@ -291,7 +288,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		File uploadArtifact = new File(TestConfigurationProvider.getResourceLocation() + fileName);
         applicationClient.createNewApplication(applicationName, this.runtimeID, applicationType, applicationRevision,
                                                applicationDescription, this.fileName, properties, tags, uploadArtifact,
-                                               true, containerSpecMemory, containerSpecCpu, applicationContext);
+                                               true, applicationContext, conSpec);
 
 		//Wait until creation finished
 		log.info("Waiting until new version comes to running state");

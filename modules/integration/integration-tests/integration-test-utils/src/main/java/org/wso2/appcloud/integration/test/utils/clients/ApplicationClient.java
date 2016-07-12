@@ -89,8 +89,7 @@ public class ApplicationClient extends BaseClient{
 	protected static final String PARAM_NAME_CHANGE_ICON = "changeIcon";
 	protected static final String PARAM_NAME_FILE_UPLOAD = "fileupload";
 	protected static final String PARAM_NAME_IS_NEW_VERSION = "isNewVersion";
-	protected static final String PARAM_NAME_CONTAINER_SPEC_MEMORY = "conSpecMemory";
-	protected static final String PARAM_NAME_CONTAINER_SPEC_CPU = "conSpecCpu";
+	protected static final String PARAM_NAME_CONTAINER_SPEC = "conSpec";
     public static final String PARAM_NAME_APP_CREATION_METHOD = "appCreationMethod";
     public static final String PARAM_NAME_APP_CONTEXT = "applicationContext";
     public static final String DEFAULT = "default";
@@ -115,7 +114,7 @@ public class ApplicationClient extends BaseClient{
     public void createNewApplication(String applicationName, String runtime, String appTypeName,
                                      String applicationRevision, String applicationDescription, String uploadedFileName,
                                      String runtimeProperties, String tags, File uploadArtifact, boolean isNewVersion,
-                                     String containerSpecMemory, String containerSpecCpu, String applicationContext)
+                                     String applicationContext, String conSpec)
             throws AppCloudIntegrationTestException {
 
         HttpClient httpclient = null;
@@ -133,9 +132,7 @@ public class ApplicationClient extends BaseClient{
             builder.addPart(PARAM_NAME_FILE_UPLOAD, new FileBody(uploadArtifact));
             builder.addPart(PARAM_NAME_ACTION, new StringBody(CREATE_APPLICATION_ACTION, ContentType.TEXT_PLAIN));
             builder.addPart(PARAM_NAME_APP_CREATION_METHOD, new StringBody(DEFAULT, ContentType.TEXT_PLAIN));
-            builder.addPart(PARAM_NAME_CONTAINER_SPEC_MEMORY,
-                    new StringBody(containerSpecMemory, ContentType.TEXT_PLAIN));
-            builder.addPart(PARAM_NAME_CONTAINER_SPEC_CPU, new StringBody(containerSpecCpu, ContentType.TEXT_PLAIN));
+	        builder.addPart(PARAM_NAME_CONTAINER_SPEC, new StringBody(conSpec, ContentType.TEXT_PLAIN));
             builder.addPart(PARAM_NAME_APPLICATION_NAME, new StringBody(applicationName, ContentType.TEXT_PLAIN));
             builder.addPart(PARAM_NAME_APPLICATION_DESCRIPTION,
                     new StringBody(applicationDescription, ContentType.TEXT_PLAIN));
@@ -187,15 +184,12 @@ public class ApplicationClient extends BaseClient{
 		}
 	}
 
-	public void startApplicationRevision(String applicationName, String applicationRevision, String versionHash,
-	                                     String containerSpecMemory, String containerSpecCpu) throws Exception {
+	public void startApplicationRevision(String applicationName, String applicationRevision, String versionHash) throws Exception {
         List<NameValuePair> nameValuePairs = new ArrayList<>();
         nameValuePairs.add(new BasicNameValuePair(PARAM_NAME_ACTION, START_APPLICATION_ACTION));
         nameValuePairs.add(new BasicNameValuePair(PARAM_NAME_APPLICATION_NAME, applicationName));
         nameValuePairs.add(new BasicNameValuePair(PARAM_NAME_APPLICATION_REVISION, applicationRevision));
         nameValuePairs.add(new BasicNameValuePair(PARAM_NAME_VERSION_KEY, versionHash));
-        nameValuePairs.add(new BasicNameValuePair(PARAM_NAME_CONTAINER_SPEC_CPU, containerSpecCpu));
-        nameValuePairs.add(new BasicNameValuePair(PARAM_NAME_CONTAINER_SPEC_MEMORY, containerSpecMemory));
         HttpResponse response = doPostRequest(this.endpoint, nameValuePairs);
 
 		if (response.getResponseCode() != HttpStatus.SC_OK && response.getResponseCode() != HttpStatus.SC_REQUEST_TIMEOUT) {
