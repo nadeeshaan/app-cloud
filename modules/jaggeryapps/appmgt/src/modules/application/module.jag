@@ -247,6 +247,9 @@ jagg.module("application", {
     getDefaultVersion: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").getDefaultVersion.apply(this, arguments);
     },
+    setDefaultDomain: function () {
+        return jagg.require(jagg.getModulesDir() + "application/application.jag").setDefaultDomain.apply(this, arguments);
+    },
     changeMappedDomain: function () {
         return jagg.require(jagg.getModulesDir() + "application/application.jag").changeMappedDomain.apply(this, arguments);
     },
