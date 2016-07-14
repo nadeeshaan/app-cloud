@@ -36,7 +36,9 @@ public class MSF4JApplicationTestCase extends AppCloudIntegrationBaseTestCase {
                         MSS_APP_CONTENT), Long.parseLong(AppCloudIntegrationTestUtils
                         .getPropertyValue(AppCloudIntegrationTestConstants.MSS_RUNTIME_START_TIMEOUT)),
                 AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.MSS_APPLICATION_CONTEXT),
-                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.MSS_CONTAINER_SPEC));
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.MSS_CONTAINER_SPEC),
+                Boolean.parseBoolean(AppCloudIntegrationTestUtils
+                        .getPropertyValue(AppCloudIntegrationTestConstants.MSS_SET_DEFAULT_VERSION)));
     }
 
 	@Override

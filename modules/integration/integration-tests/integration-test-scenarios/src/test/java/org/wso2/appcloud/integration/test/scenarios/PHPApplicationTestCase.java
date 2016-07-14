@@ -35,7 +35,9 @@ public class PHPApplicationTestCase extends AppCloudIntegrationBaseTestCase {
                         PHP_APP_CONTENT), Long.parseLong(AppCloudIntegrationTestUtils
                         .getPropertyValue(AppCloudIntegrationTestConstants.PHP_RUNTIME_START_TIMEOUT)),
                 AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.PHP_APPLICATION_CONTEXT),
-                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.PHP_CONTAINER_SPEC));
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.PHP_CONTAINER_SPEC),
+                Boolean.parseBoolean(AppCloudIntegrationTestUtils
+                        .getPropertyValue(AppCloudIntegrationTestConstants.PHP_SET_DEFAULT_VERSION)));
     }
 
     @Override

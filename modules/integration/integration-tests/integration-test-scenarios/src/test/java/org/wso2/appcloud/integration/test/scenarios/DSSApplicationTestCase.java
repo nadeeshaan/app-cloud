@@ -36,7 +36,9 @@ public class DSSApplicationTestCase extends AppCloudIntegrationBaseTestCase {
                         DSS_APP_CONTENT), Long.parseLong(AppCloudIntegrationTestUtils
                         .getPropertyValue(AppCloudIntegrationTestConstants.DSS_RUNTIME_START_TIMEOUT)),
                 AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DSS_APPLICATION_CONTEXT),
-                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DSS_CONTAINER_SPEC));
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DSS_CONTAINER_SPEC),
+                Boolean.parseBoolean(AppCloudIntegrationTestUtils
+                        .getPropertyValue(AppCloudIntegrationTestConstants.DSS_SET_DEFAULT_VERSION)));
     }
 
     @Override

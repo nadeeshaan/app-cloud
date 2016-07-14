@@ -93,6 +93,7 @@ public class ApplicationClient extends BaseClient{
     public static final String PARAM_NAME_APP_CREATION_METHOD = "appCreationMethod";
     public static final String PARAM_NAME_APP_CONTEXT = "applicationContext";
     public static final String DEFAULT = "default";
+    public static final String PARAM_NAME_SET_DEFAULT_VERSION = "setDefaultVersion";
 
 	private String endpoint;
 
@@ -114,7 +115,7 @@ public class ApplicationClient extends BaseClient{
     public void createNewApplication(String applicationName, String runtime, String appTypeName,
                                      String applicationRevision, String applicationDescription, String uploadedFileName,
                                      String runtimeProperties, String tags, File uploadArtifact, boolean isNewVersion,
-                                     String applicationContext, String conSpec)
+                                     String applicationContext, String conSpec, boolean setDefaultVersion)
             throws AppCloudIntegrationTestException {
 
         HttpClient httpclient = null;
@@ -148,6 +149,8 @@ public class ApplicationClient extends BaseClient{
                     ContentType.TEXT_PLAIN));//Setting true to send the file in request
             builder.addPart(PARAM_NAME_IS_NEW_VERSION,
                     new StringBody(Boolean.toString(isNewVersion), ContentType.TEXT_PLAIN));
+            builder.addPart(PARAM_NAME_SET_DEFAULT_VERSION,
+                    new StringBody(Boolean.toString(setDefaultVersion), ContentType.TEXT_PLAIN));
 
             httppost.setEntity(builder.build());
             httppost.setHeader(HEADER_COOKIE, getRequestHeaders().get(HEADER_COOKIE));

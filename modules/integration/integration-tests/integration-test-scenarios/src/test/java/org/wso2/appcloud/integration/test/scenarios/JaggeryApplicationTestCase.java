@@ -39,7 +39,9 @@ public class JaggeryApplicationTestCase extends AppCloudIntegrationBaseTestCase 
                                                                                    JAGGERY_RUNTIME_START_TIMEOUT)),
               AppCloudIntegrationTestUtils
                       .getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_APPLICATION_CONTEXT),
-              AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_CONTAINER_SPEC));
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_CONTAINER_SPEC),
+                Boolean.parseBoolean(AppCloudIntegrationTestUtils
+                        .getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_SET_DEFAULT_VERSION)));
     }
 
     @Override
