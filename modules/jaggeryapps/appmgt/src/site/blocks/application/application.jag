@@ -99,7 +99,6 @@ var log = new Log();
         }
 
         var uploadedFileName = request.getParameter("uploadedFileName");
-        if (validateRequired("uploadedFileName", uploadedFileName)) {return;}
 
         var appIcon = request.getFile("appIcon");
         var uploadedArtifact = request.getFile("fileupload");
