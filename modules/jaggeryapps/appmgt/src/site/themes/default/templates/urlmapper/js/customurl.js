@@ -45,14 +45,23 @@ function setExistingCustomUrl() {
 function verifyCustomUrl() {
     var pointedUrl = defaultHostName;
     var customUrl = $('#productionCustom').val().trim();
-    jagg.post("../blocks/urlmapper/urlmapper.jag", {
-            action: "verifyCustomDomain",
-            customUrl: customUrl,
-            pointedUrl: pointedUrl
-        }, verifyCustomUrlSuccess,
-        function (jqXHR, textStatus, errorThrown) {
-            jagg.message({content: jqXHR.responseText, type: 'error', id: 'view_log'});
+
+    if (!checkHostNamePattern(customUrl)) {
+        jagg.message({
+            content: "Domain name format is invalid, Please add valid formatted domain name",
+            type: 'error',
+            id: 'view_log'
         });
+    } else {
+        jagg.post("../blocks/urlmapper/urlmapper.jag", {
+                action: "verifyCustomDomain",
+                customUrl: customUrl,
+                pointedUrl: pointedUrl
+            }, verifyCustomUrlSuccess,
+            function (jqXHR, textStatus, errorThrown) {
+                jagg.message({content: jqXHR.responseText, type: 'error', id: 'view_log'});
+            });
+    }
 }
 
 function stripedUrl(url){
@@ -97,6 +106,11 @@ function updateCustomUrl() {
         jagg.message({content: jqXHR.responseText, type: 'error', id: 'view_log'});
 
     });
+}
+
+function checkHostNamePattern(hostName) {
+    var hostNamePattern = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/gm;
+    return hostNamePattern.test(hostName);
 }
 
 function editCustomUrl() {

@@ -2818,3 +2818,7 @@ ul#appVersionList {
   white-space: nowrap;
   overflow: hidden;
 }
+
+.from-group-margin {
+    margin-bottom: 2.0em;
+}
