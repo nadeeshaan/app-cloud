@@ -37,9 +37,7 @@ var mod = jagg.module("application");
             var success = mod.verifyCustomUrl(pointedUrl, customUrl);
 
             if (!success) {
-                response.status = 400;
-                response.content = "CNAME record does not exist for this config : \"" +
-                        customUrl + " CNAME " + pointedUrl + "\". Please publish a CNAME record first.";
+                domainNameNotExistResponse();
             } else {
                 response.status = 200;
                 response.content = "The custom domain is valid";
@@ -52,10 +50,17 @@ var mod = jagg.module("application");
             response.content = message;
         }
     } else if (action == "updateCustomUrl") {
+        var pointedUrl = request.getParameter("pointedUrl");
         var customUrl = request.getParameter("customUrl");
         var applicationName = request.getParameter("applicationName");
+
         try {
-            mod.addCustomDomain(applicationName, customUrl);
+            var success = mod.verifyCustomUrl(pointedUrl, customUrl);
+            if (!success) {
+                domainNameNotExistResponse();
+            } else {
+                mod.addCustomDomain(applicationName, customUrl);
+            }
         } catch (e) {
             var message = "Error while updating custom url : " + customUrl;
             log.error(message);
@@ -80,6 +85,12 @@ var mod = jagg.module("application");
         throw new Error("No action specified");
     }
 
+    function domainNameNotExistResponse() {
+        response.status = 400;
+        response.content = "CNAME record does not exist for this config : \"" +
+                customUrl + " CNAME " + pointedUrl + "\". Please publish a CNAME record first.";
+
+    }
 }());
 
 %>

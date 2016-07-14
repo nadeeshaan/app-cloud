@@ -94,9 +94,11 @@ function showEditButton() {
 }
 
 function updateCustomUrl() {
+    var pointedUrl = defaultHostName;
     var customUrl = $('#productionCustom').val().trim();
     jagg.post("../blocks/urlmapper/urlmapper.jag", {
         action: "updateCustomUrl",
+        pointedUrl: pointedUrl,
         customUrl: customUrl,
         applicationName: applicationName
     }, function (result) {
