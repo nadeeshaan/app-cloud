@@ -228,7 +228,7 @@ var log = new Log();
                     gitHubAppModule.addApplicationViaGitHub(applicationName, applicationRevision, applicationDescription,
                             replicas, runtimeId, appTypeName, runtimeProperties, tags,
                             appIcon, gitRepoUrl, gitRepoBranch, projectRoot, token,
-                            isNewVersion, conSpecMemory, conSpecCpu, appCreationMethod, applicationContext);
+                            isNewVersion, conSpecMemory, conSpecCpu, appCreationMethod, applicationContext, setDefaultVersion);
                 }
                 logMessage = "Application creation is successfully submitted";
                 log.info(logMessage);
