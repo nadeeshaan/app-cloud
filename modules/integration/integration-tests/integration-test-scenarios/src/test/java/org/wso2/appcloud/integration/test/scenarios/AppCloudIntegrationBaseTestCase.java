@@ -50,16 +50,17 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	protected String tags;
 	private String applicationContext;
 	private String conSpec;
-
+	private boolean setDefaultVersion;
 
 	public AppCloudIntegrationBaseTestCase(String runtimeID, String fileName, String applicationType,
 	                                       String sampleAppContent, long runtimeStartTimeout, String applicationContext,
-	                                       String conSpec) {
+	                                       String conSpec, boolean setDefaultVersion) {
 		this.runtimeID = runtimeID;
 		this.fileName = fileName;
 		this.sampleAppContent = sampleAppContent;
 		this.runtimeStartTimeout = runtimeStartTimeout;
 		this.applicationContext = applicationContext;
+		this.setDefaultVersion = setDefaultVersion;
 		//Application details
 		this.applicationName = AppCloudIntegrationTestUtils
 				.getPropertyValue(AppCloudIntegrationTestConstants.APP_NAME_KEY);
@@ -95,7 +96,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		File uploadArtifact = new File(TestConfigurationProvider.getResourceLocation() + fileName);
 		applicationClient.createNewApplication(applicationName, this.runtimeID, applicationType, applicationRevision,
 		                                       applicationDescription, this.fileName, properties, tags, uploadArtifact,
-		                                       false, applicationContext, conSpec);
+		                                       false, applicationContext, conSpec, true);
 
 		//Wait until creation finished
 		log.info("Waiting until application comes to running state...");
@@ -288,8 +289,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		File uploadArtifact = new File(TestConfigurationProvider.getResourceLocation() + fileName);
         applicationClient.createNewApplication(applicationName, this.runtimeID, applicationType, applicationRevision,
                                                applicationDescription, this.fileName, properties, tags, uploadArtifact,
-                                               true, applicationContext, conSpec);
-
+                                               true, applicationContext, conSpec, setDefaultVersion);
 		//Wait until creation finished
 		log.info("Waiting until new version comes to running state");
 		RetryApplicationActions(applicationRevision, AppCloudIntegrationTestConstants.STATUS_RUNNING, "Application version creation");

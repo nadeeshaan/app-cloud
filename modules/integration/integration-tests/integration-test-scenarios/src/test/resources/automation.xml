@@ -364,6 +364,13 @@
                 <tag key="tag3">tagValue3</tag>
                 <tag key="tag4">tagValue4</tag>
             </newTags>
+            <defaultVersion>
+                <set key="war">true</set>
+                <set key="msf4j">true</set>
+                <set key="php">true</set>
+                <set key="wso2dataservice">true</set>
+                <set key="jaggery">true</set>
+            </defaultVersion>
 
         </application>
 
