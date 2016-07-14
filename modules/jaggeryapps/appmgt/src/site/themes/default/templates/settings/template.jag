@@ -72,10 +72,10 @@ jagg.template("settings", function (inputs, outputs, jagg) { %>
 
                         <div role="tabpanel" class="tab-pane active" id="default-version">
                             <div id="push"></div>
-                            <div class="form-group">
+                            <div class="from-group-margin">
                                 <label for="default-version" id="lbl-default-version">Default version is set to <%=defaultVersion%></label>
                             </div>
-                            <div class="form-group">
+                            <div class="from-group-margin">
                                 <% if(application.customURL != null) { %>
                                     <label for="custom-url">Custom URL : <%=application.customURL%></label>
                                 <% } else if (application.defaultURL != null) { %>

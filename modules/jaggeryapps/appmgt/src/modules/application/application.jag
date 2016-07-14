@@ -55,7 +55,8 @@ var addApplication = function (applicationName, versionName, applicationDescript
                                conSpecCpu, artifactUrl, appCreationMethod, oldHashId, applicationContext, setDefaultVersion) {
 
     log.info("Started creating App => name : " + applicationName + " Version : " + versionName + " Description " +
-             ": " + applicationDescription + " runtimeId : " + runtimeId + " apptype : " + appTypeName );
+             ": " + applicationDescription + " runtimeId : " + runtimeId + " apptype : " + appTypeName +
+            "setDefaultVersion : " + setDefaultVersion);
 
     var tenantId = modManager.getTenantId();
     var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
