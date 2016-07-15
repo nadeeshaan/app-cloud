@@ -17,6 +17,8 @@
 package org.wso2.appcloud.core.dao;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.appcloud.common.AppCloudException;
 import org.wso2.appcloud.core.DBUtil;
 import org.wso2.appcloud.core.SQLQueryConstants;
@@ -107,10 +109,11 @@ public class ApplicationDAO {
                 }
             }
 
+            InputStream iconInputStream = null;
             if (application.getIcon() != null) {
-                InputStream iconInputStream = IOUtils.toBufferedInputStream(application.getIcon().getBinaryStream());
-                updateApplicationIcon(dbConnection, iconInputStream, applicationId, tenantId);
+                iconInputStream = IOUtils.toBufferedInputStream(application.getIcon().getBinaryStream());
             }
+            updateApplicationIcon(dbConnection, iconInputStream, applicationId, tenantId);
 
         } catch (SQLException e) {
 

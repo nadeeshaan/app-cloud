@@ -410,6 +410,8 @@ var deployApplication = function(applicationName, versionName, appTypeName, depl
     var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
     var application = getApplication(applicationHashId);
 
+    var conSpecMemory;
+    var conSpecCpu;
     if (application.versions) {
         if (application.versions[versionName]) {
             var versionInfo = application.versions[versionName];
