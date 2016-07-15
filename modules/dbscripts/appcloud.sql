@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_APPLICATION` (
   `tenant_id` INT NOT NULL,
   `default_version` varchar(24) DEFAULT NULL,
   `app_type_id` INT NULL,
+  `custom_domain` VARCHAR(200) NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT uk_Application_NAME_TID_REV UNIQUE(`name`, `tenant_id`),
   CONSTRAINT `fk_Application_ApplicationType1`
@@ -286,7 +287,6 @@ CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_CONTAINER_SERVICE_PROXY` (
   `backend_port` VARCHAR(45) NULL,
   `container_id` INT NOT NULL,
   `tenant_id` INT NULL,
-  `host_url` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_ApplicationServiceProxy_ApplicationContainer1`
     FOREIGN KEY (`container_id`)
