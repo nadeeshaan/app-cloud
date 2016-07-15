@@ -58,7 +58,7 @@ jagg.template("urlmapper", function (inputs, outputs, jagg) { %>
  <div name="customUrlForm" id="customUrlForm">
      <div class="col-md-5 forms">
          <div class="form-group" for="productionVersion">
-             <label for="production-Version">Mapped to : </label>
+             <label for="production-Version">Pointed to : </label>
              <label id="defaultVersion" type="text" class="form-control mygroup" name="productionCustom">
          </div>
 
