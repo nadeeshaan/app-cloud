@@ -177,7 +177,7 @@ jagg.template("index", function(inputs, outputs, jagg) {
             action:"deleteApplication",
             applicationKey:applicationHashId
         },function (result) {
-            jagg.message({content: "Application : " + appName + " deleted successfully", type: 'success', id:'view_log'});
+            jagg.message({content: 'Application: ' + appName + ' deleted successfully.', type: 'success', id:'view_log'});
             setTimeout(redirectAppListing, 2000);
         },function (jqXHR, textStatus, errorThrown) {
             jagg.message({content: "Error occurred while deleting application : " + appName, type: 'error', id:'view_log'});

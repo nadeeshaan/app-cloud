@@ -288,7 +288,7 @@ function submitChangeAppIcon(newIconObj) {
     if(validated) {
         $('#changeAppIcon').submit();
     } else {
-        jagg.message({content: "Invalid image selected for Application Icon - Select a valid image", type: 'error', id:'notification'});
+        jagg.message({content: "Invalid image selected for application icon. Please select a valid image.", type: 'error', id:'notification'});
     }
 }
 
@@ -306,13 +306,13 @@ function validateIconImage(filename, fileSize) {
             extStatus = true;
             break;
         default:
-            jagg.message({content: "Invalid image selected for Application Icon - Select a valid image", type: 'error', id:'notification'});
+            jagg.message({content: "Invalid image selected for application icon. Please select a valid image.", type: 'error', id:'notification'});
             break;
     }
 
     if((fileSize/1024) > 51200 && extStatus == true) {
         fileSizeStatus = false;
-        jagg.message({content: "Image file should be less than 5MB", type: 'error', id:'notification'});
+        jagg.message({content: "Image file size should be less than 5MB", type: 'error', id:'notification'});
     }
     if(extStatus == true && fileSizeStatus == true) {
         return true;

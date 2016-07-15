@@ -114,25 +114,25 @@ function initData(selectedRevision, isFirstRequest){
                 if (revisionStatus == APPLICATION_STOPPED) {
                     clearInterval(timerId);
                     jagg.message({
-                        content: "Application is currently stopped, logs will be available after restarting.",
+                        content: "Application is currently stopped. Please restart the application to obtain logs.",
                         type: 'information',
                         id: 'view_log',
                         timeout: '20000'
                     });
-                    setLogArea("Application is stopped, Since logs are currently not available.", true);
+                    setLogArea("Logs are unavailable since the application has been stopped.", true);
                 } else if (revisionStatus == APPLICATION_INACTIVE) {
                     clearInterval(timerId);
                     jagg.message({
-                        content: "Application is currently stopped due to inactivity, logs will be available after restarting.",
+                        content: "Application is stopped due to inactivity. Please restart application to obtain logs.",
                         type: 'information',
                         id: 'view_log',
                         timeout: '20000'
                     });
-                    setLogArea("Application is stopped, Since logs are currently not available.", true);
+                    setLogArea("Logs are unavailable since the application has been stopped.", true);
                 } else {
                     clearInterval(timerId);
                     jagg.message({
-                        content: "Deployment in progress. Please wait",
+                        content: "Deployment is in progress. Please wait.",
                         type: 'information',
                         id: 'view_log',
                         timeout: '8000'

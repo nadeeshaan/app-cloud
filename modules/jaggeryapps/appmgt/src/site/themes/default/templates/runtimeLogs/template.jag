@@ -73,7 +73,7 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
                 <div class="div-search">
                     <div class="form-horizontal" role="form">
                         <div class="form-group">
-                            <label for="log-search" class="col-sm-1 control-label">Revision: </label>
+                            <label for="log-search" class="col-sm-1 control-label">Revision : </label>
                             <div class="col-sm-4">
                                 <select class="form-control" id="revision" disabled>
                                     <% for(var i = 0; i < revisionsList.length; i++){
@@ -88,7 +88,7 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
                                     <% }%>
                                 </select>
                             </div>
-                            <label for="log-search" class="col-sm-1 control-label">Replica: </label>
+                            <label for="log-search" class="col-sm-1 control-label">Replica : </label>
                             <div class="col-sm-4">
                                 <select class="form-control" id="replicas">
 
@@ -96,7 +96,7 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="log-search" class="col-sm-1 control-label">Search: </label>
+                            <label for="log-search" class="col-sm-1 control-label">Search : </label>
                             <div class="col-sm-4">
                                 <div class="input-group">
                                     <input type="text" class="form-control log-search" id="log-search" placeholder="Enter search text">
@@ -106,7 +106,7 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
                                                   </span>
                                 </div><!-- /input-group -->
                             </div><!-- /.col-lg-6 -->
-                            <label for="noOfLines" class="col-sm-1 control-label">No Of Lines: </label>
+                            <label for="noOfLines" class="col-sm-1 control-label">No of lines : </label>
                             <div class="col-sm-4">
                                 <select class="form-control" id="noOfLines">
                                     <option value="10" selected="selected">10</option>

@@ -168,7 +168,7 @@ function deleteDatabase(dbName) {
                 databaseDatatable.api().ajax.reload();
             }
         }, function (jqXHR, textStatus, errorThrown) {
-            jagg.message({type:'error',content:'Database deletion failed for ' + dbName , id:'delete_db'});
+            jagg.message({type:'error',content:'Failed to delete database: ' + dbName + '.' , id:'delete_db'});
     });
 }
 
