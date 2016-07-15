@@ -13,27 +13,27 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 ################################################################################
-  listenerConfigurations:
-   -
-    id: "msf4j-http"
-    host: "0.0.0.0"
-    port: 8080
-    bossThreadPoolSize: 2
-    workerThreadPoolSize: 250
-    execHandlerThreadPoolSize: 60
-    parameters:
-      -
-       name: "executor.workerpool.size"
-       value: 60
+listenerConfigurations:
+ -
+  id: "msf4j-http"
+  host: "0.0.0.0"
+  port: 8080
+  bossThreadPoolSize: 2
+  workerThreadPoolSize: 250
+  execHandlerThreadPoolSize: 60
+  parameters:
+    -
+     name: "executor.workerpool.size"
+     value: 60
 
-   -
-    id: "msf4j-https"
-    host: "0.0.0.0"
-    port: 8443
-    bossThreadPoolSize: 2
-    workerThreadPoolSize: 250
-    execHandlerThreadPoolSize: 60
-    scheme: https
-    keyStoreFile: "wso2carbon.jks"
-    keyStorePass: wso2carbon
-    certPass: wso2carbon
+ -
+  id: "msf4j-https"
+  host: "0.0.0.0"
+  port: 8443
+  bossThreadPoolSize: 2
+  workerThreadPoolSize: 250
+  execHandlerThreadPoolSize: 60
+  scheme: https
+  keyStoreFile: "wso2carbon.jks"
+  keyStorePass: wso2carbon
+  certPass: wso2carbon
