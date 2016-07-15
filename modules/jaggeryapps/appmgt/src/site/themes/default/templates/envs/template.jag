@@ -222,7 +222,7 @@ $(document).ready(function() {
             //Validation when user submits empty keys and values
             if (!updatedKey || !updatedValue) {
                 jagg.message({
-                    content: "Please fill necessary details before saving",
+                    content: "Please fill necessary details before saving.",
                     type: 'info'
                 });
                 return;
@@ -319,7 +319,7 @@ $(document).on('click', '.panel-heading a', function (e) {
 
 function displayAppRedeployNotification() {
     jagg.message({
-        content: "Please redeploy the application to take effect updated runtime variables",
+        content: "Please redeploy the application for the updated runtime variables to take effect.",
         type: 'info'
     });
 }

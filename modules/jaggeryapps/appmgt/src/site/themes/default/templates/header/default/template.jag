@@ -116,7 +116,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                        <div class="clearfix"></div> <!-- to make seperate -->
                    </div>
                    <div class="cloud-actions">
-                       <h3>Manage your cloud</h3>
+                       <h3>Manage your Cloud</h3>
                         <a class="cloud-block-invert" href="http://cloudmgt.cloud.wso2.com/cloudmgt/site/pages/organization.jag" target=_blank>
                             <i class="fa fa-3x  fa-institution"></i>
                             <div class="cloud-name">Organizations</div>

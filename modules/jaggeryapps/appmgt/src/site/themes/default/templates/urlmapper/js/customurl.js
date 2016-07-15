@@ -48,7 +48,7 @@ function verifyCustomUrl() {
 
     if (!checkHostNamePattern(customUrl)) {
         jagg.message({
-            content: "Domain name format is invalid, Please add valid formatted domain name",
+            content: "Domain name format is invalid. Please add correctly formatted domain name",
             type: 'error',
             id: 'view_log'
         });
@@ -70,7 +70,7 @@ function stripedUrl(url){
 }
 
 function verifyCustomUrlSuccess() {
-    jagg.message({content: "The custom domain successfully added to the application.", type: 'success', id: 'view_log'});
+    jagg.message({content: "Custom domain successfully added to application.", type: 'success', id: 'view_log'});
     uiElementStateChange(true, true, true);
     showUpdateButton();
     $('#updateCustomUrl').prop('disabled', false);

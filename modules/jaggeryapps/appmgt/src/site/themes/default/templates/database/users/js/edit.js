@@ -114,10 +114,10 @@ function detachUserAndDropTemplate(userName){
     }, function (result) {
         if(result) {
             usersDatatable.api().ajax.reload();
-            jagg.message({content:'User ' + userName +' detached from database ' + dbName , type:'success', id:'userdetach'});
+            jagg.message({content:'Successfully detached user: ' + userName + ' from database: ' + dbName + '.' , type:'success', id:'userdetach'});
         }
     },function (jqXHR, textStatus, errorThrown) {
-            jagg.message({content:'Error occured while detaching the user from database' , type:'error', id:'userdetach'});
+            jagg.message({content:'Failed to attach user: ' + userName + ' to database: ' + dbName + '.', type:'error', id:'userdetach'});
     });
 }
 
@@ -136,7 +136,7 @@ function attachUserWithPermissions(userName) {
                 }
         },function (jqXHR, textStatus, errorThrown) {
                 if (jqXHR.status != 0){
-                    jagg.message({type:'error',content:'User ' + userName + ' attaching failed for database ' + dbName, id:'attach_user'});
+                    jagg.message({type:'error',content:'Failed to attach user: ' + userName + ' to database: ' + dbName + '.', id:'attach_user'});
                 }
         });
     }
@@ -148,7 +148,7 @@ function attachUserWithPermissions(userName) {
 function getCheckedPriviledgesAsJson() {
     var priviledgeCheckboxes = document.getElementsByName('chkbx_priviledge');
     if(priviledgeCheckboxes.length == 0) {
-        jagg.message({type:'error',content:'Please select one or more priviledges', id:'get_priviledges'});
+        jagg.message({type:'error',content:'Please select one or more priviledges.', id:'get_priviledges'});
         return ;
     }
     var allPriviledges = {};
@@ -195,7 +195,7 @@ function editUserPriviledges(userName, permissionsJson) {
             usersDatatable.api().ajax.reload();
         },function (jqXHR, textStatus, errorThrown) {
                 if (jqXHR.status != 0){
-                    jagg.message({type:'error',content:'User ' + userName + ' attaching failed for database ' + dbName, id:'attach_user'});
+                    jagg.message({type:'error',content:'Failed to attach user: ' + userName + ' to database: ' + dbName + '.', id:'attach_user'});
                 }
         });
 }
@@ -211,7 +211,7 @@ function deleteUser(userName) {
             usersDatatable.api().ajax.reload();
         },function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.status != 0) {
-                jagg.message({content:'Error occurred while deleting user: ' + userName + 'User already attached to a database.',type:'error', id:'dbusercreation' });
+                jagg.message({content:'Cannot delete user: ' + userName + '. User already attached to a database.',type:'error', id:'dbusercreation' });
             }
         });
 }

@@ -283,7 +283,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 return false;
 
                 },function (jqXHR, textStatus, errorThrown) {
-                    jagg.message({content: "Error occurred getting version hash.", type: 'error', id:'view_log'});
+                    jagg.message({content: "Error occured while getting version hash id.", type: 'error', id:'view_log'});
                 });
             });
 
@@ -349,7 +349,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 activateCreateApplication();
             }, function(jqXHR, textStatus, errorThrown) {
                 jagg.message({
-                    content: "Error occurred while getting version hash.",
+                    content: "Error occured while getting version hash id.",
                     type: 'error',
                     id: 'view_log'
                 });
@@ -384,7 +384,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     if(event.status == "success"){
                         statusStyle = "success";
                         if (event.name === "Status") {
-                                table = table + "<tr class='" + statusStyle + "'><td>Container Status</td>" +
+                                table = table + "<tr class='" + statusStyle + "'><td>Container status</td>" +
                                                 "<td>"+event.description+"</td>" +
                                                 "<td><i class=\"fa fa-check\"></i></td></tr>";
                         } else {
@@ -395,7 +395,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     } else if (event.status == "failed") {
                         statusStyle = "danger";
                         if (event.name === "Status") {
-                                table = table + "<tr class='" + statusStyle + "'><td>Container Status</td>" +
+                                table = table + "<tr class='" + statusStyle + "'><td>Container status</td>" +
                                                 "<td>"+event.description+"</td>" +
                                                 "<td><i class=\"fa fa-times\"></i></td></tr>";
                         } else {
@@ -406,7 +406,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     } else if (event.status == "pending"){
                         if (event.name === "Status") {
                             statusStyle = "active";
-                                table = table + "<tr class='" + statusStyle + "'><td>Container Status</td>" +
+                                table = table + "<tr class='" + statusStyle + "'><td>Container status</td>" +
                                                 "<td>"+event.description+"</td>" +
                                                 "<td><i class=\"fa fa-circle-o-notch fa-spin\"></i></td></tr>";
                         } else {
@@ -660,14 +660,14 @@ jagg.template("application", function (inputs, outputs, jagg) {
                     $("#artifactUrl").prop("disabled", true);
                     urlUploadComplete = true;
                 } else {
-                    jagg.message({content: "Url you've entered is either invalid or it doesn't contain any file.", type: 'error', id:'url'});
+                    jagg.message({content: "Invalid URL given. Please provide valid URL.", type: 'error', id:'url'});
                     $("#url-upload-progress").html("");
                     $("#url-upload").prop("disabled", false);
                     $("#artifactUrl").prop("disabled", false);
                 }
                 activateCreateApplication();
             },function (jqXHR, textStatus, errorThrown) {
-                jagg.message({content: "Error occurred while checking validity of url.", type: 'error', id:'url'});
+                jagg.message({content: "Error occured while checking validity of URL.", type: 'error', id:'url'});
             });
         }
 
@@ -1003,12 +1003,12 @@ jagg.template("application", function (inputs, outputs, jagg) {
                 </label>
 		        <label class="radio-inline">
                     <input type="radio" name="fileUploadRadioOptions" id="inlineRadioSample" value="deploy-sample"
-                           class="custom-radio"> Deploy Sample App
+                           class="custom-radio"> Deploy sample application
                 </label>
                 <%  if(isAppTypeBuildable == 'false'){ %>
                     <label class="radio-inline">
                         <input type="radio" name="fileUploadRadioOptions" id="inlineRadio3" value="github-repo-url"
-                               class="custom-radio"> Connect to GitHub repo
+                               class="custom-radio"> Clone GitHub repository
                     </label>
                 <% } %>
             </div>
