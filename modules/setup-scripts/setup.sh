@@ -91,26 +91,26 @@ function as_setup(){
     cp $LIB_LOCATION/commons-compress-1.9.0.wso2v1.jar $1/repository/components/dropins/
 
     cp $LIB_LOCATION/docker-client-1.0.10.wso2v1.jar $1/repository/components/dropins/
-    cp $LIB_LOCATION/jackson-annotations-2.7.3.jar $1/repository/components/dropins/
-    cp $LIB_LOCATION/jackson-core-2.7.3.jar $1/repository/components/dropins/
-    cp $LIB_LOCATION/jackson-databind-2.7.3.jar $1/repository/components/dropins/
-    cp $LIB_LOCATION/jackson-dataformat-yaml-2.7.3.jar $1/repository/components/dropins/
-    cp $LIB_LOCATION/slf4j-api-1.7.12.wso2v1.jar $1/repository/components/dropins/
-    cp $LIB_LOCATION/snakeyaml-1.15.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/jackson-annotations-2.7.5.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/jackson-core-2.7.5.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/jackson-databind-2.7.5.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/jackson-dataformat-yaml-2.7.5.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/slf4j-api-1.7.13.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/snakeyaml-1.16.jar $1/repository/components/dropins/
 
     cp $LIB_LOCATION/mysql-connector-java-5.1.27-bin.jar $1/repository/components/lib/
 
     cp $LIB_LOCATION/junixsocket-common-2.0.4.wso2v1.jar $1/repository/components/dropins/
-    cp $LIB_LOCATION/logging-interceptor-2.7.2.wso2v1.jar $1/repository/components/dropins/
-    cp $LIB_LOCATION/okhttp-2.7.2.wso2v1.jar $1/repository/components/dropins/
-    cp $LIB_LOCATION/okhttp-ws-2.7.2.wso2v1.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/logging-interceptor-2.7.5.wso2v1.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/okhttp-2.7.5.wso2v1.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/okhttp-ws-2.7.5.wso2v1.jar $1/repository/components/dropins/
     cp $LIB_LOCATION/okio-1.6.0.wso2v1.jar $1/repository/components/dropins/
     cp $LIB_LOCATION/validation-api-1.1.0.Final.jar $1/repository/components/dropins/
 
-    cp $LIB_LOCATION/kubernetes-client-1.3.76.wso2v1.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/kubernetes-client-1.3.99.wso2v1.jar $1/repository/components/dropins/
     cp $LIB_LOCATION/dnsjava-2.1.7.wso2v1.jar $1/repository/components/dropins/
     cp $LIB_LOCATION/json-20160212.jar $1/repository/components/dropins/
-    cp $LIB_LOCATION/fabric8-utils-2.2.100.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/fabric8-utils-2.2.144.jar $1/repository/components/dropins/
 
     cp $CONF_LOCATION/wso2as-5.2.1/repository/conf/datasources/master-datasources.xml $1/repository/conf/datasources/
     cp $CONF_LOCATION/wso2as-5.2.1/repository/conf/datasources/appcloud-datasources.xml $1/repository/conf/datasources/
