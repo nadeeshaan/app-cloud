@@ -50,7 +50,7 @@ jagg.template("urlmapper", function (inputs, outputs, jagg) { %>
 <div class="container-fluid app-content-section">
     <div class="row">
          <div class="col-md-12 msg-issues">
-             Create customized URLs for the applications with your domain name, instead of the default URLs.
+             Create a customized URL for the default version of the application.
          </div>
     </div>
  <div class="clearfix"></div>
@@ -58,13 +58,15 @@ jagg.template("urlmapper", function (inputs, outputs, jagg) { %>
  <div class="row form-section">
  <div name="customUrlForm" id="customUrlForm">
      <div class="col-md-5 forms">
+         <div class="from-group-margin">
+            <label><strong>IMPORTANT:</strong> Before giving the domain name here, go to your domain registrar's DNS panel and add a CNAME record pointing to default domain.</label>
+         </div>
          <div class="form-group" for="productionVersion">
-             <label for="production-Version">Pointed to : </label>
+             <label for="production-Version">Default Domain: </label>
              <label id="defaultVersion" type="text" class="form-control mygroup" name="productionCustom">
          </div>
-
          <div class="form-group" for="productionCustom">
-            <label for="production-Custom">Custom Domain : </label>
+            <label for="production-Custom">Custom Domain: </label>
 
              <div class="input-group" >
                  <input type="text" class="form-control mygroup" id="productionCustom" name="productionCustom"
