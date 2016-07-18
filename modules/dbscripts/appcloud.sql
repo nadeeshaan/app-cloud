@@ -431,7 +431,6 @@ INSERT INTO `AC_SUBSCRIPTION_PLANS` (`PLAN_NAME`, `MAX_APPLICATIONS`) VALUES
 
 INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
 (1, 3),
-(2, 1),
 (2, 2),
 (2, 3),
 (3, 1),
@@ -446,7 +445,10 @@ INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
 (8, 1),
 (8, 2),
 (8, 3),
-(8, 4);
+(8, 4),
+(5, 4),
+(6, 4);
+
 
 -- -----------------------------------------------------
 -- Migration Script for Limiting Database Creation
