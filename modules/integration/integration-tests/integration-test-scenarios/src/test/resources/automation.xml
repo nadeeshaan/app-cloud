@@ -309,7 +309,7 @@
                 <runtimeID key="tomcat">1</runtimeID>
                 <runtimeID key="msf4j">2</runtimeID>
                 <runtimeID key="php">3</runtimeID>
-                <runtimeID key="wso2dataservice">6</runtimeID>
+                <runtimeID key="wso2dataservice">7</runtimeID>
                 <runtimeID key="jaggery">5</runtimeID>
             </runtimeIDs>
             <runtimeStartTimeouts>
@@ -343,8 +343,8 @@
             </applicationContexts>
             <containerSpecifications>
                 <spec type="war">3</spec>
-                <spec type="msf4j">1</spec>
-                <spec type="php">1</spec>
+                <spec type="msf4j">3</spec>
+                <spec type="php">3</spec>
                 <spec type="wso2dataservice">3</spec>
                 <spec type="jaggery">3</spec>
             </containerSpecifications>

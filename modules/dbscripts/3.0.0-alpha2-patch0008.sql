@@ -40,3 +40,10 @@ insert into AC_RUNTIME_TRANSPORT values (3, 8);
 insert into AC_RUNTIME_TRANSPORT values (4, 8);
 
 insert into AC_APP_TYPE_RUNTIME values(2, 8);
+
+-- to make identical local setup database and production database
+update AC_RUNTIME set name = 'Apache Tomcat 8.0.28 / WSO2 Application Server 6.0.0-M2', image_name = 'wso2as', tag = '6.0.0-m2', description = 'OS:Debian, JAVA Version:8u72' where id = 6;
+update AC_RUNTIME set name = 'WSO2 Data Services Server - 3.5.0', image_name = 'wso2dataservice', tag = '3.5.0', description = 'OS:Debian, Java Version:7u101' where id = 7;
+
+update AC_APP_TYPE_RUNTIME set app_type_id = 1 where runtime_id = 6;
+update AC_APP_TYPE_RUNTIME set app_type_id = 5 where runtime_id = 7;
