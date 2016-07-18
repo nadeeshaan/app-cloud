@@ -35,6 +35,7 @@ jagg.template("urlmapper", function (inputs, outputs, jagg) { %>
     var defaultHostName = "<%=defaultHostName%>";
 </script><!-- end of setting global javascript variable -->
 
+<div class="right-pane">
 <!-- BOF App factory menu actionbar -->
 <input type="hidden" maxlength="19" id="defaultDomain" name="defaultDomain" value=""/>
 <div class="action-bar">
@@ -93,11 +94,13 @@ jagg.template("urlmapper", function (inputs, outputs, jagg) { %>
              </button>
          </div>
      </div>
-</form>
  </div>
-</div><!-- /.container -->
+</div>
 <div class="clearfix"></div>
 <div id="push"></div>
+</div><!-- /.container -->
+</div><!-- /.right pane -->
+</div><!-- /.inner wrapper (comes from left menu template) -->
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/bootstrap-3.2.0/bootstrap.min.js'))%>"></script>
 <!-- include custom js functions -->
