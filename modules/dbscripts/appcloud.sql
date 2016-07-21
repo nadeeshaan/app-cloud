@@ -31,6 +31,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema AppCloudDB
 -- -----------------------------------------------------
+
 CREATE SCHEMA IF NOT EXISTS `AppCloudDB` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
 USE `AppCloudDB` ;
 
@@ -54,8 +55,8 @@ INSERT INTO `AC_APP_TYPE` (`id`, `name`, `description`) VALUES
 (2, 'mss', 'Allows you to create microservices in Java, using an annotation-based programming model. MSF4J stands for Microservices Framework for Java.'),
 (3, 'php', 'Allows you to create dynamic web pages and complete server applications using PHP web applications.'),
 (4, 'jaggery', 'Allows you to write all parts of web applications, services and APIs in a completely JavaScript way.'),
-(5, 'wso2dataservice', 'Allows you to deploy a data service that is supported in WSO2 Data Services Server.');
-
+(5, 'wso2dataservice', 'Allows you to deploy a data service that is supported in WSO2 Data Services Server.'),
+(6, 'car', 'Allows you to deploy a esb configuration that is supported in WSO2 Enterprise Service Bus');
 
 -- -----------------------------------------------------
 -- Table `AppCloudDB`.`AC_RUNTIME`
@@ -83,8 +84,8 @@ INSERT INTO `AC_RUNTIME` (`id`, `name`, `repo_url`, `image_name`, `tag`, `descri
 (5, 'Jaggery 0.11.0 ', 'registry.docker.appfactory.private.wso2.com:5000', 'jaggery', '0.11.0', 'OS:Debian, Java Version:7u101'),
 (6, 'Apache Tomcat 8.0.28 / WSO2 Application Server 6.0.0-M2', 'registry.docker.appfactory.private.wso2.com:5000', 'wso2as', '6.0.0-m2', 'OS:Debian, JAVA Version:8u72'),
 (7, 'WSO2 Data Services Server - 3.5.0','registry.docker.appfactory.private.wso2.com:5000', 'wso2dataservice', '3.5.0', 'OS:Debian, Java Version:7u101'),
-(8, 'OpenJDK 8 + WSO2 MSF4J 2.0.0', 'registry.docker.appfactory.private.wso2.com:5000', 'msf4j', '2.0.0', 'OS:Debian, JAVA Version:8u72');
-
+(8, 'OpenJDK 8 + WSO2 MSF4J 2.0.0', 'registry.docker.appfactory.private.wso2.com:5000', 'msf4j', '2.0.0', 'OS:Debian, JAVA Version:8u72'),
+(9, 'WSO2 Enterprise Service Bus - 5.0.0','registry.docker.appfactory.private.wso2.com:5000', 'esb', '5.0.0', 'OS:Debian, Java Version:7u101');
 
 
 -- -----------------------------------------------------
@@ -245,7 +246,8 @@ INSERT INTO `AC_APP_TYPE_RUNTIME` (`app_type_id`, `runtime_id`) VALUES
 (4, 5),
 (1, 6),
 (5, 7),
-(2, 8);
+(2, 8),
+(6,9);
 
 
 -- -----------------------------------------------------
@@ -464,7 +466,9 @@ INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
 (8, 3),
 (8, 4),
 (5, 4),
-(6, 4);
+(6, 4),
+(9, 3),
+(9, 4);
 
 -- -----------------------------------------------------
 -- Table `AppCloudDB`.`AC_CLOUD`
@@ -519,8 +523,8 @@ INSERT INTO `AC_CLOUD_APP_TYPE` (`cloud_id`, `app_type_id`) VALUES
 -- -----------------------------------------------------
 
 ALTER TABLE `AC_SUBSCRIPTION_PLANS` ADD MAX_DATABASES int(11);
-UPDATE `AC_SUBSCRIPTION_PLANS` SET MAX_DATABASES=2 WHERE PLAN_NAME="FREE";
-UPDATE `AC_SUBSCRIPTION_PLANS` SET MAX_DATABASES=6 WHERE PLAN_NAME="PAID";
+UPDATE `AC_SUBSCRIPTION_PLANS` SET MAX_DATABASES=2 WHERE PLAN_ID=1;
+UPDATE `AC_SUBSCRIPTION_PLANS` SET MAX_DATABASES=6 WHERE PLAN_ID=2;
 
 ALTER TABLE `AC_WHITE_LISTED_TENANTS` ADD max_database_count INT(11) DEFAULT -1;
 ALTER TABLE `AC_WHITE_LISTED_TENANTS` MODIFY max_app_count INT(11) DEFAULT -1;
