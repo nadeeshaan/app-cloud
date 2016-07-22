@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestConstants;
+import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestException;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestUtils;
 
 public class DSSApplicationTestCase extends AppCloudIntegrationBaseTestCase {
@@ -28,6 +29,7 @@ public class DSSApplicationTestCase extends AppCloudIntegrationBaseTestCase {
 	private static final Log log = LogFactory.getLog(DSSApplicationTestCase.class);
 	public static final String DSS_SERVER_STARTED_MESSAGE = "Mgt Console URL  :";
 	public static final String DSS_APPLICATION_TYPE = "wso2dataservice";
+    public static final String DSS_LAUNCH_CONTEXT = "/services/CSVSampleService?wsdl";
 
     public DSSApplicationTestCase() {
         super(AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DSS_APP_RUNTIME_ID_KEY),
@@ -38,7 +40,8 @@ public class DSSApplicationTestCase extends AppCloudIntegrationBaseTestCase {
                 AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DSS_APPLICATION_CONTEXT),
                 AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DSS_CONTAINER_SPEC),
                 Boolean.parseBoolean(AppCloudIntegrationTestUtils
-                        .getPropertyValue(AppCloudIntegrationTestConstants.DSS_SET_DEFAULT_VERSION)));
+                        .getPropertyValue(AppCloudIntegrationTestConstants.DSS_SET_DEFAULT_VERSION)),
+                AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.DSS_DEFAULT_VERSION));
     }
 
     @Override
@@ -56,12 +59,33 @@ public class DSSApplicationTestCase extends AppCloudIntegrationBaseTestCase {
         String launchURL = ((JSONObject) ((JSONObject) applicationBean
                 .get(AppCloudIntegrationTestConstants.PROPERTY_VERSIONS_NAME))
                 .get(applicationRevision)).getString(AppCloudIntegrationTestConstants.PROPERTY_DEPLOYMENT_URL);
-        launchURL = launchURL + "/services/CSVSampleService?wsdl";
+        launchURL = launchURL + DSS_LAUNCH_CONTEXT;
         //make the launch url http
         launchURL = launchURL.replace("https", "http");
         Boolean isLaunchSuccessfull = applicationClient.launchApplication(launchURL, sampleAppContent);
         Assert.assertTrue(isLaunchSuccessfull, "Application launch failed!");
 
+        log.info("Testing default version launch...");
+        Assert.assertTrue(isDefaultVersionLaunch(), "Default version is not launch");
+    }
+
+    @Override
+    protected boolean isDefaultVersionLaunch() throws AppCloudIntegrationTestException {
+        try {
+            JSONObject applicationBean = applicationClient.getApplicationBean(applicationName);
+            String defaultVersionLaunchURL =
+                    applicationBean.getString(AppCloudIntegrationTestConstants.DEFAULT_VERSION_URL)
+                            + DSS_LAUNCH_CONTEXT;
+
+            //make the launch url http
+            defaultVersionLaunchURL = defaultVersionLaunchURL.replace("https", "http");
+            return applicationClient.launchApplication(defaultVersionLaunchURL, sampleAppContent);
+        } catch (InterruptedException e) {
+            throw new AppCloudIntegrationTestException("Error while sleep the thread", e);
+        } catch (Exception e) {
+            throw new AppCloudIntegrationTestException(
+                    "Error while default version launch for application : " + applicationName, e);
+        }
     }
 
 }
