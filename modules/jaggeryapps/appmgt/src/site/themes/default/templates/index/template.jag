@@ -21,6 +21,8 @@ include("/jagg/jagg.jag");
 
 jagg.template("index", function(inputs, outputs, jagg) {
     var applications = outputs.applications;
+    var appTypeCount = outputs.appTypeCount;
+    var appType = outputs.appType;
     var log = new Log("index");
 
     %>
@@ -258,7 +260,11 @@ jagg.template("index", function(inputs, outputs, jagg) {
     </script>
 
     <div class="action-bar">
+    <% if (appTypeCount == 1) { %>
+        <a href="<%=jagg.getAbsoluteUrl("/site/pages/application.jag")%>?appTypeName=<%=appType%>" class="btn-action" data-toggle="tooltip" data-placement="top" title="Add New Application">
+    <% } else { %>
         <a href="/appmgt/site/pages/select-apptype.jag" class="btn-action" data-toggle="tooltip" data-placement="top" title="Add New Application">
+    <% } %>
             <span class="fw-stack fw-lg btn-action-ico">
                 <i class="fw fw-circle-outline fw-stack-2x"></i>
                 <i class="fw fw-add fw-stack-1x"></i>
