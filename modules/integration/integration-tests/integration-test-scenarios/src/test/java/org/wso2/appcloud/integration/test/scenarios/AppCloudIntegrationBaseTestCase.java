@@ -13,6 +13,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestConstants;
+import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestException;
 import org.wso2.appcloud.integration.test.utils.AppCloudIntegrationTestUtils;
 import org.wso2.appcloud.integration.test.utils.clients.ApplicationClient;
 import org.wso2.appcloud.integration.test.utils.clients.LogsClient;
@@ -51,10 +52,11 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	private String applicationContext;
 	private String conSpec;
 	private boolean setDefaultVersion;
+	private String defaultVersion;
 
 	public AppCloudIntegrationBaseTestCase(String runtimeID, String fileName, String applicationType,
 	                                       String sampleAppContent, long runtimeStartTimeout, String applicationContext,
-	                                       String conSpec, boolean setDefaultVersion) {
+	                                       String conSpec, boolean setDefaultVersion, String defaultVersion) {
 		this.runtimeID = runtimeID;
 		this.fileName = fileName;
 		this.sampleAppContent = sampleAppContent;
@@ -74,6 +76,7 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		this.tags = AppCloudIntegrationTestUtils.getKeyValuePairAsJsonFromConfig(
 				AppCloudIntegrationTestUtils.getPropertyNodes(AppCloudIntegrationTestConstants.APP_TAGS_KEY));
 		this.conSpec = conSpec;
+		this.defaultVersion = defaultVersion;
 	}
 
 	@BeforeClass(alwaysRun = true)
@@ -102,7 +105,11 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		log.info("Waiting until application comes to running state...");
 		RetryApplicationActions(applicationRevision, AppCloudIntegrationTestConstants.STATUS_RUNNING, "Application " +
 		                                                                                              "creation");
+		log.info("Testing default version update");
+		boolean isDefaultVersionSet = isDefaultVersionNameSet(applicationRevision);
+		Assert.assertTrue(isDefaultVersionSet, "Default version not set to the initial version");
 	}
+
 	@SetEnvironment(executionEnvironments = {ExecutionEnvironment.PLATFORM})
 	@Test(description = "Testing application launch")
 	public void testLaunchApplication() throws Exception {
@@ -116,6 +123,9 @@ public abstract class AppCloudIntegrationBaseTestCase {
 		launchURL = launchURL.replace("https", "http");
 		Boolean isLaunchSuccessfull = applicationClient.launchApplication(launchURL, sampleAppContent);
 		Assert.assertTrue(isLaunchSuccessfull, "Application launch failed!");
+
+		log.info("Testing default version launch...");
+		Assert.assertTrue(isDefaultVersionLaunch(), "Default version is not launch");
 	}
 
 	@SetEnvironment(executionEnvironments = {ExecutionEnvironment.PLATFORM})
@@ -292,7 +302,17 @@ public abstract class AppCloudIntegrationBaseTestCase {
                                                true, applicationContext, conSpec, setDefaultVersion);
 		//Wait until creation finished
 		log.info("Waiting until new version comes to running state");
-		RetryApplicationActions(applicationRevision, AppCloudIntegrationTestConstants.STATUS_RUNNING, "Application version creation");
+		RetryApplicationActions(applicationRevision, AppCloudIntegrationTestConstants.STATUS_RUNNING,
+				"Application version creation");
+
+		if (setDefaultVersion) {
+			log.info("Testing default version update");
+			boolean isDefaultVersionSet = isDefaultVersionNameSet(applicationRevision);
+			Assert.assertTrue(isDefaultVersionSet, "Default version not set to the current version");
+			log.info("Waiting " + runtimeStartTimeout + "milliseconds before trying default version launch...");
+			Thread.sleep(runtimeStartTimeout);
+			Assert.assertTrue(isDefaultVersionLaunch(), "Default version is not launch");
+		}
 	}
 
 
@@ -383,4 +403,53 @@ public abstract class AppCloudIntegrationBaseTestCase {
 	}
 
 	protected abstract void assertLogContent(String logContent);
+
+	private boolean isDefaultVersionNameSet(String versionName) throws AppCloudIntegrationTestException {
+		try {
+			JSONObject applicationObj = applicationClient.getApplicationBean(applicationName);
+			String defaultVersion = applicationObj.getString(AppCloudIntegrationTestConstants.DEFAULT_VERSION);
+			return versionName.equals(defaultVersion);
+		} catch (Exception e) {
+			throw new AppCloudIntegrationTestException(
+					"Error while testing the set default version for initial application version", e);
+		}
+	}
+
+	//TODO This method should uncomment when we removed the free tire restriction.
+	/*
+	@SetEnvironment(executionEnvironments = { ExecutionEnvironment.PLATFORM })
+	@Test(description = "Testing change default version", dependsOnMethods = { "testCreateVersion" })
+	public void changeDefaultVersion() {
+		try {
+			applicationClient.updateDefaultVersion(applicationName, defaultVersion);
+			boolean isDefaultVersionSet = isDefaultVersionNameSet(defaultVersion);
+			Assert.assertTrue(isDefaultVersionSet, "Default version change is not set");
+			log.info("Waiting " + runtimeStartTimeout + "milliseconds before trying default version launch...");
+			Thread.sleep(runtimeStartTimeout);
+			Assert.assertTrue(isDefaultVersionLaunch(), "Default version is not launch");
+		} catch (AppCloudIntegrationTestException e) {
+			log.error("Error while testing change default version " + defaultVersion +
+					"for application name : " + applicationName);
+		} catch (InterruptedException e) {
+			log.error("Error while sleep the thread", e);
+		}
+	}
+	*/
+
+	protected boolean isDefaultVersionLaunch() throws AppCloudIntegrationTestException {
+		try {
+			JSONObject applicationBean = applicationClient.getApplicationBean(applicationName);
+			String defaultVersionLaunchURL = applicationBean
+					.getString(AppCloudIntegrationTestConstants.DEFAULT_VERSION_URL);
+
+			//make the launch url http
+			defaultVersionLaunchURL = defaultVersionLaunchURL.replace("https", "http");
+			return applicationClient.launchApplication(defaultVersionLaunchURL, sampleAppContent);
+		} catch (InterruptedException e) {
+			throw new AppCloudIntegrationTestException("Error while sleep the thread", e);
+		} catch (Exception e) {
+			throw new AppCloudIntegrationTestException(
+					"Error while default version launch for application : " + applicationName, e);
+		}
+	}
 }

@@ -370,6 +370,11 @@
                 <set key="php">true</set>
                 <set key="wso2dataservice">true</set>
                 <set key="jaggery">true</set>
+                <name key="war">1.0.0</name>
+                <name key="msf4j">1.0.0</name>
+                <name key="php">1.0.0</name>
+                <name key="wso2dataservice">1.0.0</name>
+                <name key="jaggery">1.0.0</name>
             </defaultVersion>
 
         </application>

@@ -94,8 +94,11 @@ public class ApplicationClient extends BaseClient{
     public static final String PARAM_NAME_APP_CONTEXT = "applicationContext";
     public static final String DEFAULT = "default";
     public static final String PARAM_NAME_SET_DEFAULT_VERSION = "setDefaultVersion";
+    protected static final String UPDATE_DEFAULT_VERSION_ACTION = "updateDefaultVersion";
+    protected static final String PARAM_NAME_DEFAULT_VERSION = "defaultVersion";
 
 	private String endpoint;
+    private String settingsEndpoint;
 
 
 	/**
@@ -110,6 +113,8 @@ public class ApplicationClient extends BaseClient{
 	    super(backEndUrl, username, password);
 	    this.endpoint = backEndUrl + AppCloudIntegrationTestConstants.APPMGT_URL_SURFIX
 	                    + AppCloudIntegrationTestConstants.REST_APPLICATION_ENDPOINT;
+        this.settingsEndpoint = backEndUrl + AppCloudIntegrationTestConstants.APPMGT_URL_SURFIX
+                + AppCloudIntegrationTestConstants.REST_SETTINGS_ENDPOINT;
     }
 
     public void createNewApplication(String applicationName, String runtime, String appTypeName,
@@ -430,5 +435,22 @@ public class ApplicationClient extends BaseClient{
             HttpClientUtils.closeQuietly(httpclient);
         }
     }
+
+    //TODO This method should uncomment when we removed the free tire restriction.
+    /*
+    public void updateDefaultVersion(String applicationName, String newDefaultVersion)
+            throws AppCloudIntegrationTestException {
+        List<NameValuePair> nameValuePairs = new ArrayList<>();
+        nameValuePairs.add(new BasicNameValuePair(PARAM_NAME_ACTION, UPDATE_DEFAULT_VERSION_ACTION));
+        nameValuePairs.add(new BasicNameValuePair(PARAM_NAME_APPLICATION_NAME, applicationName));
+        nameValuePairs.add(new BasicNameValuePair(PARAM_NAME_DEFAULT_VERSION, newDefaultVersion));
+
+        HttpResponse response = doPostRequest(this.settingsEndpoint, nameValuePairs);
+
+        if (response.getResponseCode() != HttpStatus.SC_OK) {
+            throw new AppCloudIntegrationTestException("Update Application Tag failed " + response.getData());
+        }
+    }
+    */
 
 }
