@@ -68,6 +68,7 @@
                 var email = modManager.getEmailAddressForUser(userName);
                 modManager.setUserEmailAddress(email);
                 session.put("LOGGED_IN_USER", ssoRelyingParty.getLoggedInUser(sessionId));
+                session.put("SELECTED_CLOUD", "app-cloud");
                 audit.info("User : " + jagg.getUser() + ", Action : login");
                 response.sendRedirect("/appmgt/site/pages/index.jag");
             } else {

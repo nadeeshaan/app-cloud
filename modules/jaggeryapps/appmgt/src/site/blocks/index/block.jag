@@ -37,11 +37,14 @@ jagg.block("index", {
             var appType = appTypes[0].name;
         }
 
+        var cloudTitle = jagg.module("manager").getCloudTypeProperties().cloudTitle;
+
         return {
             "applications" : applications,
             "applicationName" :applicationName,
             "appTypeCount" : appTypeCount,
-            "appType" : appType
+            "appType" : appType,
+            "cloudTitle" : cloudTitle
         };
     }
 

@@ -30,11 +30,13 @@ jagg.block("page/master", {
     },
 
     getInputs:function () {
+        var cloudTypeProperties = jagg.module("manager").getCloudTypeProperties();
         return {
             title:null,
             pagePath:null,
             body:null,
-            leftMenu:null
+            leftMenu:null,
+            pageTitle : cloudTypeProperties.pageTitle
         };
     },
 

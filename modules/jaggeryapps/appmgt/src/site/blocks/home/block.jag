@@ -47,12 +47,14 @@ jagg.block("home", {
         var conSpecCpu = selectedVersion.conSpecCpu;
         var conSpecMemory = selectedVersion.conSpecMemory;
 
+        var pageTitle = jagg.module("manager").getCloudTypeProperties().pageTitle;
         return {
             "application" : application,
             "selectedRevision" : selectedRevision,
             "conSpecCpu" : conSpecCpu,
             "conSpecMemory" : conSpecMemory,
-            "restartCounts" : restartCounts
+            "restartCounts" : restartCounts,
+            "pageTitle" : pageTitle
         };
     }
 

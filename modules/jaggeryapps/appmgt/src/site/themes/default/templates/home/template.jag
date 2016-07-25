@@ -61,7 +61,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
     var APPLICATION_STOPPED = "<%=APPLICATION_STOPPED%>";
     var APPLICATION_RUNNING = "<%=APPLICATION_RUNNING%>";
     var APPLICATION_INACTIVE = "<%=APPLICATION_INACTIVE%>";
-
+    var pageTitle = "<%=outputs.pageTitle%>";
 </script>
 
     <div class="right-pane">
