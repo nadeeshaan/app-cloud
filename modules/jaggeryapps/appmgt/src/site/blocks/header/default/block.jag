@@ -21,8 +21,10 @@ jagg.block("header/default", {
             loggedInUserName = userEmailAddress;
         }
         var tenantDomain = manager.getTenantDomain(true);
-        var docUrl = manager.getPropertyValue(DOCUMENTATION_REDIRECTION_URL);
-        var supportUrl = manager.getPropertyValue(SUPPORT_REDIRECTION_URL);
+        var cloudTypeProperties = manager.getCloudTypeProperties();
+        var docUrl = manager.getPropertyValue(cloudTypeProperties.properties.documentationUrl);
+        var supportUrl = manager.getPropertyValue(cloudTypeProperties.properties.supportUrl);
+        var cloudTitle = cloudTypeProperties.cloudTitle;
 
         var isGoogleAnalyticsEnabled = manager.getPropertyValue(GOOGLE_ANALYTICS_ENABLED);
         var googleTrackingId = manager.getPropertyValue(GOOGLE_TRACKING_ID);
@@ -33,6 +35,7 @@ jagg.block("header/default", {
             "tenantDomain": tenantDomain,
             "docUrl": docUrl,
             "supportUrl": supportUrl,
+            "cloudTitle" : cloudTitle,
             "isGoogleAnalyticsEnabled" : isGoogleAnalyticsEnabled,
             "googleTrackingId" : googleTrackingId
         };

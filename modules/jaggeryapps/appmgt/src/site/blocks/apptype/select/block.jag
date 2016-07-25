@@ -33,8 +33,12 @@ jagg.block("apptype/select", {
                 appTypes[index].cssProperties = appTypesProperties[appTypes[index].name];
             }
         }
+        var manager = jagg.module("manager");
+        var cloudTypeProperties = manager.getCloudTypeProperties();
+        var docLink = manager.getPropertyValue(cloudTypeProperties.properties.documentationUrl);
         return {
-            "appTypes": appTypes
+            "appTypes": appTypes,
+            "docLink" : docLink
         };
     }
 });

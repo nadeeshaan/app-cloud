@@ -75,6 +75,15 @@ var jagg = jagg || (function () {
         return stringfiedObject;
     };
 
+    var getCloudTypePropertyConfFilePath = function () {
+        var fileNameUtils = Packages.org.apache.commons.io.FilenameUtils;
+        var cloudTypePropertyConfPath = fileNameUtils.normalize(CLOUD_TYPES_PROPERTIES_CONFIG);
+        var stringfiedObject = stringify(cloudTypePropertyConfPath);
+        var cloudTypesProperties = parse(stringfiedObject);
+        cloudTypesProperties = require(cloudTypesProperties);
+        return cloudTypesProperties;
+    };
+
 var getThemeFile = function (path) {
         var p, index, theme = getUserTheme();
         if(theme.subtheme) {
@@ -595,7 +604,8 @@ return getThemePath() + path;
         includeJag:includeJag,
         getUserTheme:getUserTheme,
         getThemeFile:getThemeFile,
-        getAppTypePropertyConfFilePath:getAppTypePropertyConfFilePath
+        getAppTypePropertyConfFilePath:getAppTypePropertyConfFilePath,
+        getCloudTypePropertyConfFilePath:getCloudTypePropertyConfFilePath
     };
 
 }());
