@@ -24,6 +24,7 @@ jagg.template("leftMenu", function (inputs, outputs, jagg) {
     var versionKey = outputs.versionKey;
     var selectedRevision = outputs.selectedRevision;
     var pageName = outputs.pageName;
+    var cloudTitle = outputs.cloudTitle;
 
 %>
 
@@ -35,7 +36,7 @@ jagg.template("leftMenu", function (inputs, outputs, jagg) {
             </div>
             <div class="col-md-3 breadcrumb-secondary">
                 <a href="/appmgt/site/pages/index.jag"><i class="fa fa-cubes visible-xs visible-lg"></i></a>
-                <span class="hidden-xs"><a href="/appmgt/site/pages/index.jag">Application Cloud</a></span>
+                <span class="hidden-xs"><a href="/appmgt/site/pages/index.jag"><%=cloudTitle%></a></span>
             </div>
         </div>
     </div>

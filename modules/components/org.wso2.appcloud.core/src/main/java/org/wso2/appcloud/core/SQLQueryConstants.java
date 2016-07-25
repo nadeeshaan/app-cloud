@@ -166,7 +166,9 @@ public class SQLQueryConstants {
             "SELECT name, port, protocol, service_prefix FROM AC_TRANSPORT WHERE id IN (SELECT transport_id FROM AC_RUNTIME_TRANSPORT " +
             "WHERE runtime_id=?)";
 
-    public static final String GET_ALL_APP_TYPES = "SELECT * FROM AC_APP_TYPE";
+    public static final String GET_ALL_APP_TYPES_FOR_CLOUD =
+            "SELECT * FROM AC_APP_TYPE WHERE id IN (SELECT app_type_id FROM AC_CLOUD_APP_TYPE WHERE cloud_id=" +
+                    "(SELECT id FROM AC_CLOUD WHERE name=?))";
 
     public static final String GET_RUNTIMES_FOR_APP_TYPE_OF_TENANT =
             "SELECT * FROM AC_RUNTIME WHERE id IN (SELECT runtime_id FROM AC_APP_TYPE_RUNTIME WHERE app_type_id=" +

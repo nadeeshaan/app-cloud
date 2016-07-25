@@ -75,7 +75,7 @@ function displayApplicationInactiveMessage() {
                      type: 'warning',
                      timeout: 15000,
                      content: "<b>This application has been stopped due to inactivity for more than 24 hours</b></br>" +
-                              "This is a limitation of free accounts in App Cloud.</br> To restart, click the <b>Start</b>. button.</br>" +
+                              "This is a limitation of free accounts in " + pageTitle + "</br> To restart, click the <b>Start</b>. button.</br>" +
                               "Click the Support menu to contact us if you need any help."
                  });
 }

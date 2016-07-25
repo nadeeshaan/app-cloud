@@ -64,7 +64,7 @@ INSERT INTO `AC_RUNTIME` (`id`, `name`, `repo_url`, `image_name`, `tag`, `descri
 (3, 'Apache 2.4.10', 'registry.docker.appfactory.private.wso2.com:5000','php','5.6', 'OS:Debian, PHP Version:5.6.20'),
 (4, 'Carbon 4.2.0', 'registry.docker.appfactory.private.wso2.com:5000','carbon','4.2.0', 'OS:Debian, Java Version:7u101'),
 (5, 'Jaggery 0.11.0 ', 'registry.docker.appfactory.private.wso2.com:5000', 'jaggery', '0.11.0', 'OS:Debian, Java Version:7u101'),
-(6, 'Apache Tomcat 8.0.28 / WSO2 Application Server 6.0.0-M2', 'registry.docker.appfactory.private.wso2.com:5000', 'wso2as', '6.0.0-m2', 'OS:Debian, JAVA Version:8u72');
+(6, 'Apache Tomcat 8.0.28 / WSO2 Application Server 6.0.0-M2', 'registry.docker.appfactory.private.wso2.com:5000', 'wso2as', '6.0.0-m2', 'OS:Debian, JAVA Version:8u72'),
 (7, 'WSO2 Data Services Server - 3.5.0','registry.docker.appfactory.private.wso2.com:5000', 'wso2dataservice', '3.5.0', 'OS:Debian, Java Version:7u101'),
 (8, 'OpenJDK 8 + WSO2 MSF4J 2.0.0', 'registry.docker.appfactory.private.wso2.com:5000', 'msf4j', '2.0.0', 'OS:Debian, JAVA Version:8u72');
 
@@ -431,7 +431,6 @@ INSERT INTO `AC_SUBSCRIPTION_PLANS` (`PLAN_NAME`, `MAX_APPLICATIONS`) VALUES
 
 INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
 (1, 3),
-(2, 1),
 (2, 2),
 (2, 3),
 (3, 1),
@@ -446,7 +445,57 @@ INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
 (8, 1),
 (8, 2),
 (8, 3),
-(8, 4);
+(8, 4),
+(5, 4),
+(6, 4);
+
+-- -----------------------------------------------------
+-- Table `AppCloudDB`.`AC_CLOUD`
+-- -----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_CLOUD` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE (`name`))
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Populate Data to `AppCloudDB`.`AC_CLOUD`
+-- -----------------------------------------------------
+
+INSERT INTO `AC_CLOUD` (`id`, `name`) VALUES
+(1, 'app-cloud');
+
+-- -----------------------------------------------------
+-- Table `AppCloudDB`.`AC_CLOUD_APP_TYPE`
+-- -----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_CLOUD_APP_TYPE` (
+  `cloud_id` INT NOT NULL,
+  `app_type_id` INT NOT NULL,
+  CONSTRAINT `fk_cloud_has_cloudAppType_cloud`
+    FOREIGN KEY (`cloud_id`)
+    REFERENCES `AppCloudDB`.`AC_CLOUD` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_cloud_has_cloudAppType_appType`
+    FOREIGN KEY (`app_type_id`)
+    REFERENCES `AppCloudDB`.`AC_APP_TYPE` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Populate Data to `AppCloudDB`.`AC_CLOUD_APP_TYPE`
+-- -----------------------------------------------------
+
+INSERT INTO `AC_CLOUD_APP_TYPE` (`cloud_id`, `app_type_id`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5);
 
 -- -----------------------------------------------------
 -- Migration Script for Limiting Database Creation

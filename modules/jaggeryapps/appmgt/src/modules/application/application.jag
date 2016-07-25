@@ -722,9 +722,9 @@ function getDeploymentConfig(containersList, versionHashId, replicas){
 var getAllAppTypes = function(){
 
     var appTypeArray = [];
-
+    var selectedCloud = session.get("SELECTED_CLOUD");
     try {
-        var appTypes = ApplicationManager.getAllAppTypes();
+        var appTypes = ApplicationManager.getAllAppTypesForCloud(selectedCloud);
 
         for (var i = 0; i < appTypes.length; i++) {
             var appType = appTypes[i];
@@ -826,7 +826,7 @@ var generateApplicationHashId = function(applicationName){
 var getApplicationHashIdByName = function(applicationName){
     try {
         var tenantId = modManager.getTenantId();
-        var applicationHashId = Util.getApplicationHashId(applicationName.toLowerCase(), tenantId);
+        var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
         return applicationHashId;
     } catch (e){
         var msg = "Error while getting application hash id for application : " + applicationName;

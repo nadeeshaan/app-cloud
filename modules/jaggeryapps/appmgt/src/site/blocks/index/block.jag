@@ -31,10 +31,20 @@ jagg.block("index", {
         var applicationModule = jagg.module("application");
         var applications = applicationModule.getAllApplications();
         var applicationName = request.getParameter("applicationName");
+        var appTypes = applicationModule.getAllAppTypes();
+        var appTypeCount = appTypes.length;
+        if (appTypeCount > 0) {
+            var appType = appTypes[0].name;
+        }
+
+        var cloudTitle = jagg.module("manager").getCloudTypeProperties().cloudTitle;
 
         return {
             "applications" : applications,
-            "applicationName" :applicationName
+            "applicationName" :applicationName,
+            "appTypeCount" : appTypeCount,
+            "appType" : appType,
+            "cloudTitle" : cloudTitle
         };
     }
 

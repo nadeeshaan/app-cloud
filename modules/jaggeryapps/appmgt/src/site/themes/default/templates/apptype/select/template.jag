@@ -21,6 +21,7 @@ include("/jagg/jagg.jag");
 
 jagg.template("apptype/select", function(inputs, outputs, jagg) {
     var appTypes = outputs.appTypes;
+    var docLink = outputs.docLink;
     %>
 
     <div class="action-bar">
@@ -63,7 +64,7 @@ jagg.template("apptype/select", function(inputs, outputs, jagg) {
                   <div class="app-description">
                   </div>
                   <div class="button-bar">
-                     <a href="https://docs.wso2.com/display/AppCloud/WSO2+App+Cloud+Documentation" class="cu-btn cu-btn-md cu-btn-gray"><i class="fa fa-book"></i> Documentation</a>
+                     <a href="<%=docLink%>" class="cu-btn cu-btn-md cu-btn-gray" target="_blank"><i class="fa fa-book"></i> Documentation</a>
                      <!--a href="#" class="cu-btn cu-btn-md cu-btn-gray"><i class="fa fa-video-camera"></i> Video Guide</a-->
                   </div>
                </div>

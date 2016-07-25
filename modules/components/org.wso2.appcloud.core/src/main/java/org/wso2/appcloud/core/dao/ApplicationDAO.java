@@ -1123,14 +1123,16 @@ public class ApplicationDAO {
         return versionId;
     }
 
-
     /**
-     * Method for retrieving all the application types.
+     * Method for retrieving all the application types for a given cloud type
      *
-     * @return list of all application types
+     * @param dbConnection database Connection
+     * @param tenantId     tenant id
+     * @param cloudType    cloud type
+     * @return list of app types
      * @throws AppCloudException
      */
-    public List<ApplicationType> getAllApplicationTypes(Connection dbConnection, int tenantId)
+    public List<ApplicationType> getAllApplicationTypesForCloud(Connection dbConnection, int tenantId, String cloudType)
             throws AppCloudException {
 
         PreparedStatement preparedStatement = null;
@@ -1140,7 +1142,8 @@ public class ApplicationDAO {
 
         try {
 
-            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_APP_TYPES);
+            preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_APP_TYPES_FOR_CLOUD);
+            preparedStatement.setString(1, cloudType);
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
@@ -1161,7 +1164,6 @@ public class ApplicationDAO {
         }
         return applicationTypeList;
     }
-
 
     /**
      * Method for retrieving all the runtimes for a given application type.

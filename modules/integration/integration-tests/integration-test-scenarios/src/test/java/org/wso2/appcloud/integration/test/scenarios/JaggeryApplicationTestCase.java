@@ -41,7 +41,9 @@ public class JaggeryApplicationTestCase extends AppCloudIntegrationBaseTestCase 
                       .getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_APPLICATION_CONTEXT),
                 AppCloudIntegrationTestUtils.getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_CONTAINER_SPEC),
                 Boolean.parseBoolean(AppCloudIntegrationTestUtils
-                        .getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_SET_DEFAULT_VERSION)));
+                        .getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_SET_DEFAULT_VERSION)),
+                AppCloudIntegrationTestUtils
+                        .getPropertyValue(AppCloudIntegrationTestConstants.JAGGERY_DEFAULT_VERSION));
     }
 
     @Override

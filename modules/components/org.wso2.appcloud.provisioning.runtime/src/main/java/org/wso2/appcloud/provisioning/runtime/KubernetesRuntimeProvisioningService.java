@@ -952,6 +952,10 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
         AutoAdaptableKubernetesClient kubernetesClient = KubernetesProvisioningUtils.getFabric8KubernetesClient();
         String namespace = this.namespace.getMetadata().getName();
 
+        if (log.isDebugEnabled()) {
+            log.debug("Kubernetes kind : " + k8sKind + ", object name : " + name);
+        }
+
         try {
             switch (k8sKind) {
             case KubernetesPovisioningConstants.KIND_REPLICATION_CONTROLLER:

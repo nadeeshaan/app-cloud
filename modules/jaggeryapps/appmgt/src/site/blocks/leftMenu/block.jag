@@ -49,12 +49,14 @@ jagg.block("leftMenu", {
             versionKey = selectedApplicationRevision.hashId;
         }
 
+        var cloudTitle = jagg.module("manager").getCloudTypeProperties().cloudTitle;
+
         return {
             "applicationKey": applicationKey,
             "selectedRevision": selectedRevision,
             "versionKey": versionKey,
-            "pageName": pageName
-
+            "pageName": pageName,
+            "cloudTitle" : cloudTitle
         };
     }
 
