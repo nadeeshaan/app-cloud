@@ -573,6 +573,17 @@ return getThemePath() + path;
         include(getThemeFile(path));
     };
 
+    var getIssuer = function(requestURL) {
+        var manager = jagg.module("manager");
+        var appCloudHostname = manager.getPropertyValue(APP_CLOUD_HOSTNAME);
+        var issuer;
+        if (requestURL.indexOf(appCloudHostname) > -1) {
+            issuer = site.ssoConfiguration.issuer;
+            session.put(SELECTED_CLOUD, APP_CLOUD);
+        }
+        return issuer;
+    };
+
     return {
         setUser:setUser,
         getUser:getUser,
@@ -605,7 +616,8 @@ return getThemePath() + path;
         getUserTheme:getUserTheme,
         getThemeFile:getThemeFile,
         getAppTypePropertyConfFilePath:getAppTypePropertyConfFilePath,
-        getCloudTypePropertyConfFilePath:getCloudTypePropertyConfFilePath
+        getCloudTypePropertyConfFilePath:getCloudTypePropertyConfFilePath,
+        getIssuer:getIssuer
     };
 
 }());

@@ -3,8 +3,8 @@
         "pageTitle": "WSO2 App Cloud",
         "cloudTitle" : "Application Cloud",
         "properties" : {
-            "documentationUrl": "app-cloud.documentation.url",
-            "supportUrl": "app-cloud.support.url"
+            "documentationUrl": "AppCloud.Documentation.Url",
+            "supportUrl": "AppCloud.Support.Url"
         }
     }
 }
