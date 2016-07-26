@@ -515,7 +515,8 @@ INSERT INTO `AC_CLOUD_APP_TYPE` (`cloud_id`, `app_type_id`) VALUES
 (1, 2),
 (1, 3),
 (1, 4),
-(1, 5);
+(1, 5),
+(1, 6);
 
 -- -----------------------------------------------------
 -- Migration Script for Limiting Database Creation
