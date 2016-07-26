@@ -82,6 +82,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var versionHashIdAtFileUpload;
     var progress;
     var fileMoved = false;
+    var envKeyRegex = new RegExp("<%=ENV_KEY_REGEX%>");
     $(document).ready(function(){
 
             if (newVersion == "true") {
@@ -793,12 +794,11 @@ jagg.template("application", function (inputs, outputs, jagg) {
     }
 
     function validateEnvironmentVariable(value){
-        var envKeyRegex = /[^A-Za-z0-9_]/g;
         if(value != "" && $.inArray(value.toLowerCase(), notAllowedEnvVariables) > -1){
             envVariableErrorMsg = value + " is not allowed";
             return false;
-        } else if (envKeyRegex.test(value)) {
-            envVariableErrorMsg = "Invalid key, use [A-Za-z0-9_]";
+        } else if (!envKeyRegex.test(value)) {
+            envVariableErrorMsg = "Invalid value for variable key, Valid characters are [A-Z, a-z, 0-9, _]";
             return false;
         } else {
             return true;

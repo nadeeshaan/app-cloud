@@ -18,13 +18,17 @@
  */
 
 include("/jagg/jagg.jag");
+include("/jagg/constants.jag");
 
 jagg.template("envs", function(inputs, outputs, jagg) {
     var versionKey = request.getParameter("versionKey");
     var applicationKey = request.getParameter("applicationKey");
     var selectedRevision = outputs.selectedRevision;
+%>
 
-    %>
+<script type="text/javascript" charset="utf-8">
+    var envKeyRegex = new RegExp("<%=ENV_KEY_REGEX%>");
+</script>
      <!-- Bootstrap -->
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/bootstrap-3.2.0/bootstrap.min.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/font-wso2-1.0.0/css/font-wso2.css'))%>">
@@ -218,16 +222,15 @@ $(document).ready(function() {
         $(document).on('click', '.fw-save', function() {
             var updatedKey = $(this).parent().parent().parent().find('.element-key-holder')[0].value;
             var updatedValue = $(this).parent().parent().parent().find('.element-value-holder')[0].value;
-            var envKeyRegex = /[^A-Za-z0-9_]/g;
             if (!updatedKey || !updatedValue) { //Validation when user submits empty keys and values
                 jagg.message({
                     content: "Please fill necessary details before saving.",
                     type: 'info'
                 });
                 return;
-            } else if (envKeyRegex.test(updatedKey)) { //Validates the Env key is in the K8s accepted format
+            } else if (!envKeyRegex.test(updatedKey)) { //Validates the Env key is in the K8s accepted format
                 jagg.message({
-                    content: "Invalid value for variable key, (Matching pattern is [A-Za-z0-9_])",
+                    content: "Invalid value for variable key, Valid characters are [A-Z, a-z, 0-9, _]",
                     type: 'error'
                 });
                 return;
