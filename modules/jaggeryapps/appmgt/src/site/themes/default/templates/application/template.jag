@@ -793,10 +793,14 @@ jagg.template("application", function (inputs, outputs, jagg) {
     }
 
     function validateEnvironmentVariable(value){
+        var envKeyRegex = /[^A-Za-z0-9_]/g;
         if(value != "" && $.inArray(value.toLowerCase(), notAllowedEnvVariables) > -1){
             envVariableErrorMsg = value + " is not allowed";
             return false;
-        } else {
+        } else if (envKeyRegex.test(value)){
+            envVariableErrorMsg = "Invalid key, use [A-Za-z0-9_]";
+            return false;
+        } {
             return true;
         }
     }
