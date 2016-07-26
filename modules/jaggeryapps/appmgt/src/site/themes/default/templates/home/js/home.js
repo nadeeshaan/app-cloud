@@ -20,41 +20,16 @@ $(document).ready(function() {
 function initPageView() {
     loadAppIcon();
     var deploymentURL = selectedApplicationRevision.deploymentURL;
-    var repoUrlHtml = generateLunchUrl(deploymentURL);
+    var repoUrlHtml = generateLunchUrl(deploymentURL, selectedApplicationRevision.status);
     $("#version-url-link").html(repoUrlHtml);
     $('#appVersionList li').click(function() {
         var newRevision = this.textContent;
         changeSelectedRevision(newRevision);
     });
 
-    $('body').on('click', '#btn-launchApp', function() {
-        if(selectedApplicationRevision.status == APPLICATION_RUNNING){
-            var appUrl = $('#btn-launchApp').attr("url");
-            var newWindow = window.open('','_blank');
-            newWindow.location = appUrl;
-        } else if(selectedApplicationRevision.status == APPLICATION_STOPPED) {
-            jagg.message({
-                             modalStatus: true,
-                             type: 'warning',
-                             timeout: 3000,
-                             content: "<b>Application has been stopped. Start the application before launch.</b>"
-                         });
-        } else if(selectedApplicationRevision.status == APPLICATION_INACTIVE) {
-            jagg.message({
-                             modalStatus: true,
-                             type: 'warning',
-                             timeout: 3000,
-                             content: "<b>Application has been stopped due to inactivity. Start the application before launch.</b>"
-                         });
-        } else {
-            jagg.message({
-                             modalStatus: true,
-                             type: 'error',
-                             timeout: 3000,
-                             content: "<b>Error has occurred while application creation. If the problem persists please contact system administrator.</b>"
-                         });
-        }
-    });
+    $('body').on('click', '#btn-launchApp', launchApp);
+    $('body').on('click', '#launch-version-url-a', displayMessage);
+    $('body').on('click', '#launch-default-url-a', displayMessage);
 
     $('#btn-dashboard').click(function() {
         var appUrl = $('#btn-dashboard').attr("url");
@@ -64,6 +39,41 @@ function initPageView() {
 
     listTags();
     listEnvs();
+}
+
+function launchApp() {
+    if(selectedApplicationRevision.status == APPLICATION_RUNNING){
+        var appUrl = $('#btn-launchApp').attr("url");
+        var newWindow = window.open('','_blank');
+        newWindow.location = appUrl;
+    } else {
+        displayMessage();
+    }
+}
+
+function displayMessage() {
+    if(selectedApplicationRevision.status == APPLICATION_STOPPED) {
+        jagg.message({
+                         modalStatus: true,
+                         type: 'warning',
+                         timeout: 3000,
+                         content: "<b>Application has been stopped. Start the application before launch.</b>"
+                     });
+    } else if(selectedApplicationRevision.status == APPLICATION_INACTIVE) {
+        jagg.message({
+                         modalStatus: true,
+                         type: 'warning',
+                         timeout: 3000,
+                         content: "<b>Application has been stopped due to inactivity. Start the application before launch.</b>"
+                     });
+    } else {
+        jagg.message({
+                         modalStatus: true,
+                         type: 'error',
+                         timeout: 3000,
+                         content: "<b>Error has occurred while application creation. If the problem persists please contact system administrator.</b>"
+                     });
+    }
 }
 /**
  * This function is to display a message to user to inform that the application is stopped due to
@@ -196,6 +206,12 @@ function changeSelectedRevision(newRevision){
     // Change version status in UI
     if(selectedApplicationRevision.status == APPLICATION_RUNNING){
 
+        $('#launch-default-url-block').empty();
+        $('#launch-default-url-block').html('<a id="launch-default-url-a" target="_blank" href="' + deploymentURL + '">' + deploymentURL + '</a>');
+
+        $('#version-url-link').empty();
+        $('#version-url-link').html('<a id="launch-version-url-a" href="' + deploymentURL + '" target="_blank"><span><b>URL : </b>' + deploymentURL + '</span></a>');
+
         $('#version-app-launch-block').empty();
         $('#version-app-launch-block').html('<button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"' +
                        'url="' + deploymentURL + '">Launch App</button>' +
@@ -218,6 +234,12 @@ function changeSelectedRevision(newRevision){
 
     } else if(selectedApplicationRevision.status == APPLICATION_STOPPED || selectedApplicationRevision.status == APPLICATION_INACTIVE){
 
+        $('#launch-default-url-block').empty();
+        $('#launch-default-url-block').html('<a id="launch-default-url-a" target="_blank">' + deploymentURL + '</a>');
+
+        $('#version-url-link').empty();
+        $('#version-url-link').html('<a id="launch-version-url-a" target="_blank"><span><b>URL : </b>' + deploymentURL + '</span></a>');
+
         $('#version-app-launch-block').empty();
         $('#version-app-launch-block').html('<button class="cu-btn cu-btn-md cu-btn-gr-dark btn-launch-app" id="btn-launchApp"' +
                        'url="' + deploymentURL + '">Launch App</button>' +
@@ -235,6 +257,12 @@ function changeSelectedRevision(newRevision){
                                  '</i></span></figcaption></figure></div>');
     } else {
 
+        $('#launch-default-url-block').empty();
+        $('#launch-default-url-block').html('<a id="launch-default-url-a" target="_blank">' + deploymentURL + '</a>');
+
+        $('#version-url-link').empty();
+        $('#version-url-link').html('<a id="launch-version-url-a" target="_blank"><span><b>URL : </b>' + deploymentURL + '</span></a>');
+
         $('#version-app-launch-block').empty();
         $('#version-app-launch-block').html('<div class="btn-group ctrl-edit-button btn-edit-code">' +
                                             '<a type="button" class="btn cu-btn cu-btn-md cu-btn-red" ' +
@@ -251,10 +279,14 @@ function changeSelectedRevision(newRevision){
     changeLabels(selectedApplicationRevision);
 }
 
-function generateLunchUrl(appURL) {
+function generateLunchUrl(appURL, status) {
     var message = "";
     if(appURL) {
-        message += "<a target='_blank' href='" + appURL + "' >";
+        if(status && status == APPLICATION_RUNNING) {
+            message += "<a id='launch-version-url-a' target='_blank' href='" + appURL + "' >";
+        } else {
+            message += "<a id='launch-version-url-a' target='_blank' >";
+        }
         message += "<span>";
         message += "<b>URL : </b>";
         message += appURL;

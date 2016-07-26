@@ -95,8 +95,13 @@ jagg.template("home", function(inputs, outputs, jagg) {
                 <p id="app-description"><%=(application.description)?application.description:''%></p>
                 <%if (defaultAppLaunchURL != null) { %>
                 <div class="app-preview-action-bar" id="custom-url-block">
-                    <div class="sec prod-url"><a target="_blank" href="<%=defaultAppLaunchURL%>"><%=defaultAppLaunchURL%></a>
-                    <a href="/appmgt/site/pages/customurl.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>"><i class="fw fw-settings"></i></a>
+                    <div class="sec prod-url" id="launch-default-url-block">
+                        <% if(selectedApplicationRevision.status==APPLICATION_RUNNING){ %>
+                            <a id="launch-default-url-a" target="_blank" href="<%=defaultAppLaunchURL%>"><%=defaultAppLaunchURL%></a>
+                        <% } else { %>
+                            <a id="launch-default-url-a" target="_blank"><%=defaultAppLaunchURL%></a>
+                        <% } %>
+                        <a href="/appmgt/site/pages/customurl.jag?applicationKey=<%=applicationKey%>&selectedRevision=<%=selectedRevision%>"><i class="fw fw-settings"></i></a>
                     </div>
                 </div>
                 <% } %>
@@ -124,8 +129,15 @@ jagg.template("home", function(inputs, outputs, jagg) {
                               </ul>
                           </div>
                           <div id="version-url-link" class="version-url">
-                          <a href="<%=selectedApplicationRevision.deploymentURL%>" target="_blank"><span>
-                          <b>URL : </b><%=selectedApplicationRevision.deploymentURL%></span></a>
+                          <% if(selectedApplicationRevision.status==APPLICATION_RUNNING){ %>
+                            <a id="launch-version-url-a" href="<%=selectedApplicationRevision.deploymentURL%>" target="_blank">
+                                <span><b>URL : </b><%=selectedApplicationRevision.deploymentURL%></span>
+                            </a>
+                          <% } else { %>
+                            <a id="launch-version-url-a" target="_blank">
+                                <span><b>URL : </b><%=selectedApplicationRevision.deploymentURL%></span>
+                            </a>
+                          <% } %>
                           </div>
                           <div class="sec" id="version-app-launch-block">
                               <%
@@ -287,7 +299,6 @@ jagg.template("home", function(inputs, outputs, jagg) {
         var revArry = [];
         for (var x in revisionsSet){
             var rev = x.split(".")[0];
-            console.log(rev);
             revArry.push(rev);
         }
         revArry.sort(function(a, b){return a-b});
