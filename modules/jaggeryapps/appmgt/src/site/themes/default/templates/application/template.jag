@@ -597,9 +597,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
         }
 
         function validateApplicationNameChar(value) {
-            var patternNonAlphaNumExceptHyphen = /[^\w-]/g;
+            var patternNonAlphaNumExceptHyphen = /[^a-zA-Z\d\-\_ ]/g;
             var isPatternMatch = patternNonAlphaNumExceptHyphen.test(value);
-            validationFailErrorMsg = "Application Name has invalid characters. Valid characters are a-z A-Z 0-9 -";
+            validationFailErrorMsg = "Application Name has invalid characters. Valid characters are [a-z, A-Z, 0-9, _, -]";
 
             return !isPatternMatch;
         }
@@ -797,10 +797,10 @@ jagg.template("application", function (inputs, outputs, jagg) {
         if(value != "" && $.inArray(value.toLowerCase(), notAllowedEnvVariables) > -1){
             envVariableErrorMsg = value + " is not allowed";
             return false;
-        } else if (envKeyRegex.test(value)){
+        } else if (envKeyRegex.test(value)) {
             envVariableErrorMsg = "Invalid key, use [A-Za-z0-9_]";
             return false;
-        } {
+        } else {
             return true;
         }
     }
