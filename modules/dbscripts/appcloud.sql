@@ -14,7 +14,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema AppCloudDB
 -- -----------------------------------------------------
-
 CREATE SCHEMA IF NOT EXISTS `AppCloudDB` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
 USE `AppCloudDB` ;
 
@@ -68,7 +67,7 @@ INSERT INTO `AC_RUNTIME` (`id`, `name`, `repo_url`, `image_name`, `tag`, `descri
 (6, 'Apache Tomcat 8.0.28 / WSO2 Application Server 6.0.0-M2', 'registry.docker.appfactory.private.wso2.com:5000', 'wso2as', '6.0.0-m2', 'OS:Debian, JAVA Version:8u72'),
 (7, 'WSO2 Data Services Server - 3.5.0','registry.docker.appfactory.private.wso2.com:5000', 'wso2dataservice', '3.5.0', 'OS:Debian, Java Version:7u101'),
 (8, 'OpenJDK 8 + WSO2 MSF4J 2.0.0', 'registry.docker.appfactory.private.wso2.com:5000', 'msf4j', '2.0.0', 'OS:Debian, JAVA Version:8u72'),
-(9, 'WSO2 Enterprise Service Bus - 5.0.0','registry.docker.appfactory.private.wso2.com:5000', 'esb', '5.0.0', 'OS:Debian, Java Version:7u101');
+(9, 'WSO2 Enterprise Service Bus - 5.0.0','registry.docker.appfactory.private.wso2.com:5000', 'wso2esb', '5.0.0', 'OS:Debian, Java Version:7u101');
 
 
 -- -----------------------------------------------------
