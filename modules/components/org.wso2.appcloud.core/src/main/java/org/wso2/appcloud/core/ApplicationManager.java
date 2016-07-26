@@ -559,18 +559,19 @@ public class ApplicationManager {
         }
     }
 
-
     /**
-     * Method for getting all apptypes.
+     * Method for getting all apptypes for a given cloud type.
      *
+     * @param cloudType cloud type
+     * @return list of app types
      * @throws AppCloudException
      */
-    public static ApplicationType[] getAllAppTypes() throws AppCloudException {
+    public static ApplicationType[] getAllAppTypesForCloud(String cloudType) throws AppCloudException {
         Connection dbConnection = DBUtil.getDBConnection();
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
             List<ApplicationType> applicationTypeList = ApplicationDAO.getInstance().
-                    getAllApplicationTypes(dbConnection, tenantId);
+                    getAllApplicationTypesForCloud(dbConnection, tenantId, cloudType);
             return applicationTypeList.toArray(new ApplicationType[applicationTypeList.size()]);
         } catch (AppCloudException e) {
             String msg = "Error while getting all application types for tenant id : " + tenantId;
@@ -580,7 +581,6 @@ public class ApplicationManager {
             DBUtil.closeConnection(dbConnection);
         }
     }
-
 
     /**
      * Method for getting all runtimes for a given application type.

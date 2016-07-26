@@ -722,9 +722,9 @@ function getDeploymentConfig(containersList, versionHashId, replicas){
 var getAllAppTypes = function(){
 
     var appTypeArray = [];
-
+    var selectedCloud = session.get("SELECTED_CLOUD");
     try {
-        var appTypes = ApplicationManager.getAllAppTypes();
+        var appTypes = ApplicationManager.getAllAppTypesForCloud(selectedCloud);
 
         for (var i = 0; i < appTypes.length; i++) {
             var appType = appTypes[i];

@@ -27,8 +27,6 @@ var DOCKER_FILE_NAME = "Dockerfile";
 var TENANT_DOMAIN_NAME = "tenantDomainName";
 var SUPER_TENANT_DOMAIN_NAME = "carbon.super";
 var CLOUD_TYPE = "AppCloud";
-var DOCUMENTATION_REDIRECTION_URL = "Documentation.Url";
-var SUPPORT_REDIRECTION_URL = "Support.Url";
 var APP_TYPES_PROPERTIES_CONFIG = "/site/themes/default/templates/apptype/select/app-types-properties.json";
 var KUB_SERVICE_PORT = 80;
 var KUB_SERVICE_BACKEND_PORT = 8080;
@@ -72,4 +70,5 @@ var FILE_EXTENTION_ZIP = "zip";
 var PERMISSION_EXECUTE = "ui.execute";
 var LOGIN_PERMISSION = "AppCloud.Login.Permission"
 
+var CLOUD_TYPES_PROPERTIES_CONFIG = "/jagg/cloud-types-properties.json";
 %>

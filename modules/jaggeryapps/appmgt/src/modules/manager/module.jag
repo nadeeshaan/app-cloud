@@ -53,6 +53,9 @@ jagg.module("manager", {
 	},
 	checkAuthorizationForUser: function () {
 		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").checkAuthorizationForUser.apply(this, arguments);
-	}
+	},
+       getCloudTypeProperties: function () {
+           return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getCloudTypeProperties.apply(this, arguments);
+       }
 });
 %>

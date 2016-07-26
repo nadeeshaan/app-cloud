@@ -55,7 +55,7 @@ public class AppCloudIntegrationTestConstants {
 	public static final String TOMCAT_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='war']";
 	public static final String MSS_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='msf4j']";
 	public static final String PHP_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='php']";
-	public static final String JAGGERY_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='jaggery']";
+	public static final String  JAGGERY_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='jaggery']";
 	public static final String DSS_APP_CONTENT = "//appCloudProperties/application/sampleAppContents/sampleAppContent[@key='wso2dataservice']";
 	public static final String TOMCAT_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='tomcat']";
 	public static final String MSS_RUNTIME_START_TIMEOUT = "//appCloudProperties/application/runtimeStartTimeouts/runtimeStartTimeout[@key='msf4j']";
@@ -77,6 +77,11 @@ public class AppCloudIntegrationTestConstants {
 	public static final String MSS_SET_DEFAULT_VERSION = "//appCloudProperties/application/defaultVersion/set[@key='msf4j']";
 	public static final String PHP_SET_DEFAULT_VERSION = "//appCloudProperties/application/defaultVersion/set[@key='php']";
 	public static final String JAGGERY_SET_DEFAULT_VERSION = "//appCloudProperties/application/defaultVersion/set[@key='jaggery']";
+	public static final String TOMCAT_DEFAULT_VERSION = "//appCloudProperties/application/defaultVersion/name[@key='war']";
+	public static final String DSS_DEFAULT_VERSION = "//appCloudProperties/application/defaultVersion/name[@key='wso2dataservice']";
+	public static final String MSS_DEFAULT_VERSION = "//appCloudProperties/application/defaultVersion/name[@key='msf4j']";
+	public static final String PHP_DEFAULT_VERSION = "//appCloudProperties/application/defaultVersion/name[@key='php']";
+	public static final String JAGGERY_DEFAULT_VERSION = "//appCloudProperties/application/defaultVersion/name[@key='jaggery']";
 
 	public static final String APP_PROPERTIES_KEY = "//appCloudProperties/application/properties/property";
 	public static final String APP_NEW_PROPERTIES_KEY = "//appCloudProperties/application/newProperties/property";
@@ -92,6 +97,7 @@ public class AppCloudIntegrationTestConstants {
 
 	// Rest endpoints
 	public static final String REST_APPLICATION_ENDPOINT = "application/application.jag";
+	public static final String REST_SETTINGS_ENDPOINT = "settings/settings.jag";
 	public static final String REST_LOGS_ENDPOINT = "runtimeLogs/ajax/runtimeLogs.jag";
 	public static final String APPMGT_USER_LOGIN = "user/login/ajax/login.jag";
 	public static final String APPMGT_URL_SURFIX = "appmgt/site/blocks/";
@@ -112,5 +118,6 @@ public class AppCloudIntegrationTestConstants {
 	public static final String PROPERTY_DEPLOYMENT_URL = "deploymentURL";
 	public static final String PARAM_UNDERSCORE = "_";
 	public static final String PARAM_ICON = "icon";
-
+	public static final String DEFAULT_VERSION = "defaultVersion";
+	public static final String DEFAULT_VERSION_URL = "defaultURL";
 }

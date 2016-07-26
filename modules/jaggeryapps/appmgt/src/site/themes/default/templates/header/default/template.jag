@@ -25,6 +25,7 @@ jagg.template("header/default", function(inputs, outputs, jagg) {
     var tenantDomain = outputs.tenantDomain;
     var docUrl = outputs.docUrl;
     var supportUrl = outputs.supportUrl;
+    var cloudTitle = outputs.cloudTitle;
     var isGoogleAnalyticsEnabled = outputs.isGoogleAnalyticsEnabled;
     var googleTrackingId = outputs.googleTrackingId;
 
@@ -143,7 +144,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="row">
             <div class="col-md-3 breadcrumb-secondary">
                 <a href="/appmgt/site/pages/index.jag"><i class="fa fa-cubes visible-xs visible-lg"></i></a>
-                <span class="hidden-xs"><a href="/appmgt/site/pages/index.jag">Application Cloud</a></span>
+                <span class="hidden-xs"><a href="/appmgt/site/pages/index.jag"><%=cloudTitle%></a></span>
             </div>
         </div>
     </div>

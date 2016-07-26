@@ -211,6 +211,8 @@ $(document).ready(function () {
         });
     }
 
+});
+
 $(document).on('click', '.panel-heading a', function (e) {
     var $this = $(this);
     if ($this.hasClass('collapsed')) {

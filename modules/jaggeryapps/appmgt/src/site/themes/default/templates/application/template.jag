@@ -40,6 +40,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
         var allowedRuntimeContainerSpecJson = outputs.allowedContainerSpecs;
 		var maxApplications = outputs.maxAppCount;
         var defaultVersion = outputs.defaultVersion;
+        var appTypeCount = outputs.appTypeCount;
     %>
 
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/bootstrap-3.2.0/bootstrap.min.css'))%>">
@@ -792,10 +793,14 @@ jagg.template("application", function (inputs, outputs, jagg) {
     }
 
     function validateEnvironmentVariable(value){
+        var envKeyRegex = /[^A-Za-z0-9_]/g;
         if(value != "" && $.inArray(value.toLowerCase(), notAllowedEnvVariables) > -1){
             envVariableErrorMsg = value + " is not allowed";
             return false;
-        } else {
+        } else if (envKeyRegex.test(value)){
+            envVariableErrorMsg = "Invalid key, use [A-Za-z0-9_]";
+            return false;
+        } {
             return true;
         }
     }
@@ -913,13 +918,23 @@ jagg.template("application", function (inputs, outputs, jagg) {
             </a>
         <%
     } else {
+            if (appTypeCount == 1) {
         %>
+            <a href="<%=jagg.getAbsoluteUrl("/site/pages/index.jag")%>" class="btn-action">
+                <span class="fw-stack fw-lg btn-action-ico">
+                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+                    <i class="fw fw-left-arrow fw-stack-1x"></i>
+                </span> Back to Listing
+            </a>
+        <%  } else { %>
             <a href="<%=jagg.getAbsoluteUrl("/site/pages/select-apptype.jag")%>" class="btn-action">
                 <span class="fw-stack fw-lg btn-action-ico">
                     <i class="fw fw-circle-outline fw-stack-2x"></i>
                     <i class="fw fw-left-arrow fw-stack-1x"></i>
                 </span> Back to app type selection
             </a>
+        <%  } %>
+
             <a href="<%=jagg.getAbsoluteUrl("/site/pages/index.jag")%>" class="btn-action">
                 <span class="fw-stack fw-lg btn-action-ico">
                     <i class="fw fw-circle-outline fw-stack-2x"></i>

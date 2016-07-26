@@ -21,6 +21,9 @@ include("/jagg/jagg.jag");
 
 jagg.template("index", function(inputs, outputs, jagg) {
     var applications = outputs.applications;
+    var appTypeCount = outputs.appTypeCount;
+    var appType = outputs.appType;
+    var cloudTitle = outputs.cloudTitle;
     var log = new Log("index");
 
     %>
@@ -258,7 +261,11 @@ jagg.template("index", function(inputs, outputs, jagg) {
     </script>
 
     <div class="action-bar">
+    <% if (appTypeCount == 1) { %>
+        <a href="<%=jagg.getAbsoluteUrl("/site/pages/application.jag")%>?appTypeName=<%=appType%>" class="btn-action" data-toggle="tooltip" data-placement="top" title="Add New Application">
+    <% } else { %>
         <a href="/appmgt/site/pages/select-apptype.jag" class="btn-action" data-toggle="tooltip" data-placement="top" title="Add New Application">
+    <% } %>
             <span class="fw-stack fw-lg btn-action-ico">
                 <i class="fw fw-circle-outline fw-stack-2x"></i>
                 <i class="fw fw-add fw-stack-1x"></i>
@@ -286,8 +293,12 @@ jagg.template("index", function(inputs, outputs, jagg) {
         <div class="row row-centered">
             <div class="col-centered col-xs-10 col-sm-7  col-md-7 col-lg-6">
                 <div class="cloud-new-content">
-                    <h1>New to WSO2 Application Cloud ?</h1>
+                    <h1>New to WSO2 <%=cloudTitle%> ?</h1>
+                    <% if (appTypeCount == 1) { %>
+                    <a id="app-create-button" class="cu-btn cu-btn-md cu-btn-blue" href="<%=jagg.getAbsoluteUrl("/site/pages/application.jag")%>?appTypeName=<%=appType%>">
+                    <% } else { %>
                     <a id="app-create-button" class="cu-btn cu-btn-md cu-btn-blue" href="/appmgt/site/pages/select-apptype.jag">
+                    <% } %>
                       Create your first application</a>
                     <!--div class="help">
                         <i class="fa fa-2x fa-book"></i> Need help ? Read App creation guide first..
