@@ -14,6 +14,7 @@
   "distributable" : true,
   "ssoConfiguration" : {
     "issuer" : "appmgt",
+    "integrationIssuer" : "integration-cloud",
     "identityProviderURL" : "https://localhost:9444/samlsso",
     "keyStorePassword": "wso2carbon",
     "identityAlias" : "wso2carbon",

@@ -1,26 +1,11 @@
---
---  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
---
---    WSO2 Inc. licenses this file to you under the Apache License,
---    Version 2.0 (the "License"); you may not use this file except
---    in compliance with the License.
---    You may obtain a copy of the License at
---
---       http://www.apache.org/licenses/LICENSE-2.0
---
---    Unless required by applicable law or agreed to in writing,
---    software distributed under the License is distributed on an
---    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
---    KIND, either express or implied.  See the License for the
---    specific language governing permissions and limitations
---    under the License.
---
 -- to make identical local setup database with production database
 delete from AC_RUNTIME_CONTAINER_SPECIFICATIONS where id = 2 and CON_SPEC_ID = 1;
 insert into AC_RUNTIME_CONTAINER_SPECIFICATIONS values(5,4);
 insert into AC_RUNTIME_CONTAINER_SPECIFICATIONS values(6,4);
 
+-------------------------------------------------------------------------------------------------
 -- app types per cloud
+-------------------------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_CLOUD` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
@@ -53,3 +38,28 @@ INSERT INTO `AC_CLOUD_APP_TYPE` (`cloud_id`, `app_type_id`) VALUES
 (1, 4),
 (1, 5);
 
+-------------------------------------------------------------------------------------------------
+-- adding esb app type
+-------------------------------------------------------------------------------------------------
+INSERT INTO `AC_APP_TYPE` (`id`, `name`, `description`) VALUES
+(6, 'car', 'Allows you to deploy a esb configuration that is supported in WSO2 Enterprise Service Bus');
+
+INSERT INTO `AC_RUNTIME` (`id`, `name`, `repo_url`, `image_name`, `tag`, `description`) VALUES
+(9, 'WSO2 Enterprise Service Bus - 5.0.0','registry.docker.appfactory.private.wso2.com:5000', 'wso2esb', '5.0.0', 'OS:Debian, Java Version:7u101');
+
+INSERT INTO `AC_APP_TYPE_RUNTIME` (`app_type_id`, `runtime_id`) VALUES
+(6, 9);
+
+INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
+(9, 3),
+(9, 4);
+
+-------------------------------------------------------------------------------------------------
+-- adding integration cloud
+-------------------------------------------------------------------------------------------------
+
+INSERT INTO `AC_CLOUD` (`id`, `name`) VALUES
+(2, 'integration-cloud');
+
+INSERT INTO `AC_CLOUD_APP_TYPE` (`cloud_id`, `app_type_id`) VALUES
+(2, 6);

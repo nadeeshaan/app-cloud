@@ -246,7 +246,7 @@ INSERT INTO `AC_APP_TYPE_RUNTIME` (`app_type_id`, `runtime_id`) VALUES
 (1, 6),
 (5, 7),
 (2, 8),
-(6,9);
+(6, 9);
 
 
 -- -----------------------------------------------------
@@ -516,7 +516,7 @@ INSERT INTO `AC_CLOUD_APP_TYPE` (`cloud_id`, `app_type_id`) VALUES
 (1, 3),
 (1, 4),
 (1, 5),
-(1, 6);
+(2, 6);
 
 -- -----------------------------------------------------
 -- Migration Script for Limiting Database Creation
