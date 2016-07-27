@@ -56,6 +56,14 @@ INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
 (9, 3),
 (9, 4);
 
+INSERT INTO AC_TRANSPORT (`id`, `name`, `port`, `protocol`, `service_prefix`, `description`) VALUES
+(7, "http", 8280, "TCP", "htp", "HTTP Protocol"),
+(8, "https", 8243, "TCP", "hts", "HTTPS Protocol");
+
+INSERT INTO AC_RUNTIME_TRANSPORT (`transport_id`, `runtime_id`) VALUES
+(7, 9),
+(8, 9);
+
 -------------------------------------------------------------------------------------------------
 -- adding integration cloud
 -------------------------------------------------------------------------------------------------
