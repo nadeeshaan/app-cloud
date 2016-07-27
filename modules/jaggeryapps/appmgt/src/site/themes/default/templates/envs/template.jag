@@ -219,6 +219,17 @@ $(document).ready(function() {
             });
         });
 
+        $(document).on('focusout', '.element-key-holder', function() {
+        var updatedKey = $(this).parent().parent().parent().find('.element-key-holder')[0].value;
+            if (!envKeyRegex.test(updatedKey)) { //Validates the Env key is in the K8s accepted format
+                jagg.message({
+                    content: "Invalid value for variable key, Valid characters are [A-Z, a-z, 0-9, _]",
+                    type: 'error'
+                });
+                return;
+            }
+        });
+
         $(document).on('click', '.fw-save', function() {
             var updatedKey = $(this).parent().parent().parent().find('.element-key-holder')[0].value;
             var updatedValue = $(this).parent().parent().parent().find('.element-value-holder')[0].value;
