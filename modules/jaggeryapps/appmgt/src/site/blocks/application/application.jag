@@ -19,7 +19,7 @@
 
 include("/jagg/jagg.jag");
 include('/jagg/constants.jag');
-
+var validator = require('/site/themes/default/js/custom/validator.js');
 var action = request.getParameter("action");
 var applicationModule = jagg.module("application");
 var gitHubAppModule = jagg.module("application/git");
@@ -353,16 +353,16 @@ var log = new Log();
         var prevKey = request.getParameter("prevKey");
         var newKey = request.getParameter("newKey");
         var newValue = request.getParameter("newValue");
-        var envKeyRegex = new RegExp(ENV_KEY_REGEX);
-        if (!envKeyRegex.test(newKey)) {
+        var keyValidation = validator.validateEnvKey(newKey);
+        if (!keyValidation.status) {
             response.status = 400;
-            response.content = "Invalid value for variable key:" + newKey + ", Valid characters are [A-Z, a-z, 0-9, _]";
+            response.content = keyValidation.msg;
             return;
         } else {
             var mod = jagg.module("application");
             mod.updateRuntimeProperty(versionKey,prevKey,newKey,newValue);
             response.status = 200;
-            response.content = "Runtime property successfully updated.";
+            response.content = keyValidation.msg;
         }
 
     } else if (action == "deleteRuntimeProperty"){
@@ -378,16 +378,16 @@ var log = new Log();
         var versionKey = request.getParameter("versionKey");
         var key = request.getParameter("key");
         var value = request.getParameter("value");
-        var envKeyRegex = new RegExp(ENV_KEY_REGEX);
-        if (!envKeyRegex.test(key)) {
+        var keyValidation = validator.validateEnvKey(key);
+        if (!keyValidation.status) {
             response.status = 400;
-            response.content = "Invalid value for variable key:" + key + ", Valid characters are [A-Z, a-z, 0-9, _]";
+            response.content = keyValidation.msg;
             return;
         } else {
             var mod = jagg.module("application");
             mod.addRuntimeProperty(versionKey,key,value);
             response.status = 200;
-            response.content = "Runtime property successfully added.";
+            response.content = keyValidation.msg;
         }
 
     } else if (action == "downloadFromUrl"){

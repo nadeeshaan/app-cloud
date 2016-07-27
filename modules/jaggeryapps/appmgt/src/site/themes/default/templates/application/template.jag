@@ -794,11 +794,12 @@ jagg.template("application", function (inputs, outputs, jagg) {
     }
 
     function validateEnvironmentVariable(value){
+        var keyValidation = validateEnvKey(value);
         if(value != "" && $.inArray(value.toLowerCase(), notAllowedEnvVariables) > -1){
             envVariableErrorMsg = value + " is not allowed";
             return false;
-        } else if (!envKeyRegex.test(value)) {
-            envVariableErrorMsg = "Invalid value for variable key, Valid characters are [A-Z, a-z, 0-9, _]";
+        } else if (!keyValidation.status) {
+            envVariableErrorMsg = keyValidation.msg;
             return false;
         } else {
             return true;

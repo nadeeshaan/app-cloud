@@ -26,10 +26,7 @@ jagg.template("envs", function(inputs, outputs, jagg) {
     var selectedRevision = outputs.selectedRevision;
 %>
 
-<script type="text/javascript" charset="utf-8">
-    var envKeyRegex = new RegExp("<%=ENV_KEY_REGEX%>");
-</script>
-     <!-- Bootstrap -->
+      <!-- Bootstrap -->
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/bootstrap-3.2.0/bootstrap.min.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/font-wso2-1.0.0/css/font-wso2.css'))%>">
       <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('css/font-awesome-4.2.0/font-awesome.min.css'))%>">
@@ -221,9 +218,10 @@ $(document).ready(function() {
 
         $(document).on('focusout', '.element-key-holder', function() {
         var updatedKey = $(this).parent().parent().parent().find('.element-key-holder')[0].value;
-            if (!envKeyRegex.test(updatedKey)) { //Validates the Env key is in the K8s accepted format
+        var keyValidation = validateEnvKey(updatedKey);
+            if (!keyValidation.status) { //Validates the Env key is in the K8s accepted format
                 jagg.message({
-                    content: "Invalid value for variable key, Valid characters are [A-Z, a-z, 0-9, _]",
+                    content: keyValidation.msg,
                     type: 'error'
                 });
                 return;
@@ -233,15 +231,16 @@ $(document).ready(function() {
         $(document).on('click', '.fw-save', function() {
             var updatedKey = $(this).parent().parent().parent().find('.element-key-holder')[0].value;
             var updatedValue = $(this).parent().parent().parent().find('.element-value-holder')[0].value;
+            var keyValidation = validateEnvKey(updatedKey);
             if (!updatedKey || !updatedValue) { //Validation when user submits empty keys and values
                 jagg.message({
                     content: "Please fill necessary details before saving.",
                     type: 'info'
                 });
                 return;
-            } else if (!envKeyRegex.test(updatedKey)) { //Validates the Env key is in the K8s accepted format
+            } else if (!keyValidation.status) { //Validates the Env key is in the K8s accepted format
                 jagg.message({
-                    content: "Invalid value for variable key, Valid characters are [A-Z, a-z, 0-9, _]",
+                    content: keyValidation.msg,
                     type: 'error'
                 });
                 return;
