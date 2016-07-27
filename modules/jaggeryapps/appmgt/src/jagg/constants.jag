@@ -71,6 +71,9 @@ var PERMISSION_EXECUTE = "ui.execute";
 var LOGIN_PERMISSION = "AppCloud.Login.Permission"
 
 var CLOUD_TYPES_PROPERTIES_CONFIG = "/jagg/cloud-types-properties.json";
+var SELECTED_CLOUD = "SELECTED_CLOUD";
+var APP_CLOUD = "app-cloud";
+var APP_CLOUD_HOSTNAME = "AppCloud.Hostname";
 
 //Regex patterns
 var ENV_KEY_REGEX = "^[A-Za-z0-9_]+$";

@@ -33,7 +33,7 @@
     include("/jagg/jagg.jag");
     var site = require("/site/conf/site.json");
     var security = require("sso");
-    var ssoRelyingParty = new security.SSORelyingParty(site.ssoConfiguration.issuer);
+    var ssoRelyingParty = new security.SSORelyingParty(jagg.getIssuer(request.getRequestURL()));
     var isLogoutResponse = false;
     var isLogoutRequest = false;
 
@@ -68,7 +68,6 @@
                 var email = modManager.getEmailAddressForUser(userName);
                 modManager.setUserEmailAddress(email);
                 session.put("LOGGED_IN_USER", ssoRelyingParty.getLoggedInUser(sessionId));
-                session.put("SELECTED_CLOUD", "app-cloud");
                 audit.info("User : " + jagg.getUser() + ", Action : login");
                 response.sendRedirect("/appmgt/site/pages/index.jag");
             } else {
@@ -78,8 +77,8 @@
         } else {
             // if the saml response is log out request from IDP, we log out from web app.
             ssoRelyingParty.invalidateSessionBySessionId(sessionId);
-            session.invalidate();
             audit.info("User : " + jagg.getUser() + ", Action : logout");
+            session.invalidate();
             response.sendRedirect("../");
             return;
         }
@@ -91,8 +90,8 @@
         isLogoutRequest = ssoRelyingParty.isLogoutRequest(samlRequest);
         if (Boolean(isLogoutRequest)) {
             ssoRelyingParty.invalidateSessionBySAMLResponse(samlRequest);
-            session.invalidate();
             audit.info("User : " + jagg.getUser() + ", Action : logout");
+            session.invalidate();
         }
     }
 
