@@ -576,10 +576,14 @@ return getThemePath() + path;
     var getIssuer = function(requestURL) {
         var manager = jagg.module("manager");
         var appCloudHostname = manager.getPropertyValue(APP_CLOUD_HOSTNAME);
+        var integrationCloudHostname = manager.getPropertyValue(INTEGRATION_CLOUD_HOSTNAME);
         var issuer;
         if (requestURL.indexOf(appCloudHostname) > -1) {
             issuer = site.ssoConfiguration.issuer;
             session.put(SELECTED_CLOUD, APP_CLOUD);
+        } else if (requestURL.indexOf(integrationCloudHostname) > -1) {
+            issuer = site.ssoConfiguration.integrationIssuer;
+            session.put(SELECTED_CLOUD, INTEGRATION_CLOUD);
         }
         return issuer;
     };
