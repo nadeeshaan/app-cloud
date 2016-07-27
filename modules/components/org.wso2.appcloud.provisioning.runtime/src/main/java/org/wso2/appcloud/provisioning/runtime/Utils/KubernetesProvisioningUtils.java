@@ -141,11 +141,21 @@ public class KubernetesProvisioningUtils {
         return (domain).replace(".","-").toLowerCase();
     }
 
-    public static ApplicationContext getApplicationContext(String id, String version, String type, int tenantId,
+    /**
+     * This method generates the application context
+     * @param appName application name
+     * @param version application version
+     * @param type application type
+     * @param tenantId relevant tenant id
+     * @param tenantDomain relevant tenant domain
+     * @param versionHashId hash id of the application
+     * @return application context
+     */
+    public static ApplicationContext getApplicationContext(String appName, String version, String type, int tenantId,
             String tenantDomain, String versionHashId) {
 
         ApplicationContext applicationContext = new ApplicationContext();
-        applicationContext.setId(id);
+        applicationContext.setId(getKubernetesValidAppName(appName));
         applicationContext.setVersion(version);
         applicationContext.setType(type);
         TenantInfo tenantInfo = new TenantInfo();
@@ -154,6 +164,19 @@ public class KubernetesProvisioningUtils {
         applicationContext.setTenantInfo(tenantInfo);
         applicationContext.setVersionHashId(versionHashId);
         return applicationContext;
+    }
+
+    /**
+     * This method converts Kubernetes valid application name
+     * @param applicationName application name provided by user
+     * @return kubernetes valid application name
+     */
+    public static String getKubernetesValidAppName(String applicationName){
+        if(applicationName == null || applicationName.isEmpty()){
+            return null;
+        }
+        applicationName = applicationName.replaceAll("[^a-zA-Z0-9]+", "-");
+        return applicationName;
     }
 
     /**

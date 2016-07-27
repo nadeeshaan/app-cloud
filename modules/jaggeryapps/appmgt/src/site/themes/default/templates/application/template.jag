@@ -82,6 +82,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var versionHashIdAtFileUpload;
     var progress;
     var fileMoved = false;
+    var envKeyRegex = new RegExp("<%=ENV_KEY_REGEX%>");
     $(document).ready(function(){
 
             if (newVersion == "true") {
@@ -597,9 +598,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
         }
 
         function validateApplicationNameChar(value) {
-            var patternNonAlphaNumExceptHyphen = /[^\w-]/g;
+            var patternNonAlphaNumExceptHyphen = /[^a-zA-Z\d\-\_ ]/g;
             var isPatternMatch = patternNonAlphaNumExceptHyphen.test(value);
-            validationFailErrorMsg = "Application Name has invalid characters. Valid characters are a-z A-Z 0-9 -";
+            validationFailErrorMsg = "Application Name has invalid characters. Valid characters are [a-z, A-Z, 0-9, _, -]";
 
             return !isPatternMatch;
         }
@@ -795,6 +796,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
     function validateEnvironmentVariable(value){
         if(value != "" && $.inArray(value.toLowerCase(), notAllowedEnvVariables) > -1){
             envVariableErrorMsg = value + " is not allowed";
+            return false;
+        } else if (!envKeyRegex.test(value)) {
+            envVariableErrorMsg = "Invalid value for variable key, Valid characters are [A-Z, a-z, 0-9, _]";
             return false;
         } else {
             return true;

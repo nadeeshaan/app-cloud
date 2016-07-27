@@ -546,10 +546,10 @@ function validateApplicationName(field, value) {
         return true;
     }
 
-    var patternNonAlphaNumExceptHyphen = /[^\w-]/g;
+    var patternNonAlphaNumExceptHyphen = /[^a-zA-Z\d\-\_ ]/g;
     if (patternNonAlphaNumExceptHyphen.test(value)) {
         response.status = 400;
-        response.content = "Bad request : Application Name has invalid characters. Valid characters are a-z A-Z 0-9 -";
+        response.content = "Bad request : Application Name has invalid characters. Valid characters are [a-z, A-Z, 0-9, _, -]";
         return true;
     }
 

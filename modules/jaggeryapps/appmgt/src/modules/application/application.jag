@@ -433,7 +433,6 @@ var deployApplication = function(applicationName, versionName, appTypeName, depl
     var msg = "Application deployment successfully triggered in Kubernetes";
     addEvent(KUBE_DEPLOY, EVENT_PENDING, msg, versionHashId);
 
-    applicationName = Util.getRuntimeValidAppName(applicationName);
     //Creating basic deployment
     var KubernetesRuntime = Packages.org.wso2.appcloud.provisioning.runtime.KubernetesRuntimeProvisioningService;
 
@@ -515,17 +514,13 @@ var getRestartCounts = function (applicationName, versionName, applicationType){
 
 
 var constructAppLaunchURL = function(applicationName, versionName){
-
-    applicationName = Util.getRuntimeValidAppName(applicationName);
+    applicationName = KubernetesProvisioningUtils.getKubernetesValidAppName(applicationName);
     applicationName = applicationName.toLowerCase();
-
     var urlPrefix = modManager.getTenantDomain()
                             + "-" + applicationName + "-" + versionName;
     var appLaunchURL = urlPrefix.replace(/\./g, '-')
                                +  "." + modManager.getPropertyValue("ApplicationLaunchBaseURL");
-
     log.info("Application Launch URL: " + appLaunchURL);
-
     return appLaunchURL;
 };
 
@@ -722,7 +717,7 @@ function getDeploymentConfig(containersList, versionHashId, replicas){
 var getAllAppTypes = function(){
 
     var appTypeArray = [];
-    var selectedCloud = session.get("SELECTED_CLOUD");
+    var selectedCloud = session.get(SELECTED_CLOUD);
     try {
         var appTypes = ApplicationManager.getAllAppTypesForCloud(selectedCloud);
 
@@ -1590,7 +1585,7 @@ var deleteService = function (applicationName, versionName) {
 }
 
 var constructDefaultAppLaunchURL = function (applicationName) {
-    applicationName = Util.getRuntimeValidAppName(applicationName);
+    applicationName = KubernetesProvisioningUtils.getKubernetesValidAppName(applicationName);
     applicationName = applicationName.toLowerCase();
     var urlPrefix = modManager.getTenantDomain()
             + "-" + applicationName;
