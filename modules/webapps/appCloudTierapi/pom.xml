@@ -27,10 +27,10 @@
     <artifactId>tierapi</artifactId>
     <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>tierapi</name>
+    <name>WSO2 AppCloud WebApps    - Tier API</name>
 
     <build>
-        <finalName>tierapi</finalName>
+        <finalName>Tier API</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
