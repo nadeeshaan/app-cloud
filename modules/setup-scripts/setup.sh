@@ -104,7 +104,7 @@ function as_setup(){
 
     cp -r $APP_CLOUD_SRC_HOME/modules/setup-scripts/jaggery/modules/* $1/modules/
 
-    cp $LIB_LOCATION/org.wso2.carbon.hostobjects.sso_4.2.0.jar $1/repository/components/dropins/
+    cp $LIB_LOCATION/org.wso2.carbon.hostobjects.sso_4.2.1.jar $1/repository/components/dropins/
     cp $LIB_LOCATION/nimbus-jose-jwt_2.26.1.wso2v2.jar $1/repository/components/dropins/
     cp $LIB_LOCATION/commons-codec-1.10.0.wso2v1.jar $1/repository/components/dropins/
     cp $LIB_LOCATION/commons-compress-1.9.0.wso2v1.jar $1/repository/components/dropins/
