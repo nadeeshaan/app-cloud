@@ -40,7 +40,28 @@
     // if saml response is not a log out response
     if (samlResponse != null) {
         isLogoutResponse = ssoRelyingParty.isLogoutResponse(samlResponse);
-        if (!Boolean(isLogoutResponse)) {
+        if (!isLogoutResponse) {
+            var MultitenantConstants = Packages.org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+            var fullUserName = ssoRelyingParty.getSAMLResponseNameId(samlResponse);
+            var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+            var domainName = null;
+            if (fullUserName != null) {
+                domainName = MultitenantUtils.getTenantDomain(fullUserName);
+            } else {
+                log.error("SAML Response Schema verification failed");
+                response.sendRedirect("../site/pages/error-pages/401.html");
+                return;
+            }
+            // validating the audience restrictions
+            var audienceRestrictionsEnabled = site.ssoConfiguration.audienceRestrictionsEnabled;
+            if (audienceRestrictionsEnabled) {
+                var isAudienceRestrictionsValid = ssoRelyingParty.validateAudienceRestrictions(samlResponse);
+                if (!isAudienceRestrictionsValid) {
+                    log.error("SAML Response Audience Restrictions verification failed");
+                    response.sendRedirect("../site/pages/error-pages/401.html");
+                    return;
+                }
+            }
             // relay state value should be a valid value, this value is mapped with request uri.
             var relayState = request.getParameter("RelayState");
             var requestedURI = ssoRelyingParty.getRelayStateProperty(relayState);
@@ -51,11 +72,28 @@
             }
 
             // validating the signature
-            var isSignatureValid = ssoRelyingParty.validateSignature(samlResponse);
-            if (!Boolean(isSignatureValid)) {
-                log.error("SAML response signature is verification failed.");
-                response.sendRedirect("../error.jag");
-                return;
+            var responseSigningEnabled = site.ssoConfiguration.responseSigningEnabled;
+            if (responseSigningEnabled) {
+                var isSignatureValid = ssoRelyingParty.validateSignature(samlResponse);
+                if (!isSignatureValid) {
+                    log.error("SAML Response Signature verification failed.");
+                    session.remove('ERROR_MSG');
+                    session.put('ERROR_MSG', 'An authorization error occurred in the backend');
+                    response.sendRedirect("../site/pages/error-pages/401.html");
+                    return;
+                }
+            }
+            // validating the saml assertion signature
+            var assertionSigningEnabled = site.ssoConfiguration.assertionSigningEnabled;
+
+            if (assertionSigningEnabled) {
+                // validating the saml assertion signature
+                var isAssertionSignatureValid = ssoRelyingParty.validateAssertionSignature(samlResponse);
+                if (!isAssertionSignatureValid) {
+                    log.error("SAML Assertion Signature verification failed.");
+                    response.sendRedirect("../site/pages/error-pages/401.html");
+                    return;
+                }
             }
             samlResponse = samlResponse.replace('<?xml version="1.0" encoding="UTF-8"?>', "");
             ssoRelyingParty.setSessionAuthenticated(sessionId, samlResponse);
@@ -82,23 +120,17 @@
             response.sendRedirect("../");
             return;
         }
-
     }
-
     // if saml request is a log out request, then invalidate session.
     if (samlRequest != null) {
         isLogoutRequest = ssoRelyingParty.isLogoutRequest(samlRequest);
-        if (Boolean(isLogoutRequest)) {
+        if (isLogoutRequest) {
             ssoRelyingParty.invalidateSessionBySAMLResponse(samlRequest);
             audit.info("User : " + jagg.getUser() + ", Action : logout");
             session.invalidate();
         }
     }
-
-
 }());
-
 %>
-
 </body>
 </html>
