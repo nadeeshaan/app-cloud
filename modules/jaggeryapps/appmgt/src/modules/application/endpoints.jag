@@ -80,7 +80,6 @@ DSSEndpointsExtractor.prototype = Object.create(EndpointsExtractor);
 
 // actual implementation goes here
 WarEndpointsExtractor.prototype.getEndpoints = function (deploymentUrl) {
-    log.info("WarEndpointsExtractor called");
     return createJsonResponse(null, null, {"url" : deploymentUrl});
 };
 
@@ -93,7 +92,6 @@ MSSEndpointsExtractor.prototype.getEndpoints = function (deploymentUrl) {
 };
 
 CarEndpointsExtractor.prototype.getEndpoints = function (deploymentUrl) {
-    log.info("CarEndpointsExtractor called");
     return createJsonResponse(null, null, {"url" : deploymentUrl});
 };
 

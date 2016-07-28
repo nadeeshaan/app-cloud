@@ -103,6 +103,7 @@
             var isUserAuthorized = modManager.checkAuthorizationForUser(userName, permission);
             if(isUserAuthorized){
                 jagg.setUser(userName);
+                jagg.setSelectedCloud(request.getRequestURL());
                 var email = modManager.getEmailAddressForUser(userName);
                 modManager.setUserEmailAddress(email);
                 session.put("LOGGED_IN_USER", ssoRelyingParty.getLoggedInUser(sessionId));
