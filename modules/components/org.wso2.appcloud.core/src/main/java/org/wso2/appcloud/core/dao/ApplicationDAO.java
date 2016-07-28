@@ -120,13 +120,13 @@ public class ApplicationDAO {
 
             String msg =
                     "Error occurred while adding application : " + application.getApplicationName() + " to database " +
-                            "in tenant : " + tenantId;
+                            "in tenant : " + tenantId + " and cloud : " + application.getCloudType();
             throw new AppCloudException(msg, e);
 
         } catch (IOException e) {
             String msg =
                     "Error while generating stream of the icon for application : " + application.getApplicationName() +
-                            " in tenant : " + tenantId;
+                            " in tenant : " + tenantId + " and cloud : " + application.getCloudType();
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -1159,7 +1159,7 @@ public class ApplicationDAO {
             }
 
         } catch (SQLException e) {
-            String msg = "Error while retrieving app types from database in tenant " + tenantId;
+            String msg = "Error while retrieving app types from database in tenant " + tenantId + " and cloud : " + cloudType;
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -1861,20 +1861,22 @@ public class ApplicationDAO {
     }
 
     /**
-     * Method for getting maximum application count for whitelisted tenant.
+     * Method for getting maximum application count for whitelisted tenant per cloud.
      *
      * @param dbConnection database connection
-     * @param tenantID     id of tenant
+     * @param tenantId     id of tenant
+     * @param cloudType    cloud type
      * @return maximum application count
      * @throws AppCloudException
      */
-    public int getWhiteListedTenantMaxAppCount(Connection dbConnection, int tenantID) throws AppCloudException {
+    public int getWhiteListedTenantMaxAppCount(Connection dbConnection, int tenantId, String cloudType) throws AppCloudException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int maxAppCount;
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_WHITE_LISTED_TENANT_DETAILS);
-            preparedStatement.setInt(1, tenantID);
+            preparedStatement.setInt(1, tenantId);
+            preparedStatement.setString(2, cloudType);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 maxAppCount = resultSet.getInt(SQLQueryConstants.MAX_APP_COUNT);
@@ -1882,7 +1884,7 @@ public class ApplicationDAO {
                 maxAppCount = -1;
             }
         } catch (SQLException e) {
-            String msg = "Error while getting Max App Count in tenant : " + tenantID;
+            String msg = "Error while getting Max App Count in tenant : " + tenantId + " and cloud : " + cloudType;
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -1918,15 +1920,16 @@ public class ApplicationDAO {
     }
 
     /**
-     * Method for whitelisting tenant.
+     * Method for whitelisting tenant per cloud
      *
      * @param dbConnection     database connection
      * @param tenantId         id of tenant
      * @param maxAppCount      maximum application count
      * @param maxDatabaseCount maximum database count
+     * @param cloudType        cloud type
      * @throws AppCloudException
      */
-    public void whiteListTenant(Connection dbConnection, int tenantId, int maxAppCount, int maxDatabaseCount)
+    public void whiteListTenant(Connection dbConnection, int tenantId, int maxAppCount, int maxDatabaseCount, String cloudType)
             throws AppCloudException {
         PreparedStatement preparedStatement = null;
         try {
@@ -1934,11 +1937,12 @@ public class ApplicationDAO {
             preparedStatement.setInt(1, tenantId);
             preparedStatement.setInt(2, maxAppCount);
             preparedStatement.setInt(3, maxDatabaseCount);
-            preparedStatement.setInt(4, maxAppCount);
-            preparedStatement.setInt(5, maxDatabaseCount);
+            preparedStatement.setString(4, cloudType);
+            preparedStatement.setInt(5, maxAppCount);
+            preparedStatement.setInt(6, maxDatabaseCount);
             preparedStatement.execute();
         } catch (SQLException e) {
-            String msg = "Error while white listing tenant in tenant : " + tenantId;
+            String msg = "Error while white listing tenant in tenant : " + tenantId + " and cloud : " + cloudType;
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -1978,20 +1982,22 @@ public class ApplicationDAO {
     }
 
     /**
-     * Method for getting maximum database count for whitelisted tenant.
+     * Method for getting maximum database count for whitelisted tenant per cloud
      *
      * @param dbConnection database connection
-     * @param tenantID     id of tenant
+     * @param tenantId     id of tenant
+     * @param cloudType    cloud type
      * @return maximum database count
      * @throws AppCloudException
      */
-    public int getWhiteListedTenantMaxDatabaseCount(Connection dbConnection, int tenantID) throws AppCloudException {
+    public int getWhiteListedTenantMaxDatabaseCount(Connection dbConnection, int tenantId, String cloudType) throws AppCloudException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int maxDatabaseCount;
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_WHITE_LISTED_TENANT_DETAILS);
-            preparedStatement.setInt(1, tenantID);
+            preparedStatement.setInt(1, tenantId);
+            preparedStatement.setString(2, cloudType);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 maxDatabaseCount = resultSet.getInt(SQLQueryConstants.MAX_DATABASE_COUNT);
@@ -1999,7 +2005,7 @@ public class ApplicationDAO {
                 maxDatabaseCount = -1;
             }
         } catch (SQLException e) {
-            String msg = "Error while getting maximum database count in tenant : " + tenantID;
+            String msg = "Error while getting maximum database count in tenant : " + tenantId + " and cloud : " + cloudType;
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -2009,14 +2015,15 @@ public class ApplicationDAO {
     }
 
     /**
-     * Method for whitelisting maximum database count.
+     * Method for whitelisting maximum database count per cloud
      *
      * @param dbConnection     database connection
      * @param tenantId         id of tenant
      * @param maxDatabaseCount maximum database count
+     * @param cloudType        cloud type
      * @throws AppCloudException
      */
-    public void whiteListMaxDatabaseCount(Connection dbConnection, int tenantId, int maxDatabaseCount)
+    public void whiteListMaxDatabaseCount(Connection dbConnection, int tenantId, int maxDatabaseCount, String cloudType)
             throws AppCloudException {
         PreparedStatement preparedStatement = null;
         try {
@@ -2024,10 +2031,11 @@ public class ApplicationDAO {
                     ADD_WHITE_LISTED_MAX_DATABASE_COUNT_FOR_TENANT);
             preparedStatement.setInt(1, tenantId);
             preparedStatement.setInt(2, maxDatabaseCount);
-            preparedStatement.setInt(3, maxDatabaseCount);
+            preparedStatement.setString(3, cloudType);
+            preparedStatement.setInt(4, maxDatabaseCount);
             preparedStatement.execute();
         } catch (SQLException e) {
-            String msg = "Error while white listing maximum database count in tenant : " + tenantId;
+            String msg = "Error while white listing maximum database count in tenant : " + tenantId + " and cloud : " + cloudType;
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -2035,14 +2043,15 @@ public class ApplicationDAO {
     }
 
     /**
-     * Method for whitelisting maximum application count.
+     * Method for whitelisting maximum application count per cloud
      *
      * @param dbConnection database connection
      * @param tenantId     id of tenant
      * @param maxAppCount  maximum application count
+     * @param cloudType    cloud type
      * @throws AppCloudException
      */
-    public void whiteListMaxAppCount(Connection dbConnection, int tenantId, int maxAppCount)
+    public void whiteListMaxAppCount(Connection dbConnection, int tenantId, int maxAppCount, String cloudType)
             throws AppCloudException {
         PreparedStatement preparedStatement = null;
         try {
@@ -2050,10 +2059,11 @@ public class ApplicationDAO {
                     ADD_WHITE_LISTED_MAX_APP_COUNT_FOR_TENANT);
             preparedStatement.setInt(1, tenantId);
             preparedStatement.setInt(2, maxAppCount);
-            preparedStatement.setInt(3, maxAppCount);
+            preparedStatement.setString(3, cloudType);
+            preparedStatement.setInt(4, maxAppCount);
             preparedStatement.execute();
         } catch (SQLException e) {
-            String msg = "Error while white listing maximum application count for tenant : " + tenantId;
+            String msg = "Error while white listing maximum application count for tenant : " + tenantId + " and cloud : " + cloudType;
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
@@ -2114,7 +2124,7 @@ public class ApplicationDAO {
                 }
             }
         } catch (SQLException e) {
-            String msg = "Error while retrieving application list from database in tenant : " + tenantId;
+            String msg = "Error while retrieving application list from database in tenant : " + tenantId + " and cloud : " + cloudType;
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);

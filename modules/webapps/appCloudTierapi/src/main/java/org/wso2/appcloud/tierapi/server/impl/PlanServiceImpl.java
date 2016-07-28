@@ -77,6 +77,22 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @GET
+    @Path("/{cloudType}/{planName}")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response getPlan(@PathParam("cloudType") String cloudType, @PathParam("planName") String planName) {
+        try {
+            Plan plan = planInstance.getPlanByPlanName(cloudType, planName);
+            return Response.ok().entity(plan).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (SQLException e) {
+            String msg =
+                    "Error while getting details for plan with plan name: " + planName + " and cloud : " + cloudType;
+            log.error(msg, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg)
+                    .type(MediaType.APPLICATION_JSON_TYPE).build();
+        }
+    }
+
+    @GET
     @Path("/allowedSpecs/{planId}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getAllowedConSpecs(@PathParam("planId") int planId) {

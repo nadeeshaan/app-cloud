@@ -182,8 +182,7 @@ var checkAuthorizationForUser = function (userName , permission) {
 };
 
 var getCloudTypeProperties = function () {
-    var selectedCloudType = session.get(SELECTED_CLOUD);
     var cloudTypeProperty = jagg.getCloudTypePropertyConfFilePath();
-    return cloudTypeProperty[selectedCloudType];
+    return cloudTypeProperty[jagg.getSelectedCloud()];
 };
 %>

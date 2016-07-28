@@ -97,16 +97,17 @@ public class SQLQueryConstants {
                     "values (?, ?, ?, ?, ?, ?)";
 
     public static final String ADD_WHITE_LISTED_TENANT =
-            "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count, max_database_count) values (?, ?, ?) " +
+            "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count, max_database_count, cloud_id) " +
+                    "values (?, ?, ?, (SELECT id from AC_CLOUD WHERE name=?)) " +
                     "ON DUPLICATE KEY UPDATE max_app_count=?, max_database_count=?";
 
     public static final String ADD_WHITE_LISTED_MAX_DATABASE_COUNT_FOR_TENANT =
-            "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_database_count) values (?, ?) ON DUPLICATE KEY UPDATE "
-                    + "max_database_count=?";
+            "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_database_count, cloud_id) " +
+                    "values (?, ?, (SELECT id from AC_CLOUD WHERE name=?)) ON DUPLICATE KEY UPDATE max_database_count=?";
 
     public static final String ADD_WHITE_LISTED_MAX_APP_COUNT_FOR_TENANT =
-            "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count) values (?, ?) ON DUPLICATE KEY UPDATE "
-                    + "max_app_count=?";
+            "INSERT INTO AC_WHITE_LISTED_TENANTS (tenant_id, max_app_count, cloud_id) " +
+                    "values (?, ?, (SELECT id from AC_CLOUD WHERE name=?)) ON DUPLICATE KEY UPDATE max_app_count=?";
 
     public static final String ADD_APPLICATION_CONTEXT_FOR_APPLICATION =
             "INSERT INTO AC_APPLICAION_CONTEXTS (tenant_id, version_id, context) values (?,?,?)";
@@ -200,7 +201,8 @@ public class SQLQueryConstants {
             "AND timestamp <  timestampadd(HOUR, -?, now()) " +
             "AND tenant_id NOT IN (SELECT tenant_id FROM AC_WHITE_LISTED_TENANTS)";
 
-	public static final String GET_WHITE_LISTED_TENANT_DETAILS = "SELECT * FROM AC_WHITE_LISTED_TENANTS WHERE tenant_id=?";
+	public static final String GET_WHITE_LISTED_TENANT_DETAILS = "SELECT * FROM AC_WHITE_LISTED_TENANTS WHERE " +
+            "tenant_id=? AND cloud_id=(SELECT id FROM AC_CLOUD WHERE name=?)";
 
     public static final String GET_CUSTOM_DOMAIN = "SELECT custom_domain FROM AC_APPLICATION " +
             "WHERE hash_id=? AND AC_APPLICATION.tenant_id=?";
