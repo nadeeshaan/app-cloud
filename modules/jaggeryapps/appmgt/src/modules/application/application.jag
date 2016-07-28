@@ -880,7 +880,7 @@ var getApplication = function(applicationHashId){
         applicationObject.description = application.description;
         applicationObject.defaultVersion = application.defaultVersion;
         if (application.versions != null) {
-            applicationObject.versions = generateVersionList(application.versions, application.applicationName);
+            applicationObject.versions = generateVersionList(application.versions, application.applicationName, application.applicationType);
         }
         applicationObject.applicationType = application.applicationType;
         applicationObject.icon = getApplicationIconAsBase64String(application);
@@ -898,7 +898,7 @@ var getApplication = function(applicationHashId){
     return applicationObject;
 }
 
-var generateVersionList = function (versions, applicationName){
+var generateVersionList = function (versions, applicationName, appType) {
     var versionList = {};
     try {
         for (var i = 0; i < versions.size(); i++) {
@@ -917,6 +917,7 @@ var generateVersionList = function (versions, applicationName){
             versionObject.conSpecMemory = version.conSpecMemory;
             versionObject.runtimeProperties = generateRuntimePropsArray(version.runtimeProperties);
             versionObject.tags = generateTagsArray(version.tags);
+            versionObject.endpoints = jagg.module("application").getEndpointsExtractor(appType).getEndpoints(deploymentUrl);
 
             versionList[version.versionName] = versionObject;
         }
