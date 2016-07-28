@@ -583,12 +583,13 @@ public class ApplicationDAO {
     /**
      * Method for getting the list of applications of a tenant from database with minimal information.
      *
-     * @param dbConnection database connection
-     * @param tenantId     tenant id
+     * @param dbConnection  database connection
+     * @param tenantId      tenant id
+     * @param cloudType     cloud type
      * @return list of applications
      * @throws AppCloudException
      */
-    public List<Application> getAllApplicationsList(Connection dbConnection, int tenantId) throws AppCloudException {
+    public List<Application> getAllApplicationsList(Connection dbConnection, int tenantId, String cloudType) throws AppCloudException {
 
         PreparedStatement preparedStatement = null;
 
@@ -599,6 +600,7 @@ public class ApplicationDAO {
 
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_APPLICATIONS_LIST);
             preparedStatement.setInt(1, tenantId);
+            preparedStatement.setString(2, cloudType);
 
             resultSet = preparedStatement.executeQuery();
 
@@ -614,7 +616,7 @@ public class ApplicationDAO {
             }
 
         } catch (SQLException e) {
-            String msg = "Error while retrieving application list from database in tenant : " + tenantId;
+            String msg = "Error while retrieving application list from database in tenant : " + tenantId + " and cloud : " + cloudType ;
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);

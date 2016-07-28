@@ -71,3 +71,11 @@ INSERT INTO `AC_CLOUD` (`id`, `name`) VALUES
 
 INSERT INTO `AC_CLOUD_APP_TYPE` (`cloud_id`, `app_type_id`) VALUES
 (2, 6);
+
+-------------------------------------------------------------------------------------------------
+-- applications per cloud
+-------------------------------------------------------------------------------------------------
+
+ALTER TABLE AC_APPLICATION ADD `cloud_id` INT NOT NULL;
+UPDATE AC_APPLICATION set `cloud_id` = 1;
+ALTER TABLE AC_APPLICATION ADD CONSTRAINT fk_Application_CloudType1 FOREIGN KEY (cloud_id) REFERENCES AppCloudDB.AC_CLOUD (id) ON DELETE NO ACTION ON UPDATE NO ACTION;

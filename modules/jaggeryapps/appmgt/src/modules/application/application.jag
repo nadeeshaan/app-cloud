@@ -789,12 +789,13 @@ var getAllRuntimes = function(appType){
 }
 
 /**
- * Method for getting the application summery of all the applications
+ * Method for getting the application summery of all the applications per cloud
  */
 var getAllApplications = function(){
     var applicationArray = [];
+    var selectedCloud = session.get(SELECTED_CLOUD);
     try {
-        var applications = ApplicationManager.getApplicationList();
+        var applications = ApplicationManager.getApplicationList(selectedCloud);
         var appTypePropertyConfPath = jagg.getAppTypePropertyConfFilePath();
         var parsedObject = parse(appTypePropertyConfPath);
         var appTypesProperties = require(parsedObject);
