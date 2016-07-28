@@ -814,19 +814,21 @@ public class ApplicationManager {
         }
     }
 
-    /**
-     * Methoid for getting existing applications count.
+     /**
+     * Method for getting existing applications count per cloud
      *
+     * @param cloudType cloud type
      * @return application count
      * @throws AppCloudException
      */
-    public static int getApplicationCount() throws AppCloudException {
+    public static int getApplicationCount(String cloudType) throws AppCloudException {
         Connection dbConnection = DBUtil.getDBConnection();
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
-            return ApplicationDAO.getInstance().getApplicationCount(dbConnection, tenantId);
+            return ApplicationDAO.getInstance().getApplicationCount(dbConnection, tenantId, cloudType);
         } catch (AppCloudException e) {
-            String msg = "Error while getting application count for tenant id : " + tenantId;
+            String msg =
+                    "Error while getting application count for tenant id : " + tenantId + " and cloud : " + cloudType;
             log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
@@ -1187,20 +1189,21 @@ public class ApplicationManager {
     }
 
     /**
-     * Get the list of tagged applications.
+     * Get the list of tagged applications per cloud
      *
-     * @return List of all the tagged applications
+     * @param cloudType cloud type
+     * @return List of all the tagged applications per cloud
      * @throws AppCloudException
      */
-    public static Application[] getTaggedApplicationsList() throws AppCloudException {
+    public static Application[] getTaggedApplicationsList(String cloudType) throws AppCloudException {
         Connection dbConnection = DBUtil.getDBConnection();
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
             List<Application> applications = ApplicationDAO.getInstance().
-                    getTaggedApplicationsList(dbConnection, tenantId);
+                    getTaggedApplicationsList(dbConnection, tenantId, cloudType);
             return applications.toArray(new Application[applications.size()]);
         } catch (AppCloudException e) {
-            String msg = "Error while retrieving tagged applications for tenant id : " + tenantId;
+            String msg = "Error while retrieving tagged applications for tenant id : " + tenantId + " and cloud : " + cloudType;
             log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {

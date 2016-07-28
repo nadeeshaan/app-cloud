@@ -68,8 +68,8 @@ public class SQLQueryConstants {
     /*Insert Queries*/
 
     public static final String ADD_APPLICATION =
-            "INSERT INTO AC_APPLICATION (name, hash_id, description, tenant_id, default_version, app_type_id) values " +
-            "(?, ?, ?, ?, ?, (SELECT id FROM AC_APP_TYPE WHERE name=?))";
+            "INSERT INTO AC_APPLICATION (name, hash_id, description, tenant_id, default_version, app_type_id, cloud_id) values " +
+            "(?, ?, ?, ?, ?, (SELECT id FROM AC_APP_TYPE WHERE name=?), (SELECT id FROM AC_CLOUD WHERE name=?))";
 
     public static final String ADD_VERSION =
             "INSERT INTO AC_VERSION (name, hash_id, application_id, runtime_id, tenant_id, con_spec_cpu, con_spec_memory) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -216,7 +216,7 @@ public class SQLQueryConstants {
             "LEFT OUTER JOIN AC_APP_ICON icon ON app.id = icon.application_id " +
             "JOIN AC_VERSION version ON app.id = version.application_id " +
             "JOIN AC_TAG tag ON version.id = tag.version_id " +
-            "WHERE app.tenant_id=?";
+            "WHERE app.tenant_id=? AND app.cloud_id=(select id from AC_CLOUD WHERE name=?)";
 
     public static final String GET_APPLICATION_CONTEXT =
             "SELECT * FROM AC_APPLICAION_CONTEXTS WHERE tenant_id=? AND version_id=?";
@@ -280,5 +280,6 @@ public class SQLQueryConstants {
     public static final String DELETE_ALL_APP_VERSION_EVENTS =
             "Delete from AC_EVENT where version_id = (SELECT id FROM AC_VERSION WHERE hash_id=? AND tenant_id=?)";
 
-	public static final String GET_TENANT_APPLICATION_COUNT = "SELECT COUNT(*) FROM AC_APPLICATION WHERE tenant_id = ?";
+	public static final String GET_TENANT_APPLICATION_COUNT = "SELECT COUNT(*) FROM AC_APPLICATION WHERE tenant_id = ? " +
+            "AND cloud_id=(select id from AC_CLOUD WHERE name=?)";
 }
