@@ -167,20 +167,20 @@ public class ApplicationManager {
 
 
     /**
-     * Method for getting the list of application of a tenant.
-     *
+     * Method for getting the list of application of a tenant per cloud
+     * @param cloudType cloud type
      * @return array of application objects
      * @throws AppCloudException
      */
-    public static Application[] getApplicationList() throws AppCloudException {
+    public static Application[] getApplicationList(String cloudType) throws AppCloudException {
         Connection dbConnection = DBUtil.getDBConnection();
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         try {
             List<Application> applications = ApplicationDAO.getInstance().
-                    getAllApplicationsList(dbConnection, tenantId);
+                    getAllApplicationsList(dbConnection, tenantId, cloudType);
             return applications.toArray(new Application[applications.size()]);
         } catch (AppCloudException e) {
-            String msg = "Error while getting application list for tenant id : " + tenantId;
+            String msg = "Error while getting application list for tenant id : " + tenantId + " and cloud : " + cloudType ;
             log.error(msg, e);
             throw new AppCloudException(msg, e);
         } finally {
