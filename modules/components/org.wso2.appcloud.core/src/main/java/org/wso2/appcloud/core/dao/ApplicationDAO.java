@@ -93,6 +93,7 @@ public class ApplicationDAO {
             preparedStatement.setInt(4, tenantId);
             preparedStatement.setString(5, application.getDefaultVersion());
             preparedStatement.setString(6, application.getApplicationType());
+            preparedStatement.setString(7, application.getCloudType());
 
             preparedStatement.execute();
 
@@ -1619,27 +1620,30 @@ public class ApplicationDAO {
     }
 
     /**
-     * Method for getting application count.
+     * Method for getting application count per cloud
      *
      * @param dbConnection database connection
      * @param tenantId     id of tenant
+     * @param cloudType    cloud type
      * @return application count
      * @throws AppCloudException
      */
-    public int getApplicationCount(Connection dbConnection, int tenantId) throws AppCloudException {
+    public int getApplicationCount(Connection dbConnection, int tenantId, String cloudType) throws AppCloudException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int appCount = 0;
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_TENANT_APPLICATION_COUNT);
             preparedStatement.setInt(1, tenantId);
+            preparedStatement.setString(2, cloudType);
             resultSet = preparedStatement.executeQuery();
             dbConnection.commit();
             if (resultSet.next()) {
                 appCount = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            String msg = "Error while getting the application count in tenant : " + tenantId;
+            String msg =
+                    "Error while getting the application count in tenant : " + tenantId + " and cloud :" + cloudType;
             throw new AppCloudException(msg, e);
         } finally {
             DBUtil.closeResultSet(resultSet);
@@ -2057,20 +2061,22 @@ public class ApplicationDAO {
     }
 
     /**
-     * Method for getting the list of tagged applications.
+     * Method for getting the list of tagged applications per cloud
      *
      * @param dbConnection database connection
      * @param tenantId     tenant id
-     * @return taggedApplicationsList List of all the tagged applications
+     * @param cloudType    cloud type
+     * @return taggedApplicationsList List of all the tagged applications per cloud
      * @throws AppCloudException
      */
-    public List<Application> getTaggedApplicationsList(Connection dbConnection, int tenantId) throws AppCloudException {
+    public List<Application> getTaggedApplicationsList(Connection dbConnection, int tenantId, String cloudType) throws AppCloudException {
         PreparedStatement preparedStatement = null;
         List<Application> taggedApplicationsList = new ArrayList<>();
         ResultSet resultSet = null;
         try {
             preparedStatement = dbConnection.prepareStatement(SQLQueryConstants.GET_ALL_APPLICATIONS_LIST_WITH_TAG);
             preparedStatement.setInt(1, tenantId);
+            preparedStatement.setString(2, cloudType);
             resultSet = preparedStatement.executeQuery();
             boolean applicationAddedtoList;
             while (resultSet.next()) {
