@@ -81,3 +81,25 @@ INSERT INTO `AC_CLOUD_APP_TYPE` (`cloud_id`, `app_type_id`) VALUES
 ALTER TABLE AC_APPLICATION ADD `cloud_id` INT NOT NULL;
 UPDATE AC_APPLICATION set `cloud_id` = 1;
 ALTER TABLE AC_APPLICATION ADD CONSTRAINT fk_Application_CloudType1 FOREIGN KEY (cloud_id) REFERENCES AppCloudDB.AC_CLOUD (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-------------------------------------------------------------------------------------------------
+-- subscription plan per cloud
+-------------------------------------------------------------------------------------------------
+
+ALTER TABLE AC_SUBSCRIPTION_PLANS ADD CLOUD_ID INT NOT NULL;
+UPDATE AC_SUBSCRIPTION_PLANS set CLOUD_ID = 1;
+ALTER TABLE AC_SUBSCRIPTION_PLANS ADD CONSTRAINT fk_SubscriptionPlans_CloudType1 FOREIGN KEY (CLOUD_ID) REFERENCES AppCloudDB.AC_CLOUD (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE AC_SUBSCRIPTION_PLANS ADD CONSTRAINT uk_SubscriptionPlans_PlanName_CloudId UNIQUE(PLAN_NAME, CLOUD_ID);
+
+INSERT INTO AC_SUBSCRIPTION_PLANS (PLAN_ID, PLAN_NAME, MAX_APPLICATIONS, MAX_DATABASES, CLOUD_ID) VALUES
+(3, 'FREE', 3, 3, 2),
+(4, 'PAID', 10, 6, 2);
+
+-------------------------------------------------------------------------------------------------
+-- subscription plan per cloud
+-------------------------------------------------------------------------------------------------
+ALTER TABLE AC_WHITE_LISTED_TENANTS ADD cloud_id INT NOT NULL;
+UPDATE AC_WHITE_LISTED_TENANTS set cloud_id = 1;
+ALTER TABLE AC_WHITE_LISTED_TENANTS ADD CONSTRAINT fk_WhiteListedTenants_CloudType1 FOREIGN KEY (cloud_id) REFERENCES AppCloudDB.AC_CLOUD (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE AC_WHITE_LISTED_TENANTS DROP CONSTRAINT Unique_Constraint;
+ALTER TABLE AC_WHITE_LISTED_TENANTS ADD CONSTRAINT uk_WhiteListedTenants UNIQUE (tenant_id, cloud_id);
