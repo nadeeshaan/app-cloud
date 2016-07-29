@@ -50,13 +50,27 @@ var Arrays = Packages.java.util.Arrays;
  * @param uploadedArtifact the uploaded artifact file
  * @param runtimeId runtime id of the application
  */
-var addApplication = function (applicationName, versionName, applicationDescription, replicas,runtimeId, appTypeName,
+var addApplication = function (applicationName, versionName, applicationDescription, replicas, runtimeId, appTypeName,
                                runtimePropertiesArray, tagArray, appIcon, uploadedFileName, isNewVersion, conSpecMemory,
                                conSpecCpu, artifactUrl, appCreationMethod, oldHashId, applicationContext, setDefaultVersion) {
 
-    log.info("Started creating App => name : " + applicationName + " Version : " + versionName + " Description " +
-             ": " + applicationDescription + " runtimeId : " + runtimeId + " apptype : " + appTypeName +
-            "setDefaultVersion : " + setDefaultVersion);
+    log.info("Started creating App => Name: " + applicationName);
+    log.info("Version: " + versionName);
+    log.info("Description: " + applicationDescription);
+    log.info("RuntimeId: " + runtimeId);
+    log.info("AppType: " + appTypeName);
+    log.info("Runtime Properties: " + JSON.stringify(runtimePropertiesArray));
+    log.info("Tags: " + JSON.stringify(tagArray));
+    log.info("App Icon: " + JSON.stringify(appIcon));
+    log.info("Uploaded FileName: " + uploadedFileName);
+    log.info("New Version: " + isNewVersion);
+    log.info("Allocated Memory: " + conSpecMemory);
+    log.info("Allocated CPU: " + conSpecCpu);
+    log.info("Artifact Url: " + artifactUrl);
+    log.info("App Creation Method: " + appCreationMethod);
+    log.info("Previous HashId: " + oldHashId);
+    log.info("Context: " + applicationContext);
+    log.info("DefaultVersion: " + setDefaultVersion);
 
     var tenantId = modManager.getTenantId();
     var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
@@ -520,7 +534,9 @@ var constructAppLaunchURL = function(applicationName, versionName){
                             + "-" + applicationName + "-" + versionName;
     var appLaunchURL = urlPrefix.replace(/\./g, '-')
                                +  "." + modManager.getPropertyValue("ApplicationLaunchBaseURL");
-    log.info("Application Launch URL: " + appLaunchURL);
+    if (log.isDebugEnabled()) {
+        log.debug("Application Launch URL: " + appLaunchURL);
+    }
     return appLaunchURL;
 };
 
@@ -1591,7 +1607,9 @@ var constructDefaultAppLaunchURL = function (applicationName) {
             + "-" + applicationName;
     var appLaunchURL = urlPrefix.replace(/\./g, '-')
             + "." + modManager.getPropertyValue("ApplicationLaunchBaseURL");
-    log.info("Default Application Launch URL: " + appLaunchURL);
+    if (log.isDebugEnabled()) {
+        log.debug("Default Application Launch URL: " + appLaunchURL);
+    }
 
     return appLaunchURL;
 };

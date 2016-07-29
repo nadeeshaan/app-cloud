@@ -54,7 +54,7 @@ public class PlanServiceImpl implements PlanService {
                     GenericEntity<List<Plan>>(plansList) {};
             return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
         } catch (SQLException e) {
-            String msg = "Error while gettings plans list";
+            String msg = "Error while getting plans list";
             log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg)
                     .type(MediaType.APPLICATION_JSON_TYPE).build();
