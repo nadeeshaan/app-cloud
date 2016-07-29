@@ -46,6 +46,13 @@ jagg.block("home", {
         var selectedVersion = application.versions[selectedRevision];
         var conSpecCpu = selectedVersion.conSpecCpu;
         var conSpecMemory = selectedVersion.conSpecMemory;
+        var defaultAppLaunchURL;
+        if (application.customURL != null) {
+            defaultAppLaunchURL = application.customURL;
+        } else if (application.defaultURL != null) {
+            defaultAppLaunchURL = application.defaultURL;
+        }
+        var appMetaData = applicationModule.getAppMetaData(defaultAppLaunchURL);
 
         var pageTitle = jagg.module("manager").getCloudTypeProperties().pageTitle;
         return {
@@ -54,7 +61,8 @@ jagg.block("home", {
             "conSpecCpu" : conSpecCpu,
             "conSpecMemory" : conSpecMemory,
             "restartCounts" : restartCounts,
-            "pageTitle" : pageTitle
+            "pageTitle" : pageTitle,
+            "appMetaData" : appMetaData
         };
     }
 
