@@ -82,11 +82,17 @@ CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_APPLICATION` (
   `default_version` varchar(24) DEFAULT NULL,
   `app_type_id` INT NULL,
   `custom_domain` VARCHAR(200) NULL,
+  `cloud_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT uk_Application_NAME_TID_REV UNIQUE(`name`, `tenant_id`),
   CONSTRAINT `fk_Application_ApplicationType1`
     FOREIGN KEY (`app_type_id`)
     REFERENCES `AppCloudDB`.`AC_APP_TYPE` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_Application_CloudType1
+    FOREIGN KEY (cloud_id)
+    REFERENCES AppCloudDB.AC_CLOUD (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -352,7 +358,11 @@ CREATE TABLE IF NOT EXISTS AC_SUBSCRIPTION_PLANS (
     PLAN_ID	INTEGER NOT NULL AUTO_INCREMENT,
     PLAN_NAME   VARCHAR(200) NOT NULL,	
     MAX_APPLICATIONS	INT NOT NULL,
-    PRIMARY KEY (PLAN_ID))
+    MAX_DATABASES INT NOT NULL,
+    CLOUD_ID INT NOT NULL,
+    PRIMARY KEY (PLAN_ID),
+    CONSTRAINT fk_SubscriptionPlans_CloudType1 FOREIGN KEY (CLOUD_ID) REFERENCES AppCloudDB.AC_CLOUD (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT uk_SubscriptionPlans_PlanName_CloudId UNIQUE(PLAN_NAME, CLOUD_ID))
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS AC_CONTAINER_SPECIFICATIONS (
@@ -374,8 +384,12 @@ ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_WHITE_LISTED_TENANTS` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `tenant_id` INT NOT NULL,
-  `max_app_count` INT NOT NULL,
-  PRIMARY KEY (`id`, `tenant_id`))
+  `max_app_count` INT(11) DEFAULT -1,
+  `max_database_count` INT(11) DEFAULT -1,
+  `cloud_id` INT NOT NULL,
+  PRIMARY KEY (`id`, `tenant_id`),
+  CONSTRAINT fk_WhiteListedTenants_CloudType1 FOREIGN KEY (cloud_id) REFERENCES AppCloudDB.AC_CLOUD (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT uk_WhiteListedTenants UNIQUE (tenant_id, cloud_id))
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `AppCloudDB`.`AC_APPLICAION_CONTEXTS` (
@@ -397,7 +411,9 @@ INSERT INTO `AC_TRANSPORT` (`id`, `name`, `port`, `protocol`, `service_prefix`, 
 (3, 'http-alt', 8080, 'TCP', 'htp', 'HTTP Alternate Protocol'),
 (4, 'https-alt', 8443, 'TCP', 'hts', 'HTTPS Alternate Protocol'),
 (5, 'http', 9763, 'TCP', 'htp', 'HTTP servlet transport for carbon products'),
-(6, 'https', 9443, 'TCP', 'hts', 'HTTPS servlet transport for carbon products');
+(6, 'https', 9443, 'TCP', 'hts', 'HTTPS servlet transport for carbon products'),
+(7, 'http', 8280, 'TCP', 'htp', 'HTTP Protocol'),
+(8, 'https', 8243, 'TCP', 'hts', 'HTTPS Protocol');
 
 -- -----------------------------------------------------
 -- Populate Data to `AppCloudDB`.`ApplicationRuntimeService`
@@ -418,7 +434,9 @@ INSERT INTO `AC_RUNTIME_TRANSPORT` (`transport_id`, `runtime_id`) VALUES
 (3, 7),
 (4, 7),
 (3, 8),
-(4, 8);
+(4, 8),
+(7, 9),
+(8, 9);
 
 INSERT INTO `AC_CONTAINER_SPECIFICATIONS` (`CON_SPEC_NAME`, `CPU`, `MEMORY`, `COST_PER_HOUR`) VALUES
 ('128MB RAM and 0.1x vCPU', 100, 128, 1),
@@ -426,9 +444,9 @@ INSERT INTO `AC_CONTAINER_SPECIFICATIONS` (`CON_SPEC_NAME`, `CPU`, `MEMORY`, `CO
 ('512MB RAM and 0.3x vCPU', 300, 512, 3),
 ('1024MB RAM and 0.5x vCPU', 500, 1024, 4);
 
-INSERT INTO `AC_SUBSCRIPTION_PLANS` (`PLAN_NAME`, `MAX_APPLICATIONS`) VALUES
-('FREE', 3),
-('PAID', 10);
+INSERT INTO `AC_SUBSCRIPTION_PLANS` (`PLAN_NAME`, `MAX_APPLICATIONS`, `MAX_DATABASES`, `CLOUD_ID`) VALUES
+('FREE', 3, 2, 1),
+('PAID', 10, 6, 1);
 
 INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
 (1, 3),
@@ -501,21 +519,7 @@ INSERT INTO `AC_CLOUD_APP_TYPE` (`cloud_id`, `app_type_id`) VALUES
 (1, 2),
 (1, 3),
 (1, 4),
-(1, 5),
-(2, 6);
-
--- -----------------------------------------------------
--- Migration Script for Limiting Database Creation
--- -----------------------------------------------------
-
-ALTER TABLE `AC_SUBSCRIPTION_PLANS` ADD MAX_DATABASES int(11);
-UPDATE `AC_SUBSCRIPTION_PLANS` SET MAX_DATABASES=2 WHERE PLAN_ID=1;
-UPDATE `AC_SUBSCRIPTION_PLANS` SET MAX_DATABASES=6 WHERE PLAN_ID=2;
-
-ALTER TABLE `AC_WHITE_LISTED_TENANTS` ADD max_database_count INT(11) DEFAULT -1;
-ALTER TABLE `AC_WHITE_LISTED_TENANTS` MODIFY max_app_count INT(11) DEFAULT -1;
-
-ALTER TABLE `AC_WHITE_LISTED_TENANTS` ADD CONSTRAINT Unique_Constraint UNIQUE (tenant_id);
+(1, 5);
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
