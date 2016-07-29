@@ -54,23 +54,23 @@ var addApplication = function (applicationName, versionName, applicationDescript
                                runtimePropertiesArray, tagArray, appIcon, uploadedFileName, isNewVersion, conSpecMemory,
                                conSpecCpu, artifactUrl, appCreationMethod, oldHashId, applicationContext, setDefaultVersion) {
 
-    log.info("Started creating App => Name: " + applicationName);
-    log.info("Version: " + versionName);
-    log.info("Description: " + applicationDescription);
-    log.info("RuntimeId: " + runtimeId);
-    log.info("AppType: " + appTypeName);
-    log.info("Runtime Properties: " + JSON.stringify(runtimePropertiesArray));
-    log.info("Tags: " + JSON.stringify(tagArray));
-    log.info("App Icon: " + JSON.stringify(appIcon));
-    log.info("Uploaded FileName: " + uploadedFileName);
-    log.info("New Version: " + isNewVersion);
-    log.info("Allocated Memory: " + conSpecMemory);
-    log.info("Allocated CPU: " + conSpecCpu);
-    log.info("Artifact Url: " + artifactUrl);
-    log.info("App Creation Method: " + appCreationMethod);
-    log.info("Previous HashId: " + oldHashId);
-    log.info("Context: " + applicationContext);
-    log.info("DefaultVersion: " + setDefaultVersion);
+    log.info("Started creating App => Name: " + applicationName +
+    " Version: " + versionName +
+    " Description: " + applicationDescription +
+    " RuntimeId: " + runtimeId +
+    " AppType: " + appTypeName +
+    " Runtime Properties: " + JSON.stringify(runtimePropertiesArray) +
+    " Tags: " + JSON.stringify(tagArray) +
+    " App Icon: " + JSON.stringify(appIcon) +
+    " Uploaded FileName: " + uploadedFileName +
+    " New Version: " + isNewVersion +
+    " Allocated Memory: " + conSpecMemory +
+    " Allocated CPU: " + conSpecCpu +
+    " Artifact Url: " + artifactUrl +
+    " App Creation Method: " + appCreationMethod +
+    " Previous HashId: " + oldHashId +
+    " Context: " + applicationContext +
+    " DefaultVersion: " + setDefaultVersion);
 
     var tenantId = modManager.getTenantId();
     var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
