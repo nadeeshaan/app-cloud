@@ -52,7 +52,7 @@ jagg.block("home", {
         } else if (application.defaultURL != null) {
             defaultAppLaunchURL = application.defaultURL;
         }
-        var appMetaData = applicationModule.getAppMetaData(defaultAppLaunchURL);
+        var appMetaData; //applicationModule.getAppMetaData(defaultAppLaunchURL);
 
         var pageTitle = jagg.module("manager").getCloudTypeProperties().pageTitle;
         return {

@@ -1,6 +1,6 @@
 <%
 /*
- * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *   WSO2 Inc. licenses this file to you under the Apache License,
  *   Version 2.0 (the "License"); you may not use this file except
@@ -62,8 +62,8 @@ jagg.template("home", function(inputs, outputs, jagg) {
     var APPLICATION_STOPPED = "<%=APPLICATION_STOPPED%>";
     var APPLICATION_RUNNING = "<%=APPLICATION_RUNNING%>";
     var APPLICATION_INACTIVE = "<%=APPLICATION_INACTIVE%>";
-    var pageTitle = "<%=outputs.pageTitle%>";
-    var appMetaData;
+    var pageTitle = "<%=outputs.pageTitle%>";  
+    var appMetaData;  
     if (application.applicationType == 'wso2esb') {
         appMetaData = <%=appMetaData%>;
     }
@@ -378,6 +378,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
 
         return nextVersion;
     }
+
 
   // stop application
     function redeployApplication(){
