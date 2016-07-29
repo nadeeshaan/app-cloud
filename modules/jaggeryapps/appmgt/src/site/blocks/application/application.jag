@@ -230,8 +230,6 @@ var log = new Log();
                             appIcon, gitRepoUrl, gitRepoBranch, projectRoot, token,
                             isNewVersion, conSpecMemory, conSpecCpu, appCreationMethod, applicationContext, setDefaultVersion);
                 }
-                logMessage = "Application creation is successfully submitted";
-                log.info(logMessage);
                 response.status = 200;
                 response.content = logMessage;
                 return;

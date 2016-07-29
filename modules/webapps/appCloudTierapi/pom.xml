@@ -30,7 +30,7 @@
     <name>WSO2 AppCloud WebApps    - Tier API</name>
 
     <build>
-        <finalName>Tier API</finalName>
+        <finalName>tierapi</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
