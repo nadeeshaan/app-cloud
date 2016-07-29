@@ -55,7 +55,7 @@ INSERT INTO `AC_APP_TYPE` (`id`, `name`, `description`) VALUES
 (3, 'php', 'Allows you to create dynamic web pages and complete server applications using PHP web applications.'),
 (4, 'jaggery', 'Allows you to write all parts of web applications, services and APIs in a completely JavaScript way.'),
 (5, 'wso2dataservice', 'Allows you to deploy a data service that is supported in WSO2 Data Services Server.'),
-(6, 'car', 'Allows you to deploy a esb configuration that is supported in WSO2 Enterprise Service Bus');
+(6, 'wso2esb', 'Allows you to deploy a esb configuration that is supported in WSO2 Enterprise Service Bus');
 
 -- -----------------------------------------------------
 -- Table `AppCloudDB`.`AC_RUNTIME`
@@ -446,10 +446,10 @@ INSERT INTO `AC_RUNTIME_TRANSPORT` (`transport_id`, `runtime_id`) VALUES
 (3, 4),
 (6, 5),
 (5, 5),
-(5, 6),
-(6, 6),
-(3, 7),
-(4, 7),
+(3, 6),
+(4, 6),
+(5, 7),
+(6, 7),
 (3, 8),
 (4, 8),
 (7, 9),
@@ -461,9 +461,11 @@ INSERT INTO `AC_CONTAINER_SPECIFICATIONS` (`CON_SPEC_NAME`, `CPU`, `MEMORY`, `CO
 ('512MB RAM and 0.3x vCPU', 300, 512, 3),
 ('1024MB RAM and 0.5x vCPU', 500, 1024, 4);
 
-INSERT INTO `AC_SUBSCRIPTION_PLANS` (`PLAN_NAME`, `MAX_APPLICATIONS`, `MAX_DATABASES`, `CLOUD_ID`) VALUES
-('FREE', 3, 2, 1),
-('PAID', 10, 6, 1);
+INSERT INTO `AC_SUBSCRIPTION_PLANS` (`PLAN_ID`, `PLAN_NAME`, `MAX_APPLICATIONS`, `MAX_DATABASES`, `CLOUD_ID`) VALUES
+(1, 'FREE', 3, 3, 1),
+(2, 'PAID', 10, 6, 1),
+(3, 'FREE', 3, 3, 2),
+(4, 'PAID', 10, 6, 2);
 
 INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
 (1, 3),
@@ -478,7 +480,6 @@ INSERT INTO `AC_RUNTIME_CONTAINER_SPECIFICATIONS` (`id`, `CON_SPEC_ID`) VALUES
 (1, 4),
 (7, 4),
 (2, 4),
-(8, 1),
 (8, 2),
 (8, 3),
 (8, 4),
@@ -503,7 +504,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 
 INSERT INTO `AC_CLOUD` (`id`, `name`) VALUES
-(1, 'app-cloud');
+(1, 'app-cloud'),
+(2, 'integration-cloud');
 
 -- -----------------------------------------------------
 -- Table `AppCloudDB`.`AC_CLOUD_APP_TYPE`
@@ -533,7 +535,8 @@ INSERT INTO `AC_CLOUD_APP_TYPE` (`cloud_id`, `app_type_id`) VALUES
 (1, 2),
 (1, 3),
 (1, 4),
-(1, 5);
+(1, 5),
+(2, 6);
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

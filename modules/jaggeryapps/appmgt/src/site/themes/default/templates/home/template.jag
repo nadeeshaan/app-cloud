@@ -63,7 +63,10 @@ jagg.template("home", function(inputs, outputs, jagg) {
     var APPLICATION_RUNNING = "<%=APPLICATION_RUNNING%>";
     var APPLICATION_INACTIVE = "<%=APPLICATION_INACTIVE%>";
     var pageTitle = "<%=outputs.pageTitle%>";
-    var appMetaData = <%=appMetaData%>;
+    var appMetaData;
+    if (application.applicationType == 'wso2esb') {
+        appMetaData = <%=appMetaData%>;
+    }
 </script>
 
     <div class="right-pane">
@@ -194,7 +197,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                               </div>
                           </a>
                       </div>
-                      <% if (application.applicationType == 'car') {%>
+                      <% if (application.applicationType == 'wso2esb') {%>
 
                       <div class="col-xs-12 col-md-12 col-lg-12">
                            <div class="block-replica">

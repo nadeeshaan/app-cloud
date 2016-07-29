@@ -37,7 +37,14 @@
 		
         <ServiceProvider>
             <Issuer>appmgt</Issuer>
-            <AssertionConsumerService>https://localhost:9443/appmgt/jagg/jaggery_acs.jag</AssertionConsumerService>
+            <AssertionConsumerService>https://apps.local.wso2.com:9443/appmgt/jagg/jaggery_acs.jag</AssertionConsumerService>
+            <SignResponse>true</SignResponse>
+            <SignAssertion>true</SignAssertion>
+            <EnableSingleLogout>true</EnableSingleLogout>
+        </ServiceProvider>
+        <ServiceProvider>
+            <Issuer>integration-cloud</Issuer>
+            <AssertionConsumerService>https://integration.local.wso2.com:9443/appmgt/jagg/jaggery_acs.jag</AssertionConsumerService>
             <SignResponse>true</SignResponse>
             <SignAssertion>true</SignAssertion>
             <EnableSingleLogout>true</EnableSingleLogout>

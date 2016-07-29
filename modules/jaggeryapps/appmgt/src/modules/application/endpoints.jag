@@ -66,7 +66,7 @@ var EndpointsExtractor = {
 var WarEndpointsExtractor = function () {};
 var PHPEndpointsExtractor = function () {};
 var MSSEndpointsExtractor = function () {};
-var CarEndpointsExtractor = function () {};
+var ESBEndpointsExtractor = function () {};
 var JaggeryEndpointsExtractor = function () {};
 var DSSEndpointsExtractor = function () {};
 
@@ -74,7 +74,7 @@ var DSSEndpointsExtractor = function () {};
 WarEndpointsExtractor.prototype = Object.create(EndpointsExtractor);
 PHPEndpointsExtractor.prototype = Object.create(EndpointsExtractor);
 MSSEndpointsExtractor.prototype = Object.create(EndpointsExtractor);
-CarEndpointsExtractor.prototype = Object.create(EndpointsExtractor);
+ESBEndpointsExtractor.prototype = Object.create(EndpointsExtractor);
 JaggeryEndpointsExtractor.prototype = Object.create(EndpointsExtractor);
 DSSEndpointsExtractor.prototype = Object.create(EndpointsExtractor);
 
@@ -91,7 +91,7 @@ MSSEndpointsExtractor.prototype.getEndpoints = function (deploymentUrl) {
     return createJsonResponse(null, null, {"url" : deploymentUrl});
 };
 
-CarEndpointsExtractor.prototype.getEndpoints = function (deploymentUrl) {
+ESBEndpointsExtractor.prototype.getEndpoints = function (deploymentUrl) {
     return createJsonResponse(null, null, {"url" : deploymentUrl});
 };
 
@@ -117,8 +117,8 @@ var getEndpointsExtractor = function(appType) {
         return new MSSEndpointsExtractor();
     }
 
-    if (appType == "car") {
-        return new CarEndpointsExtractor();
+    if (appType == "wso2esb") {
+        return new ESBEndpointsExtractor();
     }
 
     if (appType == "jaggery") {
