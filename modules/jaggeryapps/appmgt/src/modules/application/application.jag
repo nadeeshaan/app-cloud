@@ -72,7 +72,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
         createAppInDataBase(applicationName, versionName, applicationDescription, replicas, runtimeId, appTypeName,
                 runtimePropertiesArray, tagArray, appIcon, applicationHashId, versionHashId, conSpecMemory, conSpecCpu);
     }
-    /*
+
     var applicationRuntime = ApplicationManager.getRuntimeById(runtimeId);
     var tagName = applicationRuntime.getTag() +"-"+ versionHashId;
     var DockerClient = Packages.org.wso2.appcloud.core.docker.DockerClient;
@@ -106,7 +106,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
     } else {
         setDefaultDomain(applicationName, versionName, applicationHashId);
         ApplicationManager.updateDefaultVersion(applicationHashId, versionName);
-    }*/
+    }
 };
 
 var stopOtherVersions = function(applicationHashId, selectedRevision) {
