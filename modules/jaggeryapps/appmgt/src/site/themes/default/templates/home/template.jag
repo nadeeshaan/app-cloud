@@ -42,6 +42,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
     } else if (application.defaultURL != null) {
         defaultAppLaunchURL = application.defaultURL;
     }
+    var appMetaData = outputs.appMetaData;
 %>
 
 <script>
@@ -62,6 +63,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
     var APPLICATION_RUNNING = "<%=APPLICATION_RUNNING%>";
     var APPLICATION_INACTIVE = "<%=APPLICATION_INACTIVE%>";
     var pageTitle = "<%=outputs.pageTitle%>";
+    var appMetaData = <%=appMetaData%>;
 </script>
 
     <div class="right-pane">
@@ -192,6 +194,72 @@ jagg.template("home", function(inputs, outputs, jagg) {
                               </div>
                           </a>
                       </div>
+                      <% if (application.applicationType == 'car') {%>
+
+                      <div class="col-xs-12 col-md-12 col-lg-12">
+                           <div class="block-replica">
+                               <h3>Endpoints</h3>
+                               <h4>SOAP</h4>
+                               <% if (appMetaData.data.urls.proxies) { %>
+                                   <style type="text/css">
+                                      .tg  {border-collapse:collapse;border-spacing:0;}
+                                      .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+                                      .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+                                      .tg .tg-yw4l{vertical-align:top}
+                                   </style>
+                                   <table class="tg">
+                                        <tr>
+                                          <th class="tg-yw4l">Name</th>
+                                          <th class="tg-yw4l">WSDL</th>
+                                          <th class="tg-yw4l">WSDL2</th>
+                                        </tr>
+
+                                        <% for (var i=0; i < appMetaData.data.urls.proxies.length; i++) {
+                                            var proxy = appMetaData.data.urls.proxies[i];
+                                        %>
+                                            <tr>
+                                              <td><%= proxy.name %></td>
+                                              <td><a><%= proxy.wsdl[0] %></a></td>
+                                              <td><a><%= proxy.wsdl[1] %></a></td>
+                                            </tr>
+                                        <% } %>
+                                   </table>
+                               <% } else { %>
+                                   <p><i>No SOAP Endpoints Found</i></p>
+                               <% } %>
+
+                               <br/>
+
+                               <h4>REST</h4>
+
+                               <% if (appMetaData.data.urls.apis) { %>
+                                  <style type="text/css">
+                                     .tg  {border-collapse:collapse;border-spacing:0;}
+                                     .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+                                     .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+                                     .tg .tg-yw4l{vertical-align:top}
+                                  </style>
+                                  <table class="tg">
+                                       <tr>
+                                         <th class="tg-yw4l">Name</th>
+                                         <th class="tg-yw4l">Context</th>
+                                       </tr>
+
+                                       <% for (var i=0; i < appMetaData.data.urls.apis.length; i++) {
+                                           var api = appMetaData.data.urls.apis[i];
+                                       %>
+                                           <tr>
+                                             <td><%= api.name %></td>
+                                             <td><a><%= defaultAppLaunchURL + api.context %></a></td>
+                                           </tr>
+                                       <% } %>
+                                  </table>
+                              <% } else { %>
+                                  <p><i>No REST Endpoints Found</i></p>
+                              <% } %>
+                           </div>
+                      </div>
+                      <% } %>
                         <div class="col-xs-12 col-md-9 col-lg-9">
                             <div class="block-replica">
                                 <h3>Replicas</h3>
@@ -307,7 +375,6 @@ jagg.template("home", function(inputs, outputs, jagg) {
 
         return nextVersion;
     }
-
 
   // stop application
     function redeployApplication(){

@@ -493,6 +493,9 @@ ENGINE = InnoDB;
 -- Populate Data to `AppCloudDB`.`AC_CLOUD_APP_TYPE`
 -- -----------------------------------------------------
 
+INSERT INTO `AC_CLOUD` (`id`, `name`) VALUES
+(2, 'integration-cloud');
+
 INSERT INTO `AC_CLOUD_APP_TYPE` (`cloud_id`, `app_type_id`) VALUES
 (1, 1),
 (1, 2),
