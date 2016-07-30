@@ -197,7 +197,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                               </div>
                           </a>
                       </div>
-                      <% if (application.applicationType == 'wso2esb') {%>
+                      <% if (application.applicationType == 'wso2esb' && appMetaData != undefined ) {%>
 
                       <div class="col-xs-12 col-md-12 col-lg-12">
                            <div class="block-replica">
