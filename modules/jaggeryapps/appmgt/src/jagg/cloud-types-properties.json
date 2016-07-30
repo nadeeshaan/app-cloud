@@ -6,5 +6,13 @@
             "documentationUrl": "AppCloud.Documentation.Url",
             "supportUrl": "AppCloud.Support.Url"
         }
+    },
+    "integration-cloud" : {
+        "pageTitle": "WSO2 Integration Cloud",
+        "cloudTitle" : "Integration Cloud",
+        "properties" : {
+            "documentationUrl": "IntegrationCloud.Documentation.Url",
+            "supportUrl": "IntegrationCloud.Support.Url"
+        }
     }
 }

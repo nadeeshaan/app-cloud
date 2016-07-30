@@ -86,6 +86,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
         createAppInDataBase(applicationName, versionName, applicationDescription, replicas, runtimeId, appTypeName,
                 runtimePropertiesArray, tagArray, appIcon, applicationHashId, versionHashId, conSpecMemory, conSpecCpu);
     }
+
     var applicationRuntime = ApplicationManager.getRuntimeById(runtimeId);
     var tagName = applicationRuntime.getTag() +"-"+ versionHashId;
     var DockerClient = Packages.org.wso2.appcloud.core.docker.DockerClient;
@@ -251,12 +252,12 @@ var createAppInDataBase = function(applicationName, versionName, applicationDesc
     //================================= Adding application to Database =========================================
     var application = new Application();
     var version = new Version();
-
     try {
         application.setApplicationName(applicationName);
         application.setHashId(applicationHashId);
         application.setDescription(applicationDescription);
         application.setApplicationType(appTypeName);
+        application.setCloudType(jagg.getSelectedCloud());
 
         var iconStream = null;
         var iconBlob = null;
@@ -733,9 +734,8 @@ function getDeploymentConfig(containersList, versionHashId, replicas){
 var getAllAppTypes = function(){
 
     var appTypeArray = [];
-    var selectedCloud = session.get(SELECTED_CLOUD);
     try {
-        var appTypes = ApplicationManager.getAllAppTypesForCloud(selectedCloud);
+        var appTypes = ApplicationManager.getAllAppTypesForCloud(jagg.getSelectedCloud());
 
         for (var i = 0; i < appTypes.length; i++) {
             var appType = appTypes[i];
@@ -789,12 +789,12 @@ var getAllRuntimes = function(appType){
 }
 
 /**
- * Method for getting the application summery of all the applications
+ * Method for getting the application summery of all the applications per cloud
  */
 var getAllApplications = function(){
     var applicationArray = [];
     try {
-        var applications = ApplicationManager.getApplicationList();
+        var applications = ApplicationManager.getApplicationList(jagg.getSelectedCloud());
         var appTypePropertyConfPath = jagg.getAppTypePropertyConfFilePath();
         var parsedObject = parse(appTypePropertyConfPath);
         var appTypesProperties = require(parsedObject);
@@ -878,7 +878,7 @@ var getApplication = function(applicationHashId){
         applicationObject.description = application.description;
         applicationObject.defaultVersion = application.defaultVersion;
         if (application.versions != null) {
-            applicationObject.versions = generateVersionList(application.versions, application.applicationName);
+            applicationObject.versions = generateVersionList(application.versions, application.applicationName, application.applicationType);
         }
         applicationObject.applicationType = application.applicationType;
         applicationObject.icon = getApplicationIconAsBase64String(application);
@@ -896,7 +896,7 @@ var getApplication = function(applicationHashId){
     return applicationObject;
 }
 
-var generateVersionList = function (versions, applicationName){
+var generateVersionList = function (versions, applicationName, appType) {
     var versionList = {};
     try {
         for (var i = 0; i < versions.size(); i++) {
@@ -915,6 +915,7 @@ var generateVersionList = function (versions, applicationName){
             versionObject.conSpecMemory = version.conSpecMemory;
             versionObject.runtimeProperties = generateRuntimePropsArray(version.runtimeProperties);
             versionObject.tags = generateTagsArray(version.tags);
+            versionObject.endpoints = jagg.module("application").getEndpointsExtractor(appType).getEndpoints(deploymentUrl);
 
             versionList[version.versionName] = versionObject;
         }
@@ -1461,7 +1462,7 @@ var constructFileUploadPath = function (versionHashId) {
 var getApplicationCount = function(){
     try{
         var tenantId = modManager.getTenantId();
-        var applicationCount = ApplicationManager.getApplicationCount();
+        var applicationCount = ApplicationManager.getApplicationCount(jagg.getSelectedCloud());
         return applicationCount;
     }catch(e){
         log.error("Error while getting application count from the database");
@@ -1644,9 +1645,9 @@ var getNotAllowedEnvVariables = function () {
 var getMaxInstanceCount = function () {
     try {
         var tenantId = modManager.getTenantId();
-        var maxAppCount = ApplicationManager.getMaxAppCountForWhiteListedTenants(tenantId);
+        var maxAppCount = ApplicationManager.getMaxAppCountForWhiteListedTenants(tenantId, jagg.getSelectedCloud());
         var subscriptionPlanBaseURL = modManager.getPropertyValue("SubscriptionPlanBaseURL");
-        var subscriptionPlanURL = subscriptionPlanBaseURL + "/plans/1";
+        var subscriptionPlanURL = subscriptionPlanBaseURL + "/plans/" + jagg.getSelectedCloud() + "/FREE";
         if (maxAppCount == -1) {
             var maxInstancesJson = get(subscriptionPlanURL, {}, "json");
             maxAppCount = parseInt(maxInstancesJson.data.maxApplications);
@@ -1750,7 +1751,7 @@ var getAllowedContainerSpecificationsForRuntime = function(runtimeID) {
  var getTaggedApplicationsList = function () {
      var applicationArray = [];
      try {
-         var applications = ApplicationManager.getTaggedApplicationsList();
+         var applications = ApplicationManager.getTaggedApplicationsList(jagg.getSelectedCloud());
          var appTypePropertyConfPath = jagg.getAppTypePropertyConfFilePath();
          var parsedObject = parse(appTypePropertyConfPath);
          var appTypesProperties = require(parsedObject);
@@ -1785,4 +1786,17 @@ var getAllowedContainerSpecificationsForRuntime = function(runtimeID) {
      return applicationArray;
  }
 
+var getAppMetaData = function (defaultAppLaunchURL) {
+    try {
+        var containerApiUrl = defaultAppLaunchURL + ":8280/container/endpoints";
+        log.info("Calling container API at " + containerApiUrl);
+        //var containerApiUrl = "http://localhost:8290/container/endpoints";
+        var metaData = get(containerApiUrl, {}, "json");
+        return metaData;
+    } catch (e) {
+        log.error("Error while getting app meta data for application " + application.name);
+        log.error(e);
+        throw e;
+    }
+};
 %>

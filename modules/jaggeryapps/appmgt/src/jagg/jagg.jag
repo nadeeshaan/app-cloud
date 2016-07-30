@@ -574,14 +574,28 @@ return getThemePath() + path;
     };
 
     var getIssuer = function(requestURL) {
-        var manager = jagg.module("manager");
-        var appCloudHostname = manager.getPropertyValue(APP_CLOUD_HOSTNAME);
-        var issuer;
-        if (requestURL.indexOf(appCloudHostname) > -1) {
-            issuer = site.ssoConfiguration.issuer;
-            session.put(SELECTED_CLOUD, APP_CLOUD);
+        var selectedCloud = findSelectedCloud(requestURL);
+        if (selectedCloud == INTEGRATION_CLOUD) {
+            return site.ssoConfiguration.integrationIssuer;
         }
-        return issuer;
+        return site.ssoConfiguration.issuer;
+    };
+
+    var findSelectedCloud = function(requestURL) {
+        var manager = jagg.module("manager");
+        var integrationCloudHostname = manager.getPropertyValue(INTEGRATION_CLOUD_HOSTNAME);
+        if (requestURL.indexOf(integrationCloudHostname) > -1) {
+            return INTEGRATION_CLOUD;
+        }
+        return APP_CLOUD;
+    };
+
+    var setSelectedCloud = function(requestURL) {
+        session.put(SELECTED_CLOUD, findSelectedCloud(requestURL));
+    };
+
+    var getSelectedCloud = function() {
+        return session.get(SELECTED_CLOUD);
     };
 
     return {
@@ -617,7 +631,9 @@ return getThemePath() + path;
         getThemeFile:getThemeFile,
         getAppTypePropertyConfFilePath:getAppTypePropertyConfFilePath,
         getCloudTypePropertyConfFilePath:getCloudTypePropertyConfFilePath,
-        getIssuer:getIssuer
+        getIssuer:getIssuer,
+        setSelectedCloud:setSelectedCloud,
+        getSelectedCloud:getSelectedCloud
     };
 
 }());
